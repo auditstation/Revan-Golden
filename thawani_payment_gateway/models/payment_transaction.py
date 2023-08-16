@@ -118,6 +118,9 @@ class PaymentTransaction(models.Model):
 
             # return payment_url
         #     payload['PaymentURL'] = payment_url
+        _logger.info("payment_url karim")
+        _logger.info(payment_url)
+
         rendering_values ={
             'api_url': payment_url,
             #  'data': payload,
