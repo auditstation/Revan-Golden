@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="MPGS_Payment_provider_id_new" model="ir.ui.view">
+            <field name="name">provider.mastercard.mpgs</field>
+            <field name="model">payment.provider</field>
+            <field name="inherit_id" ref="payment.payment_provider_form" />
+            <field name="arch" type="xml">
+               <xpath expr='//group[@name="provider_credentials"]' position='after'>
+                   <group attrs="{'invisible': [('code', '!=', 'mpgs')]}">
+                       <field name="merchant_id"/>
+                       <field name="mpgs_secret_key" password="True"/>
+                       <field name="merchant_name" />
+                       <field name="address1" />
+                       <field name="address2" />
+                   </group>
+               </xpath>
+            </field>
+        </record>
+    </data>
+
+ </odoo> 
