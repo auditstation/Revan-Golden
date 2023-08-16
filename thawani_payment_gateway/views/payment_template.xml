@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">Thawani Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position='inside'>
+                <group attrs="{'invisible': [('code', '!=', 'thawani')]}">
+                    <field name="thawani_client_reference_id"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>
+                     <field name="thawani_secret_key"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>       
+                    <field name="thawani_publishable_key"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>           
+                </group>
+            </group>
+        </field>
+    </record>
+    
+</odoo>

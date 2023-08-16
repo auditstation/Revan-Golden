@@ -1,0 +1,11 @@
+<odoo>
+    <record id="payment_provider_thawani" model="payment.provider">
+        <field name="name">Thawani</field>
+        <field name="code">thawani</field>
+        <field name="image_128" type="base64"
+               file="thawani_payment_gateway/static/description/icon.png"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="redirect_form_view_id" ref="redirect_form"/>
+    </record>
+
+</odoo>
