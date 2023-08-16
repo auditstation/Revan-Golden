@@ -120,7 +120,7 @@ class PaymentTransaction(models.Model):
         #     payload['PaymentURL'] = payment_url
         rendering_values ={
             'api_url': payment_url,
-             'data': payload,
+            #  'data': payload,
         }
 
         return rendering_values
