@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <template id="mpgs_provider_button">
+            <script src="https://ap-gateway.mastercard.com/checkout/version/61/checkout.js"
+                    data-complete="shop/completeCallback" data-cancel="cancelCallback" data-error="errorCallback">
+            </script>
+            <input type="hidden" name="key" t-att-value='key'/>
+            <input type="hidden" name="txnid" t-att-value='txnid'/>
+            <input type="hidden" name="reference" t-att-value='reference'/>
+            <input type="hidden" name="amount" t-att-value='amount'/>
+            <input type="hidden" name="productinfo" t-att-value='productinfo'/>
+            <input type="hidden" name="firstname" t-att-value='firstname'/>
+            <input type="hidden" name="email" t-att-value='email'/>
+            <input type="hidden" name="phone" t-att-value='phone'/>
+            <input type="hidden" name="service_provider" t-att-value='service_provider'/>
+            <input type="hidden" name="surl" t-att-value='surl'/>
+            <input type="hidden" name="hash" t-att-value='hash'/>
+            <input type='hidden' name='currency' t-att-value='currency'/>
+            <input id="provider_mpgs" type='hidden' name="provider" t-att-value="provider_id"/>
+            <script type="text/javascript">
+                function errorCallback(error) {
+                console.log("error",JSON.stringify(error));
+                }
+                function cancelCallback() {
+                console.log("\n \ncancel" )
+                location.reload();
+                }
+                function completeCallback(resultIndicator, sessionVersion) {
+                console.log("\n \ncompleteCallback" )
+                window.location.pathname = '/shop/payment/validate'
+                }
+            </script>
+            <script type="text/javascript" src="/aspl_payment_mpgs_ee/static/src/js/mpgs_checkout.js"/>
+        </template>
+
+    </data>
+</odoo>
