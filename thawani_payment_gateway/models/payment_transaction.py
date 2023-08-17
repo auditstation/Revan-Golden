@@ -88,8 +88,8 @@ class PaymentTransaction(models.Model):
         "client_reference_id":"123412" ,
         "mode": "payment",
         "products": invoice_items,
-        # "success_url": f"{odoo_base_url}/payment/thawani/success",
-        "success_url": "https://webhook.site/fa69f47b-5b18-4da2-91c8-8d0afff849d2",
+        "success_url": f"{odoo_base_url}/payment/thawani/success",
+        # "success_url": "https://webhook.site/fa69f47b-5b18-4da2-91c8-8d0afff849d2",
         "cancel_url": f"{odoo_base_url}/payment/thawani/cancel",
         "metadata": {
             "Customer name": self.partner_name,
