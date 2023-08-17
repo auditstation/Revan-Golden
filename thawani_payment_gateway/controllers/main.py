@@ -1,26 +1,3 @@
-# -*- coding: utf-8 -*-
-#############################################################################
-#
-#    Cybrosys Technologies Pvt. Ltd.
-#
-#    Copyright (C) 2022-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
-#    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
-#
-#    You can modify it under the terms of the GNU LESSER
-#    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU LESSER GENERAL PUBLIC LICENSE (LGPL v3) for more details.
-#
-#    You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-#    (LGPL v3) along with this program.
-#    If not, see <http://www.gnu.org/licenses/>.
-#
-#############################################################################
-
-
 import logging
 import pprint
 import json
@@ -33,51 +10,31 @@ _logger = logging.getLogger(__name__)
 
 class PaymentMyFatoorahController(http.Controller):
     _success_url = '/payment/thawani/success'
-    _failure_url = '/payment/thawani/failure'
+    # _failure_url = '/payment/thawani/failure'
     _cancel_url = '/payment/thawani/cancel'
-    _notification_url = '/payment/thawani/notification'
+    # _notification_url = '/payment/thawani/notification'
 
     @http.route([_success_url,
-                    _failure_url,
                     _cancel_url,
                     ], type='http', methods=['GET'], auth='public')
     def thawani_return_from_checkout(self, **data):
-        pass
+        """ Process the notification data sent by Tamara Pago after redirection from checkout.
 
+        :param dict data: The notification data.
+        """
+        # Handle the notification data.
+        _logger.info("Handling redirection from Thawani with data:\n%s", pprint.pformat(data))
+        # {'decline_type': 'soft decline',
+        # 'orderId': '475ae32f-c049-496a-950d-a5691730cd57',
+        # 'paymentStatus': 'declined'
+        # paymentStatus}
+        if data.get('orderId') != 'null':
+            request.env['payment.transaction'].sudo()._handle_notification_data(
+                'tamara', data
+            )
+        else:  # The customer cancelled the payment by clicking on the return button.
+            pass  # Don't try to process this case because the payment id was not provided.
 
-# class PaymentMyFatoorahController(http.Controller):
-#     _return_url = '/payment/myfatoorah/_return_url'
+        # Redirect the user to the status page.
+        return request.redirect('/payment/status')
 
-#     @http.route('/payment/myfatoorah/response', type='http', auth='public',
-#                 website=True, methods=['POST'], csrf=False, save_session=False)
-#     def myfatoorah_payment_response(self, **data):
-#         payment_data = ast.literal_eval(data["data"])
-#         vals = {
-#             'customer': payment_data["CustomerName"],
-#             'currency': payment_data["DisplayCurrencyIso"],
-#             # 'country_code': payment_data["MobileCountryCode"],
-#             'mobile': payment_data["CustomerMobile"],
-#             'invoice_amount': payment_data["InvoiceValue"],
-#             'address': payment_data["CustomerAddress"]["Address"],
-#             'payment_url': payment_data["PaymentURL"],
-#         }
-#         return request.render(
-#             "thawani_payment_gateway.myfatoorah_payment_gateway_form", vals)
-
-#     @http.route(_return_url, type='http', auth='public',
-#                 methods=['GET'])
-#     def myfatoorah_checkout(self, **data):
-#         _logger.info("Received MyFatoorah return data:\n%s",
-#                      pprint.pformat(data))
-#         tx_sudo = request.env[
-#             'payment.transaction'].sudo()._get_tx_from_notification_data(
-#             'myfatoorah', data)
-#         tx_sudo._handle_notification_data('myfatoorah', data)
-#         return request.redirect('/payment/status')
-
-#     @http.route('/payment/myfatoorah/failed', type='http', auth='user',
-#                 website=True, )
-#     def payment_failed(self, redirect=None,  **data):
-#         # self.myfatoorah_checkout(data = data)
-#         return request.render(
-#             "thawani_payment_gateway.myfatoorah_payment_gateway_failed_form")

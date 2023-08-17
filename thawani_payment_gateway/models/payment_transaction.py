@@ -63,6 +63,7 @@ class PaymentTransaction(models.Model):
         _logger.info(thawani_secret_key)
         thawani_publishable_key = self.env['payment.provider'].search([('code', '=',
                                                         'thawani')]).thawani_publishable_key
+        
         odoo_base_url = self.env['ir.config_parameter'].get_param(
             'web.base.url')
         sale_order = self.env['payment.transaction'].search(
@@ -87,8 +88,8 @@ class PaymentTransaction(models.Model):
         "client_reference_id":"123412" ,
         "mode": "payment",
         "products": invoice_items,
-        "success_url": "https://www.google.com/",
-        "cancel_url": "https://www.youtube.com/",
+        "success_url": f"{odoo_base_url}/payment/thawani/success",
+        "cancel_url": f"{odoo_base_url}/payment/thawani/cancel",
         "metadata": {
             "Customer name": self.partner_name,
             "order id":sale_order.id ,
