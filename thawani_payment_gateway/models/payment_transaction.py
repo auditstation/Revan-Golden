@@ -110,7 +110,7 @@ class PaymentTransaction(models.Model):
             raise ValidationError(f"{response_data.get('detail')}")
         if response_data.get('data')['session_id']:
             session_id = response_data.get('data')['session_id']
-            payment_url = f"{base_api_url}pay/{session_id}?key={thawani_publishable_key}"
+            payment_url = f"{base_api_url}pay/{session_id}"
             _logger.info("payment_url")
             _logger.info(payment_url)
 
@@ -123,6 +123,7 @@ class PaymentTransaction(models.Model):
 
         rendering_values ={
             'api_url': payment_url,
+            'key': thawani_publishable_key
             #  'data': payload,
         }
 
