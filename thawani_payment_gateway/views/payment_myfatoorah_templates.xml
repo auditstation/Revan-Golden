@@ -4,8 +4,9 @@
     
     <template id="redirect_form">
         <!-- Thawani generates a unique URL for each payment request. -->
-        <form t-att-action="api_url" method="get"/>
-          <input type='hidden' name='key' t-att-value='key'/>
+        <form t-att-action="api_url" method="get">
+          <input type='hidden' name='key' t-att-value='api_key'/>
+       </form>
     </template>
 
 

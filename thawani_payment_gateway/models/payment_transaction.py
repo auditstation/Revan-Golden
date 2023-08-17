@@ -123,10 +123,11 @@ class PaymentTransaction(models.Model):
 
         rendering_values ={
             'api_url': payment_url,
-            'key': thawani_publishable_key
+            'api_key': thawani_publishable_key
             #  'data': payload,
         }
-
+        _logger.info("rendering_values karim")
+        _logger.info(rendering_values)
         return rendering_values
 
 
