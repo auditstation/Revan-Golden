@@ -14,7 +14,6 @@
     'data': [
         'views/payment_template.xml',
         'views/payment_myfatoorah_templates.xml',
-        'views/myfatoorah_payment_template.xml',
         'data/payment_provider_data.xml',
 
     ],
