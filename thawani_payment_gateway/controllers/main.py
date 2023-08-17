@@ -24,7 +24,7 @@ class PaymentMyFatoorahController(http.Controller):
         """
         # Handle the notification data.
         _logger.info("Handling redirection from Thawani with data:\n%s", pprint.pformat(data))
-        _logger.info("request from Thawani with data:\n%s", pprint.pformat(vars(request)))
+        _logger.info("request from Thawani with data:\n%s", pprint.pformat(vars(request.httprequest)))
         # {'decline_type': 'soft decline',
         # 'orderId': '475ae32f-c049-496a-950d-a5691730cd57',
         # 'paymentStatus': 'declined'
