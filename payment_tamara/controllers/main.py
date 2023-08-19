@@ -56,6 +56,8 @@ class TamaraController(http.Controller):
                  _failure_url,
                  _cancel_url,
                  ], type='http', methods=['GET'], auth='public')
+    
+    
     def tamara_return_from_checkout(self, **data):
         """ Process the notification data sent by Tamara Pago after redirection from checkout.
 
