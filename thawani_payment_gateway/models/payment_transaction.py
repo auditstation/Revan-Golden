@@ -85,7 +85,7 @@ class PaymentTransaction(models.Model):
         
         ################################
         payload = json.dumps({
-        "client_reference_id":"123412" ,
+        "client_reference_id":"1386543" ,
         "mode": "payment",
         "products": invoice_items,
         "success_url": f"{odoo_base_url}/payment/thawani/success",
