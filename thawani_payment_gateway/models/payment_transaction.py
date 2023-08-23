@@ -85,12 +85,12 @@ class PaymentTransaction(models.Model):
         
         ################################
         payload = json.dumps({
-        "client_reference_id":"1386543" ,
+        "client_reference_id":str(client_reference_id) ,
         "mode": "payment",
         "products": invoice_items,
-        "success_url": f"{odoo_base_url}/payment/thawani/success",
+        "success_url": f"{odoo_base_url}/payment/thawani/success/{self.id}",
         # "success_url": "https://webhook.site/fa69f47b-5b18-4da2-91c8-8d0afff849d2",
-        "cancel_url": f"{odoo_base_url}/payment/thawani/cancel",
+        "cancel_url": f"{odoo_base_url}/payment/thawani/cancel/{self.id}",
         "metadata": {
             "Customer name": self.partner_name,
             "order id":sale_order.id ,
@@ -112,6 +112,7 @@ class PaymentTransaction(models.Model):
             raise ValidationError(f"{response_data.get('detail')}")
         if response_data.get('data')['session_id']:
             session_id = response_data.get('data')['session_id']
+            self.provider_reference = session_id
             payment_url = f"{base_api_url}pay/{session_id}"
             _logger.info("payment_url")
             _logger.info(payment_url)
@@ -133,94 +134,104 @@ class PaymentTransaction(models.Model):
         return rendering_values
 
 
-        #####################
-        # payment_details = {
-        #     "PaymentMethodId": 6,
-        #     "CustomerName": self.partner_name,
-        #     "DisplayCurrencyIso": self.currency_id.name,
-        #     # "MobileCountryCode": "964",
-        #     # "CustomerMobile": "78589587458",
-        #     "CustomerMobile":
-        #         self.partner_phone.replace('-', "").rsplit(' ', 1)[1],
-        #     "CustomerEmail": self.partner_email,
-        #     "InvoiceValue": (self.amount - sale_order.amount_tax),
-        #     "CallBackUrl": f"{odoo_base_url}/payment/myfatoorah/_return_url",
-        #     "ErrorUrl": f"{odoo_base_url}/payment/myfatoorah/failed",
-        #     "Language": "en",
-        #     "CustomerReference": self.reference,
-        #     "CustomerAddress": {
-        #         "Address": f'{self.partner_address} ,{self.partner_city} {self.partner_zip} ,{self.partner_state_id.name} ,{self.partner_country_id.name}',
 
-        #     },
-        #     "InvoiceItems":
-        #         invoice_items
-        # }
-        # headers = {
-        #     'Content-Type': 'application/json',
-        #     'Accept': 'application/json',
-        #     'Authorization': f'Bearer {api_key}',
-        # }
-        # payload = json.dumps(payment_details)
-        # response = requests.request("POST", api_url, headers=headers,
-        #                             data=payload)
-        # response_data = response.json()
-        # if not response_data.get('IsSuccess'):
-        #     raise ValidationError(f"{response_data.get('Message')}")
-        # if response_data.get('Data')['PaymentURL']:
-        #     payment_url = response_data.get('Data')['PaymentURL']
-        #     payment_details['PaymentURL'] = payment_url
-        # return {
-        #     'api_url': f"{odoo_base_url}/payment/myfatoorah/response",
-        #     'data': payment_details,
-        # }
+    def _get_tx_from_notification_data(self, provider_code, notification_data):
+        """Getting  payment status from myfatoorah"""
+        _logger.info('_get_tx_from_notification_dataaaa')
+        _logger.info(provider_code)
+        _logger.info(notification_data)
+        tx = super()._get_tx_from_notification_data(provider_code,
+                                                        notification_data)
+        tx_id = notification_data.get('id',False)
+        tx = request.env['payment.transaction'].sudo().search([('id','=',int(tx_id))])
+        if tx_id:
+            # _logger.info(tx_id)
+            _logger.info(tx)
+            _logger.info(tx.provider_reference)
+            
+                # reference = response_data["Data"]["CustomerReference"]
+                # domain.append(reference)
+            # if tx := self.search(domain):
+                        # return tx
+            return tx
+              
+        # else:
+        #     raise ValidationError(
+        #         "thawani: " + _(
+        #             "No transaction found matching reference %s.",
+        #             reference)
+        #     )
 
-    # def _get_tx_from_notification_data(self, provider_code, notification_data):
-    #     """Getting  payment status from myfatoorah"""
-    #     api_key = self.env['payment.provider'].search(
-    #         [('code', '=', 'thawani')]).myfatoorah_token
-    #     base_api_url = self.env['payment.provider'].search(
-    #         [('code', '=', 'thawani')])._thawani_get_api_url()
-    #     url = f"{base_api_url}v2/GetPaymentStatus"
-    #     paymentid = notification_data.get('paymentId')
-    #     payload = json.dumps({
-    #         "Key": f"{paymentid}",
-    #         "KeyType": "paymentId"
-    #     })
-    #     headers = {
-    #         'Content-Type': 'application/json',
-    #         'Accept': 'application/json',
-    #         'Authorization': f'Bearer {api_key}',
-    #     }
-    #     response = requests.request("POST", url, headers=headers, data=payload)
-    #     response_data = response.json()
-    #     tx = super()._get_tx_from_notification_data(provider_code,
-    #                                                 notification_data)
-    #     if provider_code != 'thawani' or len(tx) == 1:
-    #         return tx
-    #     domain = [('provider_code', '=', 'thawani')]
-    #     reference = ""
-    #     if response_data["Data"]["CustomerReference"]:
-    #         reference = response_data["Data"]["CustomerReference"]
-    #         domain.append(reference)
-    #     if tx := self.search(domain):
-    #         return tx
-    #     else:
-    #         raise ValidationError(
-    #             "thawani: " + _(
-    #                 "No transaction found matching reference %s.",
-    #                 reference)
-    #         )
+    def _handle_notification_data(self, provider_code, notification_data):
+        tx = self._get_tx_from_notification_data(provider_code,
+                                                 notification_data)
+        _logger.info("_handle_notification_dataaa")
+        _logger.info("provider_code",provider_code)
+        _logger.info("notification_data",notification_data)
+        tx._process_notification_data(notification_data)
+        tx._execute_callback()
+        return tx
 
-    # def _handle_notification_data(self, provider_code, notification_data):
-    #     tx = self._get_tx_from_notification_data(provider_code,
-    #                                              notification_data)
-    #     tx._process_notification_data(notification_data)
-    #     tx._execute_callback()
-    #     return tx
+    def _process_notification_data(self, notification_data):
+        super()._process_notification_data(notification_data)
+        if self.provider_code != 'thawani':
+            return
+        tx_id = notification_data.get('id',False)
+        tx = request.env['payment.transaction'].sudo().search([('id','=',int(tx_id))])
+        _logger.info('_process_notification_data notification_dataaaa')
+        _logger.info(notification_data)
+        thawani_session = tx.provider_reference
+        base_api_url = request.env['payment.provider'].search(
+                    [('code', '=', 'thawani')])._thawani_get_api_url()
+        _logger.info('base_api_url')
+        _logger.info(base_api_url)
+                
+        api_url = f"{base_api_url}api/v1/checkout/session"
+        _logger.info('api_url')
+        _logger.info(api_url)
 
-    # def _process_notification_data(self, notification_data):
-    #     super()._process_notification_data(notification_data)
-    #     if self.provider_code != 'thawani':
-    #         return
-    #     else:
-    #         self._set_done()
+        client_reference_id = request.env['payment.provider'].search([('code', '=',
+                                                                'thawani')]).thawani_client_reference_id
+        thawani_secret_key = request.env['payment.provider'].search([('code', '=',
+                                                                'thawani')]).thawani_secret_key
+        _logger.info('thawani_secret_key')
+        _logger.info(thawani_secret_key)
+        thawani_publishable_key = request.env['payment.provider'].search([('code', '=',
+                                                                'thawani')]).thawani_publishable_key
+                
+        odoo_base_url = request.env['ir.config_parameter'].get_param(
+                    'web.base.url')
+                
+        url = f"{base_api_url}api/v1/checkout/session/{thawani_session}"
+        _logger.info(url)
+
+        headers = {
+                    "Accept": "application/json",
+                    "thawani-api-key": thawani_secret_key
+                }
+
+        response = requests.get(url, headers=headers)
+        response_data = response.json()
+        _logger.info("response_data")
+        _logger.info(response_data)
+       
+            # if provider_code != 'thawani' or len(tx) == 1:
+            #     return tx
+        domain = [('provider_code', '=', 'thawani')]
+        tx = request.env['payment.transaction'].sudo().search([('id','=',int(tx_id))])
+
+        if response_data.get('success',False) == True and response_data.get('code',False) == 2000:
+                    payment_status = response_data['data']['payment_status']
+                    _logger.info('statusssss')
+                    _logger.info(payment_status)
+                    if payment_status == 'paid':
+                        self._set_done()
+                        _logger.info('paiiiiidd')
+                    else:
+
+                        message = "you cancelled your transaction"
+                        self._set_canceled(message)
+                        _logger.info('cancellleeed transaction')
+                         
+             
+        
