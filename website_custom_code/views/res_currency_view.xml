@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_res_currency_form">
+        <field name="name">res.currency.form</field>
+        <field name="inherit_id" ref="base.view_currency_form"/>
+        <field name="model">res.currency</field>
+        <field name="arch" type="xml">
+            <field name="currency_unit_label" position="before">
+                <field name="flag_image" widget="image"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="website_sale_product_pricelist_form_view" model="ir.ui.view">
+        <field name="name">website_sale.pricelist.form</field>
+        <field name="inherit_id" ref="product.product_pricelist_view" />
+        <field name="model">product.pricelist</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <field name="flag_image" widget='image' class="oe_avatar" options='{"preview_image": "flag_image"}'/>
+            </xpath>
+          </field>
+    </record>
+
+</odoo>
