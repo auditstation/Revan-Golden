@@ -24,4 +24,17 @@
         </xpath>
     </template>
 
+    <template id="kh_products_price_list" inherit_id="website_sale.products" name="kh products price list">
+        <xpath expr="//t[@t-call='website_sale.pricelist_list']" position="replace">
+<!--            <attribute name="style">visibility: hidden !important;</attribute>-->
+<!--            <attribute name="style">display: none !important;</attribute>-->
+        </xpath>
+    </template>
+
+    <template id="kh_product_price_list" inherit_id="website_sale.product" name="kh product price list">
+        <xpath expr="//t[@t-call='website_sale.pricelist_list']" position="replace">
+<!--            <attribute name="style">visibility: hidden !important;</attribute>-->
+        </xpath>
+    </template>
+
 </odoo>
