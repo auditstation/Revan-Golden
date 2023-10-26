@@ -1,0 +1,25 @@
+.flag_img {
+    width: 50%;
+}
+
+.price_list_button {
+    width: 130px;
+    display: flex;
+}
+
+.span_flag_img {
+    margin-right: 10px;
+}
+
+.o_pricelist_dropdown {
+    .dropdown-toggle::after{
+        margin-top: 10px;
+    }
+
+
+}
+
+.div_zip{
+    display: none !important;
+    background-color: red !important;
+}
