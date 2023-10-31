@@ -1,139 +1,52 @@
 <odoo>
     <data>
-        <template id="kh_price_list_custom_menu" inherit_id="website_sale.template_header_centered_logo"
-                  name="kh price list custom menu">
-            <xpath expr="//t[@t-call='website_sale.header_cart_link']" position="before">
-                <t t-call="website_sale.pricelist_list">
+        <template id="variant_not_avail" inherit_id="website_sale.product">
+<!--            <xpath expr="//div[hasclass('js_product')]" position="inside">-->
+<!--                <div id="unavailable_variant" t-att-data-values="product.get_variant_count()">-->
+<!--                </div>-->
+<!--            </xpath>-->
+            <xpath expr="//t[@t-set='combination']" position="replace">
+                <t t-set="combination"
+                   t-value="product.with_context(special_call=True)._get_first_possible_combination()"/>
+            </xpath>
+        </template>
+
+        <template id="variants" inherit_id="sale.variants">
+            <xpath expr="//t[@t-foreach='product.valid_product_template_attribute_line_ids']" position="before">
+                <t t-set="is_first_attr" t-value="True"/>
+            </xpath>
+            <xpath expr="//select/t[@t-foreach='ptal.product_template_value_ids._only_active()']" position="before">
+                <t t-if="not is_first_attr and website">
+                    <option value="0" readonly=""/>
                 </t>
             </xpath>
-        </template>
-        <template id="kh_vat_sign_up" inherit_id="website_sale.address" name="kh vat sign up ">
-            <xpath expr="//form[hasclass('checkout_autoformat')]/div/t/t/div[contains(@t-attf-class,'div_vat')]"
-                   position="attributes">
-                <attribute name="style">display: none !important;</attribute>
-            </xpath>
-        </template>
-        <template id="kh_street_sign_up" inherit_id="website_sale.address" name="kh street sign up ">
-            <xpath expr="//form[hasclass('checkout_autoformat')]/div/div[contains(@t-attf-class,'div_street2')]"
-                   position="attributes">
-                <attribute name="style">display: none !important;</attribute>
-            </xpath>
-        </template>
 
-        <template id="kh_zip_sec_sign_up" inherit_id="website_sale.address" name="kh zip sec sign up ">
-            <xpath expr="//form[hasclass('checkout_autoformat')]/div/t[4]/div[contains(@t-attf-class,'div_zip')]/input[@name='zip']"
-                   position="attributes">
-                <attribute name="t-att-value">'011'</attribute>
+            <xpath expr="//t[@t-foreach='product.valid_product_template_attribute_line_ids']" position="inside">
+                <t t-set="is_first_attr" t-value="False"/>
             </xpath>
 
-        </template>
-        <template id="kh_zip_sign_up" inherit_id="website_sale.address" name="kh zip sign up ">
-            <xpath expr="//form[hasclass('checkout_autoformat')]/div/t[3]/div[contains(@t-attf-class,'div_zip')]/input[@name='zip']"
-                   position="attributes">
-                <attribute name="t-att-value">'011'</attribute>
-            </xpath>
-        </template>
-
-        <template id="kh_product_variant" inherit_id="sale.variants" name="kh product variant">
-            <xpath expr="//ul/t/li/t[4]/ul/t/li[hasclass('list-inline-item')]" position="replace">
-                <t t-set="is_out" t-value="ptav.product_tmpl_id.product_variant_id.is_out_of_stock"/>
-                <t t-if="is_out == False">
-                    <label class="col-form-label">
-                        <div class="form-check">
-                            <input type="radio"
-                                   t-attf-class="form-check-input js_variant_change #{ptal.attribute_id.create_variant}"
-                                   t-att-checked="ptav in combination"
-                                   t-att-name="'ptal-%s' % ptal.id"
-                                   t-att-value="ptav.id"
-                                   t-att-data-value_id="ptav.id"
-                                   t-att-data-value_name="ptav.name"
-                                   t-att-data-attribute_name="ptav.attribute_id.name"
-                                   t-att-data-is_custom="ptav.is_custom"
-                                   t-att-data-is_single="single"
-                                   t-att-data-is_single_and_custom="single_and_custom"/>
-                            <div class="radio_input_value form-check-label">
-                                <span t-field="ptav.name"/>
-                                <t t-call="sale.badge_extra_price"/>
-                            </div>
+            <xpath expr="//li/t[5]//li" position="replace">
+                <li t-attf-class="o_variant_pills btn btn-primary mb-1 list-inline-item js_attribute_value #{'active' if ptav in combination else ''}">
+                    <label class="m-0">
+                        <input type="radio"
+                               t-attf-class="js_variant_change #{ptal.attribute_id.create_variant}"
+                               t-att-checked="ptav in combination"
+                               t-att-name="'ptal-%s' % ptal.id"
+                               t-att-value="ptav.id"
+                               t-att-data-value_id="ptav.id"
+                               t-att-id="ptav.id"
+                               t-att-data-value_name="ptav.name"
+                               t-att-data-attribute_name="ptav.attribute_id.name"
+                               t-att-data-is_custom="ptav.is_custom"
+                               t-att-data-is_single_and_custom="single_and_custom"
+                               t-att-autocomplete="off"/>
+                        <div class="radio_input_value o_variant_pills_input_value">
+                            <span t-field="ptav.name"/>
+                            <t t-call="sale.badge_extra_price"/>
                         </div>
                     </label>
-                </t>
+                </li>
             </xpath>
-<!--            <xpath expr="//ul/t/li/t[5]/ul/t[@t-foreach='ptal.product_template_value_ids._only_active()']"-->
-<!--                   position="replace">-->
-<!--                <t t-set="is_out_stock" t-value="ptav.product_tmpl_id.product_variant_id.is_out_of_stock"/>-->
-<!--                <t t-if="is_out == False">-->
-<!--                    <li t-attf-class="o_variant_pills btn btn-primary mb-1 list-inline-item js_attribute_value #{'active' if ptav in combination else ''}">-->
-<!--                        <input type="radio"-->
-<!--                               t-attf-class="js_variant_change #{ptal.attribute_id.create_variant}"-->
-<!--                               t-att-checked="ptav in combination"-->
-<!--                               t-att-name="'ptal-%s' % ptal.id"-->
-<!--                               t-att-value="ptav.id"-->
-<!--                               t-att-data-value_id="ptav.id"-->
-<!--                               t-att-id="ptav.id"-->
-<!--                               t-att-data-value_name="ptav.name"-->
-<!--                               t-att-data-attribute_name="ptav.attribute_id.name"-->
-<!--                               t-att-data-is_custom="ptav.is_custom"-->
-<!--                               t-att-data-is_single_and_custom="single_and_custom"-->
-<!--                               t-att-autocomplete="off"/>-->
-<!--                        <div class="radio_input_value o_variant_pills_input_value">-->
-<!--                            <span t-field="ptav.name"/>-->
-<!--                            <t t-call="sale.badge_extra_price"/>-->
-<!--                        </div>-->
-<!--                    </li>-->
-<!--                </t>-->
-<!--            </xpath>-->
-
         </template>
-
-
-        <!--                <template id="variant_not_avail" inherit_id="website_sale.product">-->
-        <!--                    &lt;!&ndash;            <xpath expr="//div[hasclass('js_product')]" position="inside">&ndash;&gt;-->
-        <!--                    &lt;!&ndash;                <div id="unavailable_variant" t-att-data-values="product.get_variant_count()">&ndash;&gt;-->
-        <!--                    &lt;!&ndash;                </div>&ndash;&gt;-->
-        <!--                    &lt;!&ndash;            </xpath>&ndash;&gt;-->
-        <!--                    <xpath expr="//t[@t-set='combination']" position="replace">-->
-        <!--                        <t t-set="combination"-->
-        <!--                           t-value="product.with_context(special_call=True)._get_first_possible_combination()"/>-->
-        <!--                    </xpath>-->
-        <!--                </template>-->
-
-        <!--                <template id="variants" inherit_id="sale.variants">-->
-        <!--                    <xpath expr="//t[@t-foreach='product.valid_product_template_attribute_line_ids']" position="before">-->
-        <!--                        <t t-set="is_first_attr" t-value="True"/>-->
-        <!--                    </xpath>-->
-        <!--                    <xpath expr="//select/t[@t-foreach='ptal.product_template_value_ids._only_active()']" position="before">-->
-        <!--                        <t t-if="not is_first_attr and website">-->
-        <!--                            <option value="0" readonly=""/>-->
-        <!--                        </t>-->
-        <!--                    </xpath>-->
-
-        <!--                    <xpath expr="//t[@t-foreach='product.valid_product_template_attribute_line_ids']" position="inside">-->
-        <!--                        <t t-set="is_first_attr" t-value="False"/>-->
-        <!--                    </xpath>-->
-
-        <!--                    <xpath expr="//li/t[5]//li" position="replace">-->
-        <!--                        <li t-attf-class="o_variant_pills btn btn-primary mb-1 list-inline-item js_attribute_value #{'active' if ptav in combination else ''}">-->
-        <!--                            <label class="m-0">-->
-        <!--                                <input type="radio"-->
-        <!--                                       t-attf-class="js_variant_change #{ptal.attribute_id.create_variant}"-->
-        <!--                                       t-att-checked="ptav in combination"-->
-        <!--                                       t-att-name="'ptal-%s' % ptal.id"-->
-        <!--                                       t-att-value="ptav.id"-->
-        <!--                                       t-att-data-value_id="ptav.id"-->
-        <!--                                       t-att-id="ptav.id"-->
-        <!--                                       t-att-data-value_name="ptav.name"-->
-        <!--                                       t-att-data-attribute_name="ptav.attribute_id.name"-->
-        <!--                                       t-att-data-is_custom="ptav.is_custom"-->
-        <!--                                       t-att-data-is_single_and_custom="single_and_custom"-->
-        <!--                                       t-att-autocomplete="off"/>-->
-        <!--                                <div class="radio_input_value o_variant_pills_input_value">-->
-        <!--                                    <span t-field="ptav.name"/>-->
-        <!--                                    <t t-call="sale.badge_extra_price"/>-->
-        <!--                                </div>-->
-        <!--                            </label>-->
-        <!--                        </li>-->
-        <!--                    </xpath>-->
-        <!--                </template>-->
     </data>
 </odoo>
