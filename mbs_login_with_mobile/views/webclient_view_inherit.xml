@@ -1,0 +1,7 @@
+<odoo>
+    <template id="auth_web_login" inherit_id="web.login">
+        <xpath expr="//div[2]//label" position="replace">
+            <label for="login" class="form-label">Email / Mobile</label>
+        </xpath>
+    </template>
+</odoo>
