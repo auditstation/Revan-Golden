@@ -25,5 +25,5 @@
     'data': [
         'views/views.xml',
         'views/templates.xml',
-        'data/country.xml'],
+    ],
 }
