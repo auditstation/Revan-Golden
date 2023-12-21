@@ -1,0 +1,15 @@
+<odoo>
+    <template id="custom_website_insert_customtext" inherit_id="website_sale.address">
+        <xpath expr="//select[@id='country_id']" position="replace">
+            <!-- Tu nuevo contenido para el selector del país va aquí -->
+            <select id="country_id" name="country_id" t-attf-class="form-select #{error.get('country_id') and 'is-invalid' or ''}" t-att-mode="mode[1]">
+                <option value="">Country...</option>
+                <t t-foreach="countries.filtered(lambda c: c.id in [171,23,122,186,2])" t-as="c">
+                    <option t-att-value="c.id" t-att-selected="c.id == (country and country.id or -1)">
+                        <t t-esc="c.name"/>
+                    </option>
+                </t>
+            </select>
+        </xpath>
+    </template>
+</odoo>
