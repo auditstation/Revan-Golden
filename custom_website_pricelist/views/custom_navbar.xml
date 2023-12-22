@@ -1,0 +1,31 @@
+<odoo>
+  <template id="navbar_inherited" inherit_id="website.navbar" name="Navbar Inherited">
+    <xpath expr="//nav[@data-name='Navbar']" position="after">
+      <div class="custom_price">
+        <t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)"/>
+        <div t-attf-class="o_pricelist_dropdown dropdown #{_classes}">
+          <t t-set="curr_pl" t-value="website.pricelist_id"/>
+
+          <a role="button" href="#" t-attf-class="dropdown-toggle btn btn-{{navClass}} price_list_button"
+             data-bs-toggle="dropdown">
+            <span t-field="curr_pl.flag_image" class="span_flag_img"
+                  t-options="{&quot;widget&quot;: &quot;image&quot;, &quot;alt-field&quot;: &quot;name&quot;, &quot;class&quot;: &quot;span_flag_img&quot;}"/>
+            <span>
+              <t t-esc="curr_pl and curr_pl.name or ' - '"/>
+            </span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <t t-foreach="website_sale_pricelists" t-as="pl">
+              <a role="menuitem" t-att-href="'/shop/change_pricelist/%s' % pl.id"
+                 class="dropdown-item d-flex">
+                <span t-field="pl.flag_image" class="span_flag_img"
+                      t-options="{&quot;widget&quot;: &quot;image&quot;, &quot;alt-field&quot;: &quot;name&quot;, &quot;class&quot;: &quot;flag_img&quot;}"/>
+                <span class="switcher_pricelist" t-att-data-pl_id="pl.id" t-esc="pl.name"/>
+              </a>
+            </t>
+          </div>
+        </div>
+      </div>
+    </xpath>
+  </template>
+</odoo>

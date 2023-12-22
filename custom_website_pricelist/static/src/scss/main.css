@@ -1,0 +1,12 @@
+.custom_price {
+    position: absolute;
+    top: 0px;
+}
+
+/************Mobile*************/
+
+@media (min-width: 769px) {
+    .custom_price {
+        visibility: hidden;
+    }
+}
