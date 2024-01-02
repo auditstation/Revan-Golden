@@ -10,6 +10,6 @@ class ProductTemplate(models.Model):
                 available_stock += variant.qty_available
             return available_stock > 0
 
-        return self.filtered(lambda ptav: ptav.ptav_active and has_stock(ptav))
+        return self.sudo().filtered(lambda ptav: ptav.ptav_active and has_stock(ptav))
 
 
