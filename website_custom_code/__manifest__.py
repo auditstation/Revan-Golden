@@ -24,7 +24,6 @@
     # always loaded
     'data': [
         'views/product_view.xml',
-        # 'views/website_sale_templates.xml',
         'views/price_list_template.xml',
         'views/res_currency_view.xml',
         'views/custom_navbar.xml',
