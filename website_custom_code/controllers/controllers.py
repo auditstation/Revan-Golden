@@ -10,4 +10,4 @@ class HideVariant(http.Controller):
     def get_product_variant_data(self, product_tmpl_id):
         product_tmpl_id = request.env["product.template"].search([("id", "=", product_tmpl_id)])
         if product_tmpl_id:
-            return product_tmpl_id.get_variant_count()
+            return product_tmpl_id.get_possible_combinations_available()

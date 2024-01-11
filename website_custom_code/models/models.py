@@ -3,6 +3,10 @@ import json
 
 from odoo import models, fields
 from odoo.http import request
+import logging
+import json
+
+_logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
@@ -17,6 +21,23 @@ class ProductTemplate(models.Model):
             product_temp.is_visible = is_visible
             product_temp.is_published = is_visible
 
+    def get_possible_combinations_available(self):
+
+        for tpl in self:
+            valid_combination_list = []
+
+            combinations = tpl._get_possible_combinations()
+
+            for cmb in combinations:
+                variant = tpl._get_variant_for_combination(cmb)
+
+                if variant.qty_available > 0:
+                    available = list(map(lambda item: item.id, cmb))
+                    valid_combination_list.append(available)
+
+            return {
+                "value_to_show_tuple": valid_combination_list
+            }
 
     def get_variant_count(self):
         for rec in self:
@@ -84,9 +105,11 @@ class ProductTemplate(models.Model):
                 child_list = list(set(all_child_items))
                 variant_val_child_dict[all_val[i]] = child_list
             unavailable_variant_dict = {"attribute_ids": attribute_ids,
-                "attribute_display_types": attribute_display_types,
-                "unavailable_variant_view_type": unavailable_variant_view_type, "value_to_show": variant_val_child_dict,
-                "value_to_show_tuple": list(valid_comb), "value_count_per_attr": value_count_per_attr}
+                                        "attribute_display_types": attribute_display_types,
+                                        "unavailable_variant_view_type": unavailable_variant_view_type,
+                                        "value_to_show": variant_val_child_dict,
+                                        "value_to_show_tuple": list(valid_comb),
+                                        "value_count_per_attr": value_count_per_attr}
             return unavailable_variant_dict
 
     def _get_first_possible_combination(self, parent_combination=None, necessary_values=None):
@@ -155,12 +178,9 @@ class ProductProduct(models.Model):
     def _compute_out_of_stock(self):
         for rec in self:
             if rec.type == 'product':
-                if rec.qty_available == 0:
-                    rec.is_out_of_stock = True
-                    rec.hide_on_website = True
-                else:
-                    rec.is_out_of_stock = False
-                    rec.hide_on_website = False
+                rec.is_out_of_stock = rec.qty_available == 0
+                rec.hide_on_website = rec.qty_available == 0
+
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
