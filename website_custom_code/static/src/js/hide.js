@@ -25,85 +25,55 @@ odoo.define('hide_unavailable_variants', function (require) {
         },
 
         onChangeVariant: function (ev) {
-            // console.log(`im here: onChangeVariant ${JSON.stringify(ev)}`)
+            const instance = this;
 
             const $parent = $(ev.target).closest('.js_product');
             const $target = $(ev.target)
-            var $variantContainer;
 
-            if (!$parent.length) {
+            if (!$parent.length || !id_tuples) {
                 return Promise.resolve();
             }
-            const combination = this.getSelectedVariantValues($parent);
-            console.log(`${combination} || ${$target.attr('data-attribute_name')}`)
-
 
             if ($target.is('input[type=radio]') && $target.is(':checked')) {
-                $parent.find("input[type=radio]")
-                    .each(function (index) {
-                        $(this).parent().show()
-                    });
-
-                $variantContainer = $target.closest('ul').closest('li');
-                const currentSelect = $variantContainer.attr('data-attribute_name')
-
-                $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-                    .each(function (index) {
-                        var $current = $(this)
-
-                        $current.find("input[type=radio]")
-                            .each(function (index) {
-                                var input = $(this);
-
-                                if (!id_tuples.value_to_show_tuple
-                                    .find(function (el) {
-                                        const tupla = JSON.stringify(el);
-                                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
-
-                                        return tupla === t1 || tupla === t2
-                                    })) {
-
-                                    input.parent().hide()
-                                }
-                            });
-                    });
+                instance._hideVariants($target, $parent)
             } else {
                 $target.find("input:checked")
                     .each(function (index) {
-                        var $target = $(this)
-                        $variantContainer = $target.closest('ul').closest('li');
-
-                        const currentSelect = $variantContainer.attr('data-attribute_name')
-
-                        $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-                            .each(function (index) {
-                                var $current = $(this)
-
-                                $current.find("input[type=radio]")
-                                    .each(function (index) {
-                                        var input = $(this);
-
-                                        if (!id_tuples.value_to_show_tuple
-                                            .find(function (el) {
-                                                const tupla = JSON.stringify(el);
-                                                const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                                                const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
-
-                                                return tupla === t1 || tupla === t2
-                                            })) {
-
-                                            input.parent().hide()
-                                        }
-                                    });
-                            });
+                        instance._hideVariants($(this), $parent)
                     });
             }
 
             this._super.apply(this, arguments);
         },
 
-        hideVariants($target, $parent) {
+        _hideVariants($target, $parent) {
+
+            const $variantContainer = $target.closest('ul').closest('li');
+            const currentSelect = $variantContainer.attr('data-attribute_name')
+
+            $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+                .each(function (index) {
+                    var $current = $(this)
+
+                    $current.find("input[type=radio]")
+                        .each(function (index) {
+                            var input = $(this);
+
+                            var found = id_tuples.value_to_show_tuple
+                                .find(function (el) {
+                                    const tupla = JSON.stringify(el);
+                                    const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
+                                    const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+
+                                    return tupla === t1 || tupla === t2
+                                });
+                            if (!found) {
+                                input.parent().hide()
+                            } else {
+                                input.parent().show();
+                            }
+                        });
+                });
 
         }
     });
