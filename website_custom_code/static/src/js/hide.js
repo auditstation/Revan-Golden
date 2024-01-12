@@ -51,6 +51,8 @@ odoo.define('hide_unavailable_variants', function (require) {
             const $variantContainer = $target.closest('ul').closest('li');
             const currentSelect = $variantContainer.attr('data-attribute_name')
 
+            if (currentSelect === 'SIZE') return;
+
             $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
                 .each(function (index) {
                     var $current = $(this)
@@ -69,6 +71,7 @@ odoo.define('hide_unavailable_variants', function (require) {
                                 });
                             if (!found) {
                                 input.parent().hide()
+                                input.prop("checked", false);
                             } else {
                                 input.parent().show();
                             }
