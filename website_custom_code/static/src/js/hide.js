@@ -56,6 +56,8 @@ odoo.define('hide_unavailable_variants', function (require) {
             $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
                 .each(function (index) {
                     var $current = $(this)
+                    var firstShowed = null
+                    var anyChecked = false
 
                     $current.find("input[type=radio]")
                         .each(function (index) {
@@ -74,8 +76,16 @@ odoo.define('hide_unavailable_variants', function (require) {
                                 input.prop("checked", false);
                             } else {
                                 input.parent().show();
+                                if (firstShowed == null)
+                                    firstShowed = input
+
+                                if (!anyChecked)
+                                    anyChecked = input.is(":checked")
                             }
                         });
+
+                    if (!anyChecked)
+                        firstShowed.prop("checked", true);
                 });
 
         }
