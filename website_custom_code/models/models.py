@@ -23,7 +23,7 @@ class ProductTemplate(models.Model):
 
     def get_possible_combinations_available(self):
 
-        for tpl in self:
+        for tpl in self.sudo():
             valid_combination_list = []
 
             combinations = tpl._get_possible_combinations()
