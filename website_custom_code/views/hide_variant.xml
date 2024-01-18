@@ -43,6 +43,7 @@
                     </t>
             </xpath>
         </template>
+
         <template id="revan_product" inherit_id="website_sale.product">
             <xpath expr="//t[@t-if='combination' and @t-call='sale.variants']" position="replace">
                  <t t-if="combination" t-call="website_custom_code.revan_variants">
