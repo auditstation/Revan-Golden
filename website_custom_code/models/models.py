@@ -160,6 +160,12 @@ class ProductTemplate(models.Model):
                     return True
         return result
 
+    # warlock fixing
+    def _get_variant_for_combination(self, combination):
+        if not combination:
+            combination = self.env['product.template.attribute.value']
+
+        return super(ProductTemplate, self)._get_variant_for_combination(combination)
 
 class ProductAttribute(models.Model):
     _inherit = "product.attribute"
