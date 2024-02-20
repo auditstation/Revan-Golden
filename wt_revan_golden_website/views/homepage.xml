@@ -235,7 +235,7 @@
 	<xpath expr="//head" position="inside">
 	 <style>
         .custom-class {
-            display: done;
+            display: none;
         }
  
         @media (min-width: 576px) {
