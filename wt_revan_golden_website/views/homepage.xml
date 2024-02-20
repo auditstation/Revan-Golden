@@ -226,8 +226,14 @@
 			</div>
 
 		</xpath>
-		<xpath expr="//div[@id='footer']" position="after">
-			<div class="mobile-bottom-bar">
+		<!-- <xpath expr="//div[@id='footer']" position="after">
+		
+		</xpath> -->
+
+	</template>
+	<template id="layout" name="Main layout" inherit_id="website.layout">
+	 <xpath expr="//footer" position="inside">
+	 	<div class="mobile-bottom-bar">
 				<div class="bottom-bar-item">
 					<form method="get" data-snippet="s_searchbar_input" class="o_searchbar_form o_wait_lazy_js s_searchbar_input " action="/website/search">
 						<button type="submit" aria-label="Search" title="Search" class="btn oe_search_button btn-primary">
@@ -264,7 +270,5 @@
 					</a>
 				</div>
 			</div>
-		</xpath>
-
-	</template>
+	 </xpath>
 </odoo>
