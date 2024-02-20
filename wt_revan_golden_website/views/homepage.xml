@@ -232,6 +232,7 @@
 
 	</template>
 	<template id="layout" name="Main layout" inherit_id="website.layout">
+	<xpath expr="//head" position="inside">
 	 <style>
         .custom-class {
             display: done;
@@ -243,6 +244,7 @@
             }
         }
     </style>
+	</xpath>
 	 <xpath expr="//footer" position="inside">
 	 	<div class="mobile-bottom-bar custom-class">
 				<div class="bottom-bar-item">
