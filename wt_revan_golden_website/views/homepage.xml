@@ -235,12 +235,12 @@
 	<xpath expr="//head" position="inside">
 	 <style>
         .custom-class {
-            display: none;
+            display: flex;
         }
  
         @media (min-width: 576px) {
             .custom-class {
-                display: flex;
+                display: none;
             }
         }
     </style>
