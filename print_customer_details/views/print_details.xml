@@ -43,22 +43,22 @@
                             <div style="padding-top: 90px;" class="row">
                                 <div style="padding-left: 25px;" class="col-6">
                                     <strong>
-                                         <p class="fs-5" t-out="pack.partner_id.name" />
+                                         <p style="font-size: 16px; t-out="pack.partner_id.name" />
 
                                     </strong>
                                 </div>
                                 <div style="padding-left:130px;" class="col-6">
 
-                                         <p class="fs-5" t-out="pack.partner_id.phone" />
+                                         <p style="font-size: 16px;" t-out="pack.partner_id.phone" />
 
                                 </div>
                             </div>
                             <div style="padding-top: 25px;" class="row">
                                 <div style="padding-left: 40px;" class="col-6">
                                     <strong>
-                                         <p class="fs-5" t-out="pack.partner_id.country_id.name" />
+                                         <p style="font-size: 16px; t-out="pack.partner_id.country_id.name" />
                                         -
-                                         <p class="fs-5" t-out="pack.partner_id.state_id.name" />
+                                         <p style="font-size: 16px; t-out="pack.partner_id.state_id.name" />
 
 
                                     </strong>
