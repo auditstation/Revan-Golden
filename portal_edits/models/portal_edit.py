@@ -19,14 +19,14 @@ class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone","state_id","country_id"]
     OPTIONAL_BILLING_FIELDS = ["zipcode","city","street","email","vat", "company_name"]
 
-# class WebsitePortalInherit(WebsiteSale):
-#     def _get_mandatory_fields_billing(self, country_id=False):
-#         req = ["name","country_id"]
-#         if country_id:
-#             country = request.env['res.country'].browse(country_id)
-#             if country.state_required:
-#                 req += ['state_id']
-#             # if country.zip_required:
-#             #     req += ['zip']
-#         return req
+class WebsitePortalInherit(WebsiteSale):
+    def _get_mandatory_fields_billing(self, country_id=False):
+        req = ["name","country_id"]
+        if country_id:
+            country = request.env['res.country'].browse(country_id)
+            if country.state_required:
+                req += ['state_id']
+            # if country.zip_required:
+            #     req += ['zip']
+        return req
  
