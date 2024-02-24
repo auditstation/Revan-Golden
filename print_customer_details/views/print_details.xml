@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_customer_details" model="report.paperformat">
+        <field name="name">Customer Details</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">148</field>
+        <field name="page_width">99</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="customer_details_shipping" model="ir.actions.report">
+        <field name="name">Customer Details</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">print_customer_details.print_details</field>
+        <field name="report_file">print_customer_details.print_details</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_customer_details"/>
+    </record>
+
+    <template id="print_details">
+        <t t-call="web.html_container">
+            <t t-set="company" t-value="docs[0].company_id"/>
+             <t t-set="report_header_style" t-value="'display: none;'"/>
+        <t t-set="footer" t-value="'display:none;'"/>
+        <t t-set="footer" t-value="'oe_hidden'"/>
+
+            <t t-foreach="docs" t-as="pack">
+
+                <t t-call="web.external_layout_boxed">
+                    <div class="page" style="page-break-after: always">
+
+
+                        <div>
+                            <div style="padding-top: 105px;" class="row">
+                                <div style="padding-left: 25px;" class="col-6">
+                                    <strong>
+                                         <h3 t-out="pack.partner_id.name" />
+
+                                    </strong>
+                                </div>
+                                <div style="padding-left:130px;" class="col-6">
+
+                                         <h4 t-out="pack.partner_id.phone" />
+
+                                </div>
+                            </div>
+                            <div style="padding-top: 30px;" class="row">
+                                <div style="padding-left: 40px;" class="col-6">
+                                    <strong>
+                                         <h3 t-out="pack.partner_id.country_id.name" />
+                                        -
+                                         <h3 t-out="pack.partner_id.state_id.name" />
+
+
+                                    </strong>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
