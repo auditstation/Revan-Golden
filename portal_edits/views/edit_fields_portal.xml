@@ -83,7 +83,7 @@
             </select>
         </div>
     </template>
-     <template id="website_sale.address" name="Address Management">
+     <!-- <template id="website_sale.address" name="Address Management">
         <t t-set="no_footer" t-value="1"/>
         <t t-call="website.layout">
             <div id="wrap">
@@ -250,7 +250,7 @@
                 </div>
             </div>
         </t>
-    </template>
+    </template> -->
 
 
 </odoo>
