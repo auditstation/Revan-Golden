@@ -41,19 +41,19 @@
 
                         <div>
                             <div style="padding-top: 130 px;" class="row">
-                                <div style="padding-left: 25px;" class="col-6">
+                                <div style="padding-left: 20px;" class="col-6">
                                     <strong>
                                          <p style="font-size:16px;" t-out="pack.partner_id.name" />
 
                                     </strong>
                                 </div>
-                                <div style="padding-left:130px;" class="col-6">
+                                <div style="padding-left:115px;" class="col-6">
 
                                          <p style="font-size:16px;" t-out="pack.partner_id.phone" />
 
                                 </div>
                             </div>
-                            <div style="padding-top: 35px;" class="row">
+                            <div style="padding-top: 50px;" class="row">
                                 <div style="padding-left: 40px;" class="col-6">
                                     <strong>
                                          <p style="font-size:16px;"><t t-esc="pack.partner_id.country_id.name"/> - <t t-esc="pack.partner_id.state_id.name"/> </p>
