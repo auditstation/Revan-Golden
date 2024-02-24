@@ -56,9 +56,8 @@
                             <div style="padding-top: 25px;" class="row">
                                 <div style="padding-left: 40px;" class="col-6">
                                     <strong>
-                                         <p style="font-size:16px;" t-out="pack.partner_id.country_id.name"> <p style="font-size:16px;" t-out="pack.partner_id.state_id.name" />
-                                    
-                                         </p></strong>
+                                         <p style="font-size:16px;"><t t-esc="pack.partner_id.country_id.name"/> - <t t-esc="pack.partner_id.state_id.name"/> </p>
+                                         </strong>
                                 </div>
                             </div>
 
