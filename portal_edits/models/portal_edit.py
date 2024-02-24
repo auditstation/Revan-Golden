@@ -29,4 +29,11 @@ class WebsitePortalInherit(WebsiteSale):
             # if country.zip_required:
             #     req += ['zip']
         return req
- 
+    def checkout_check_address(self, order):
+        billing_fields_required = self._get_mandatory_fields_billing(order.partner_id.country_id.id)
+        if not all(order.partner_id.read(billing_fields_required)[0].values()):
+            pass
+
+        shipping_fields_required = self._get_mandatory_fields_shipping(order.partner_shipping_id.country_id.id)
+        if not all(order.partner_shipping_id.read(shipping_fields_required)[0].values()):
+            pass
