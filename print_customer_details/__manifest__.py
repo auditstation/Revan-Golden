@@ -12,11 +12,7 @@
 
 
     ],
-    'assets': {
-        'web.assets_frontend': [
-            'portal_edits/static/scss/main.css',
-        ]
-    },
+    
 
     'application': True,
 }
