@@ -78,7 +78,7 @@
             </select>
         </div>
         <div class="clearfix" />
-        <div t-if="'select' not in state_id" t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
+        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
             <label class="col-form-label" for="street">Region</label>
             <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
         </div>
@@ -163,15 +163,7 @@
                                                 </div>
                                             </t>
                                         </t>
-                                        <div class="w-100"/>
-                                        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-lg-12 div_street">
-                                            <label class="col-form-label" for="street">Region</label>
-                                            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']" />
-                                        </div>
-                                        <div t-attf-class="#{error.get('street2') and 'o_has_error' or ''} col-lg-12 div_street2">
-                                            <label class="col-form-label label-optional" for="street2">Street</label>
-                                            <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
-                                        </div>
+                                        
                                         <div class="w-100"/>
                                         <t t-set='zip_city' t-value='country and [x for x in country.get_address_fields() if x in ["zip", "city"]] or ["city", "zip"]'/>
                                         <t t-if="'zip' in zip_city and zip_city.index('zip') &lt; zip_city.index('city')">
@@ -212,6 +204,15 @@
                                                     </option>
                                                 </t>
                                             </select>
+                                        </div>
+                                        <div class="w-100"/>
+                                        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-lg-12 div_street">
+                                            <label class="col-form-label" for="street">Region</label>
+                                            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']" />
+                                        </div>
+                                        <div t-attf-class="#{error.get('street2') and 'o_has_error' or ''} col-lg-12 div_street2">
+                                            <label class="col-form-label label-optional" for="street2">Street</label>
+                                            <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
                                         </div>
                                         <div class="w-100"/>
                                         <t t-if="mode == ('new', 'billing') and not only_services">
