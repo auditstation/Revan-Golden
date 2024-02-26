@@ -79,7 +79,7 @@
         </div>
         <div class="clearfix" />
         <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
-            <label class="col-form-label" for="street">Region</label>
+            <label class="col-form-label" for="street">Region & State</label>
             <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
         </div>
     </template>
@@ -207,11 +207,11 @@
                                         </div>
                                         <div class="w-100"/>
                                         <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6 div_street">
-                                            <label class="col-form-label" for="street">Region</label>
+                                            <label class="col-form-label" for="street">Region & State</label>
                                             <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']" />
                                         </div>
                                         <div t-attf-class="#{error.get('street2') and 'o_has_error' or ''} col-xl-6 div_street2">
-                                            <label class="col-form-label label-optional" for="street">Street</label>
+                                            <label class="col-form-label label-optional" for="street2">Street</label>
                                             <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
                                         </div>
                                         <div class="w-100 pb-4"/>
