@@ -12,7 +12,7 @@
             <label class="col-form-label" for="name">Name</label>
             <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="name or partner.name" />
         </div>
-        <div t-attf-class="d-none #{error.get('email')} col-xl-6">
+        <div t-attf-class="#{error.get('email')} col-xl-6">
             <label class="col-form-label" for="email">Email</label>
             <t t-set="email_detail" t-esc="partner.email"/>
             <input type="text" name="email" t-attf-class="form-control" t-att-value="email or partner.email" />
@@ -46,12 +46,7 @@
             <label class="col-form-label" for="phone">Phone</label>
             <input type="tel" name="phone" t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}" t-att-value="phone or partner.phone" />
         </div>
-
         <div class="clearfix" />
-        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
-            <label class="col-form-label" for="street">Region</label>
-            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
-        </div>
         <div t-attf-class="d-none #{error.get('city')} col-xl-6">
             <label class="col-form-label" for="city">City</label>
             <input type="text" name="city" t-attf-class="form-control #{error.get('city')}" t-att-value="city or partner.city" />
@@ -81,6 +76,10 @@
                     </option>
                 </t>
             </select>
+        </div>
+        <div t-if="not is_html_empty(state_id)" t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
+            <label class="col-form-label" for="street">Region</label>
+            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
         </div>
     </template>
       <template id="website_sale.address" name="Address Management">
