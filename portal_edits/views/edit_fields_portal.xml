@@ -77,7 +77,8 @@
                 </t>
             </select>
         </div>
-        <div t-if="not is_html_empty(state_id)" t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
+        <div class="clearfix" />
+        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
             <label class="col-form-label" for="street">Region</label>
             <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
         </div>
