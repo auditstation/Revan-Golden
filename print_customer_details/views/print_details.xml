@@ -43,13 +43,13 @@
                             <div style="padding-top: 105px;" class="row">
                                 <div style="padding-left: 25px;" class="col-6">
                                     <strong>
-                                         <p style="font-size:16px;" t-out="pack.partner_id.name" />
+                                         <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.name" />
 
                                     </strong>
                                 </div>
                                 <div style="padding-left:130px;" class="col-6">
 
-                                         <p style="font-size:16px;" t-out="pack.partner_id.phone" />
+                                         <p  class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.phone" />
 
                                 </div>
                             </div>
