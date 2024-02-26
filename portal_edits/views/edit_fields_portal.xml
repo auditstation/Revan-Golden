@@ -15,7 +15,7 @@
         <div t-attf-class="d-none #{error.get('email')} col-xl-6">
             <label class="col-form-label" for="email">Email</label>
             <t t-set="email_detail" t-esc="partner.email"/>
-            <input type="text" name="email" t-attf-class="form-control" t-esc="email_detail" />
+            <input type="text" name="email" t-attf-class="form-control" t-att-value="email or partner.email" />
         </div>
 
         <div class="clearfix" />
@@ -48,9 +48,9 @@
         </div>
 
         <div class="clearfix" />
-        <div t-attf-class="d-none #{error.get('street')} col-xl-6">
-            <label class="col-form-label" for="street">Street</label>
-            <input type="text" name="street" t-attf-class="form-control #{error.get('street')}" t-att-value="street or partner.street"/>
+        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-xl-6">
+            <label class="col-form-label" for="street">Region</label>
+            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street"/>
         </div>
         <div t-attf-class="d-none #{error.get('city')} col-xl-6">
             <label class="col-form-label" for="city">City</label>
@@ -164,13 +164,13 @@
                                             </t>
                                         </t>
                                         <div class="w-100"/>
-                                        <div t-attf-class="d-none #{error.get('street')} col-lg-12 div_street">
-                                            <label class="col-form-label" for="street">Street <span class="d-none d-md-inline"> and Number</span></label>
-                                            <input type="text" name="street" t-attf-class="form-control #{error.get('street') }" t-att-value="'street' in checkout and checkout['street']" />
+                                        <div t-attf-class="#{error.get('street') and 'o_has_error' or ''} col-lg-12 div_street">
+                                            <label class="col-form-label" for="street">Region</label>
+                                            <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']" />
                                         </div>
-                                        <div t-attf-class="d-none #{error.get('street2')} col-lg-12 div_street2">
-                                            <label class="col-form-label label-optional" for="street2">Street 2</label>
-                                            <input type="text" name="street2" t-attf-class="form-control #{error.get('street2')}" t-att-value="'street2' in checkout and checkout['street2']" />
+                                        <div t-attf-class="#{error.get('street2') and 'o_has_error' or ''} col-lg-12 div_street2">
+                                            <label class="col-form-label label-optional" for="street2">Street</label>
+                                            <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
                                         </div>
                                         <div class="w-100"/>
                                         <t t-set='zip_city' t-value='country and [x for x in country.get_address_fields() if x in ["zip", "city"]] or ["city", "zip"]'/>
@@ -231,7 +231,7 @@
                                     <input type="hidden" name="partner_id" t-att-value="partner_id or '0'" />
                                     <input type="hidden" name="callback" t-att-value="callback" />
                                     <!-- Example -->
-                                    <input type="hidden" name="field_required" t-att-value="'phone,name'" />
+                                    <input type="hidden" name="field_required" t-att-value="'phone,name,street'" />
 
                                     <div class="d-flex justify-content-between">
                                         <a role="button" t-att-href="mode == ('new', 'billing') and '/shop/cart' or '/shop/checkout'" class="btn btn-secondary mb32">
