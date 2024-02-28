@@ -46,7 +46,7 @@ class PaymentTransaction(models.Model):
 
     def execute_payment(self):
         """Fetching data and Executing Payment"""
-        base_api_url = self.env['payment.provider'].search(
+        base_api_url = self.env['payment.provider'].sudo().search(
             [('code', '=', 'thawani')])._thawani_get_api_url()
         _logger.info('base_api_url')
         _logger.info(base_api_url)
@@ -55,21 +55,21 @@ class PaymentTransaction(models.Model):
         _logger.info('api_url')
         _logger.info(api_url)
 
-        client_reference_id = self.env['payment.provider'].search([('code', '=',
+        client_reference_id = self.env['payment.provider'].sudo().search([('code', '=',
                                                         'thawani')]).thawani_client_reference_id
-        thawani_secret_key = self.env['payment.provider'].search([('code', '=',
+        thawani_secret_key = self.env['payment.provider'].sudo().search([('code', '=',
                                                         'thawani')]).thawani_secret_key
         _logger.info('thawani_secret_key')
         _logger.info(thawani_secret_key)
-        thawani_publishable_key = self.env['payment.provider'].search([('code', '=',
+        thawani_publishable_key = self.env['payment.provider'].sudo().search([('code', '=',
                                                         'thawani')]).thawani_publishable_key
         
-        odoo_base_url = self.env['ir.config_parameter'].get_param(
+        odoo_base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url')
-        sale_order = self.env['payment.transaction'].search(
+        sale_order = self.env['payment.transaction'].sudo().search(
             [('id', '=', self.id)]).sale_order_ids
 
-        order_line = self.env['payment.transaction'].search(
+        order_line = self.env['payment.transaction'].sudo().search(
             [('id', '=', self.id)]).sale_order_ids.order_line
         invoice_items = [
             {
@@ -151,7 +151,7 @@ class PaymentTransaction(models.Model):
             
                 # reference = response_data["Data"]["CustomerReference"]
                 # domain.append(reference)
-            # if tx := self.search(domain):
+            # if tx := self.sudo().search(domain):
                         # return tx
             return tx
               
@@ -181,7 +181,7 @@ class PaymentTransaction(models.Model):
         _logger.info('_process_notification_data notification_dataaaa')
         _logger.info(notification_data)
         thawani_session = tx.provider_reference
-        base_api_url = request.env['payment.provider'].search(
+        base_api_url = request.env['payment.provider'].sudo().search(
                     [('code', '=', 'thawani')])._thawani_get_api_url()
         _logger.info('base_api_url')
         _logger.info(base_api_url)
@@ -190,13 +190,13 @@ class PaymentTransaction(models.Model):
         _logger.info('api_url')
         _logger.info(api_url)
 
-        client_reference_id = request.env['payment.provider'].search([('code', '=',
+        client_reference_id = request.env['payment.provider'].sudo().search([('code', '=',
                                                                 'thawani')]).thawani_client_reference_id
-        thawani_secret_key = request.env['payment.provider'].search([('code', '=',
+        thawani_secret_key = request.env['payment.provider'].sudo().search([('code', '=',
                                                                 'thawani')]).thawani_secret_key
         _logger.info('thawani_secret_key')
         _logger.info(thawani_secret_key)
-        thawani_publishable_key = request.env['payment.provider'].search([('code', '=',
+        thawani_publishable_key = request.env['payment.provider'].sudo().search([('code', '=',
                                                                 'thawani')]).thawani_publishable_key
                 
         odoo_base_url = request.env['ir.config_parameter'].get_param(
