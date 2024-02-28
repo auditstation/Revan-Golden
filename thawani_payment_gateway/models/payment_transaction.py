@@ -199,7 +199,7 @@ class PaymentTransaction(models.Model):
         thawani_publishable_key = request.env['payment.provider'].sudo().search([('code', '=',
                                                                 'thawani')]).thawani_publishable_key
                 
-        odoo_base_url = request.env['ir.config_parameter'].get_param(
+        odoo_base_url = request.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
                 
         url = f"{base_api_url}api/v1/checkout/session/{thawani_session}"
