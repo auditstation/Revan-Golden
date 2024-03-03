@@ -227,7 +227,8 @@ class PaymentTransaction(models.Model):
                     if payment_status == 'paid':
                         self._set_done()
                         self._check_amount_and_confirm_order()
-                        self._set_authorized()
+                        self._send_order_confirmation_mail()
+                        # self._set_authorized()
                         self._cron_finalize_post_processing()
                        
 
