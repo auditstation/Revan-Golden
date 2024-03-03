@@ -75,7 +75,7 @@ class PaymentTransaction(models.Model):
             {
                 'name': rec.product_id.name,
                 'quantity': int(rec.product_uom_qty),
-                'unit_amount': rec.price_unit * 1000,
+                'unit_amount': int(rec.price_unit * 1000),
             }
             for rec in order_line
         ]
