@@ -225,9 +225,10 @@ class PaymentTransaction(models.Model):
                     _logger.info('statusssss')
                     _logger.info(payment_status)
                     if payment_status == 'paid':
+                        self._set_done()
                         self._check_amount_and_confirm_order()
                         self._set_authorized()
-                        self._set_done()
+                       
 
                         _logger.info('paiiiiidd')
                     else:
