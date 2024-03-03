@@ -225,11 +225,11 @@ class PaymentTransaction(models.Model):
                     _logger.info('statusssss')
                     _logger.info(payment_status)
                     if payment_status == 'paid':
-                        self._set_done()
-                        self._check_amount_and_confirm_order()
+                        self.sudo()._set_done()
+                        self.sudo()._check_amount_and_confirm_order()
                         # self._send_order_confirmation_mail()
-                        self._cron_finalize_post_processing()
-                        self._reconcile_after_done()
+                        self.sudo()._cron_finalize_post_processing()
+                        self.sudo()._reconcile_after_done()
                         # self._set_authorized()
                         
                        
