@@ -228,9 +228,10 @@ class PaymentTransaction(models.Model):
                         self._set_done()
                         self._check_amount_and_confirm_order()
                         # self._send_order_confirmation_mail()
+                        self._cron_finalize_post_processing()
                         self._reconcile_after_done()
                         # self._set_authorized()
-                        self._cron_finalize_post_processing()
+                        
                        
 
                         _logger.info('paiiiiidd')
