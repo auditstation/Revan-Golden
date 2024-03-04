@@ -226,13 +226,14 @@ class PaymentTransaction(models.Model):
                     _logger.info(payment_status)
                     if payment_status == 'paid':
                         self.sudo()._set_done()
-                        # _reconcile_after_done
+                        self.with_user(SUPERUSER_ID)._reconcile_after_done
+                        self.with_user(SUPERUSER_ID)._finalize_post_processing()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
                         self.sudo()._cron_finalize_post_processing()
 
-                        self.sudo()._reconcile_after_done()
+                        # self.sudo()._reconcile_after_done()
                         # self._set_authorized()
                         
                        
