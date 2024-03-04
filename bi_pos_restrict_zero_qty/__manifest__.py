@@ -13,7 +13,7 @@
     'website': 'https://www.browseinfo.in',
     'depends': ['base','point_of_sale'],
     'data': [
-        # 'views/pos_config_view.xml',
+        'views/pos_config_view.xml',
     ],
     'assets':{
         'point_of_sale.assets': [
