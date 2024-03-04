@@ -20,7 +20,7 @@
 #############################################################################
 # Import required libraries (make sure it is installed!)
 import logging
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models,SUPERUSER_ID
 from odoo.exceptions import ValidationError
 import requests
 import json
@@ -226,9 +226,12 @@ class PaymentTransaction(models.Model):
                     _logger.info(payment_status)
                     if payment_status == 'paid':
                         self.sudo()._set_done()
-                        self.sudo()._check_amount_and_confirm_order()
+                        _reconcile_after_done
+                        # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
+                        # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
                         self.sudo()._cron_finalize_post_processing()
+
                         self.sudo()._reconcile_after_done()
                         # self._set_authorized()
                         
