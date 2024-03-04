@@ -99,5 +99,5 @@ class PaymentMyFatoorahController(http.Controller):
         #     pass  # Don't try to process this case because the payment id was not provided.
 
         # Redirect the user to the status page.
-        return request.redirect('/shop/confirmation')
+        return request.redirect('/payment/status')
 
