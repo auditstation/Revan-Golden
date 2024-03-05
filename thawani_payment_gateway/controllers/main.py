@@ -5,18 +5,17 @@ import requests
 from odoo import http
 from odoo.http import request
 import ast
-from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 import logging
 from datetime import timedelta
 
 import psycopg2
 
-from odoo import fields, http
-from odoo.http import request
+from odoo import fields
+
 
 _logger = logging.getLogger(__name__)
 
-_logger = logging.getLogger(__name__)
+
 
 class PaymentMyFatoorahController(http.Controller):
     _success_url = '/payment/thawani/success/<int:tx_id>'
@@ -116,70 +115,3 @@ class PaymentMyFatoorahController(http.Controller):
         else:
             return request.redirect('/payment/status')  
 
-class PaymentPostProcessingInherit(PaymentPostProcessing):
-    @http.route('/payment/status/poll', type='json', auth='public')
-    def poll_status(self, **_kwargs):
-        """ Fetch the transactions to display on the status page and finalize their post-processing.
-
-        :return: The post-processing values of the transactions
-        :rtype: dict
-        """
-        # Retrieve recent user's transactions from the session
-        limit_date = fields.Datetime.now() - timedelta(days=1)
-        monitored_txs = request.env['payment.transaction'].sudo().search([
-            ('id', 'in', self.get_monitored_transaction_ids()),
-            ('last_state_change', '>=', limit_date)
-        ])
-        _logger.info(f'w3wwwwwwwwwwwwwww{monitored_txs}')
-       
-        if not monitored_txs:  # The transaction was not correctly created
-            _logger.info(f'ddddddddddddd{monitored_txs}')
-            return {
-                'success': False,
-                'error': 'no_tx_found',
-            }
-
-        # Build the list of display values with the display message and post-processing values
-        display_values_list = []
-        for tx in monitored_txs:
-            display_message = None
-            if tx.state == 'pending':
-                display_message = tx.provider_id.pending_msg
-            elif tx.state == 'done':
-                display_message = tx.provider_id.done_msg
-            elif tx.state == 'cancel':
-                display_message = tx.provider_id.cancel_msg
-            display_values_list.append({
-                'display_message': display_message,
-                **tx._get_post_processing_values(),
-            })
-
-        # Stop monitoring already post-processed transactions
-        post_processed_txs = monitored_txs.filtered('is_post_processed')
-        self.remove_transactions(post_processed_txs)
-
-        # Finalize post-processing of transactions before displaying them to the user
-        txs_to_post_process = (monitored_txs - post_processed_txs).filtered(
-            lambda t: t.state == 'done'
-        )
-        success, error = True, None
-        try:
-            txs_to_post_process._finalize_post_processing()
-        except psycopg2.OperationalError:  # A collision of accounting sequences occurred
-            request.env.cr.rollback()  # Rollback and try later
-            success = False
-            error = 'tx_process_retry'
-        except Exception as e:
-            request.env.cr.rollback()
-            success = False
-            error = str(e)
-            _logger.exception(
-                "encountered an error while post-processing transactions with ids %s:\n%s",
-                ', '.join([str(tx_id) for tx_id in txs_to_post_process.ids]), e
-            )
-
-        return {
-            'success': success,
-            'error': error,
-            'display_values_list': display_values_list,
-        }
