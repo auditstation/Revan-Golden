@@ -109,11 +109,11 @@ class PaymentMyFatoorahController(http.Controller):
         #     pass  # Don't try to process this case because the payment id was not provided.
 
         # Redirect the user to the status page.
-        doamin = request.env['res.config.settings'].website_domain
-        current_website_id = request.env.context.get('website_id')
-        new=request.env['website'].website_domain(current_website_id)
-        # test = request.env['res.config.settings'].sudo().search([('webiste_id','=',current_website_id)])
-        _logger.info(f'rrrrrrrrrrrrrr{doamin,new}')
+        
+        website_id = request.website.id
+        
+        test = request.env['res.config.settings'].sudo().search([('webiste_id','=',website_id)])
+        _logger.info(f'ggggggggggggg{website_id,test}')
         
         return request.redirect('https://www.classycom.net/payment/status')
 
