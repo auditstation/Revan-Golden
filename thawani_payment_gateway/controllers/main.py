@@ -113,7 +113,7 @@ class PaymentMyFatoorahController(http.Controller):
         website_id = request.website.id
         
         test = request.env['res.config.settings'].sudo().search([('website_id','=',website_id)])
-        _logger.info(f'ggggggggggggg{website_id,test.website_domain}')
+        _logger.info(f'ggggggggggggg{website_id.domain,test.website_domain}')
         
         return request.redirect('https://www.classycom.net/payment/status')
 
