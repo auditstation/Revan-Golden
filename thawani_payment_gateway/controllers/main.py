@@ -109,8 +109,8 @@ class PaymentMyFatoorahController(http.Controller):
         #     pass  # Don't try to process this case because the payment id was not provided.
 
         # Redirect the user to the status page.
-        _logger.info(f'ddewwsss{request.website.website_domain()}')
-        return request.redirect('/payment/status')
+        doamin = request.env['res.config.settings'].website_domain
+        return request.redirect(doamin+'/payment/status')
 
 class PaymentPostProcessingInherit(PaymentPostProcessing):
     @http.route('/payment/status/poll', type='json', auth='public')
