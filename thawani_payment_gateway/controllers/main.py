@@ -127,6 +127,7 @@ class PaymentPostProcessingInherit(PaymentPostProcessing):
             ('last_state_change', '>=', limit_date)
         ])
         _logger.info(f'w3wwwwwwwwwwwwwww{monitored_txs}')
+        _logger.info(f'ddewwsss{request.website.website_domain()}')
         if not monitored_txs:  # The transaction was not correctly created
             _logger.info(f'ddddddddddddd{monitored_txs}')
             return {
