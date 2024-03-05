@@ -6,6 +6,16 @@ from odoo import http
 from odoo.http import request
 import ast
 from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
+import logging
+from datetime import timedelta
+
+import psycopg2
+
+from odoo import fields, http
+from odoo.http import request
+
+_logger = logging.getLogger(__name__)
+
 _logger = logging.getLogger(__name__)
 
 class PaymentMyFatoorahController(http.Controller):
