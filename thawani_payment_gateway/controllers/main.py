@@ -26,7 +26,7 @@ class PaymentMyFatoorahController(http.Controller):
 
     @http.route([_success_url,
                     _cancel_url,
-                    ], type='http', methods=['GET'], auth='public')
+                    ], type='http', methods=['GET'], auth='public',website=True)
     def thawani_return_from_checkout(self, **data):
         """ Process the notification data sent by Tamara Pago after redirection from checkout.
 
