@@ -110,12 +110,11 @@ class PaymentMyFatoorahController(http.Controller):
 
         # Redirect the user to the status page.
         
-        website_id = request.website.id
-        
-        test = request.env['res.config.settings'].sudo().search([('website_id','=',website_id)])
-        _logger.info(f'ggggggggggggg{request.website.domain,test.website_domain}')
-        
-        return request.redirect('https://www.classycom.net/payment/status')
+        website_id = request.website.domain
+        if website_id:
+            return request.redirect(website_id +'/payment/status')
+        else:
+            return request.redirect('/payment/status')  
 
 class PaymentPostProcessingInherit(PaymentPostProcessing):
     @http.route('/payment/status/poll', type='json', auth='public')
