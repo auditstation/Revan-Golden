@@ -110,8 +110,10 @@ class PaymentMyFatoorahController(http.Controller):
 
         # Redirect the user to the status page.
         doamin = request.env['res.config.settings'].website_domain
-        website = request.env['website'].sudo().get_current_website(fallback=False)
-        _logger.info(f'rrrrrrrrrrrrrr{doamin,website,website.website_domain()}')
+        current_website_id = request._context.get('website_id')
+        new=request.env['website'].website_domain(current_website_id)
+        test = request.env['res.config.settings'].search([('webiste_id','=',current_website_id)])
+        _logger.info(f'rrrrrrrrrrrrrr{doamin,new,test}')
         
         return request.redirect('https://www.classycom.net/payment/status')
 
