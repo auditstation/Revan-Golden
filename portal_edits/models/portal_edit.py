@@ -12,6 +12,7 @@ from odoo.tools import consteq
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.account.controllers.portal import PortalAccount
 from odoo.addons.website_sale.controllers.main import WebsiteSale
+from odoo import api, fields, models
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -39,3 +40,6 @@ class WebsitePortalInherit(WebsiteSale):
             #     req += ['zip']
         return req    
   
+class CountryInherit(models.Model):
+    _inherit ="res.country"
+    active = fields.Boolean('Active', default=True)
