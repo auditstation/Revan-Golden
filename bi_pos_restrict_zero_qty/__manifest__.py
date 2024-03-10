@@ -16,9 +16,9 @@
         'views/pos_config_view.xml',
     ],
     'assets':{
-        # 'point_of_sale.assets': [
-        #     '/bi_pos_restrict_zero_qty/static/src/js/ProductScreen.js',
-        #  ],
+        'point_of_sale.assets': [
+            '/bi_pos_restrict_zero_qty/static/src/js/ProductScreen.js',
+         ],
     },
     'demo': [],
     'test': [],

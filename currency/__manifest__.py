@@ -30,8 +30,8 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            # 'website_custom_code/static/src/scss/main.scss',
-            # '/website_custom_code/static/src/js/hide.js',
+            'website_custom_code/static/src/scss/main.scss',
+            '/website_custom_code/static/src/js/hide.js',
         ]
     },
     # only loaded in demonstration mode
