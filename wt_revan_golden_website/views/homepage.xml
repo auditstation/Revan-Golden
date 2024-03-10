@@ -286,5 +286,16 @@
 			</div>
 	 </xpath>
 	 </template>
+	 <template id="product_buy_now_active" inherit_id="website_sale.product" active="True" name="Buy Now Button">
+        <xpath expr="//t[@t-set='hasBuyNow']" position="attributes">
+            <attribute name="t-value" remove="false" add="true" separator=" "/>
+        </xpath>
+        <xpath expr="//a[@id='add_to_cart']" position="after">
+            <a role="button" t-attf-class="btn btn-outline-primary o_we_buy_now ms-1 #{'btn-lg' if ctaSizeBig else ''}" href="#">
+                <i class="fa fa-bolt me-2"/>
+                <span style="font-weight:bold">BUY NOW</span>
+            </a>
+        </xpath>
+    </template>
 
 </odoo>
