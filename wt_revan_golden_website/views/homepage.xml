@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="homepage" inherit_id="website.homepage" name="Home">
+	<!-- <template id="homepage" inherit_id="website.homepage" name="Home">
 		<xpath expr="//div[@id='wrap']" position="before">
 			<div class="test">
 				<t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)"/>
@@ -284,5 +284,5 @@
 				</div>
 			</div>
 	 </xpath>
-	 </template>
+	 </template> -->
 </odoo>
