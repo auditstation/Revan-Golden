@@ -1,5 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+	<template id="layout" name="Main layout" inherit_id="website.layout">
+	<xpath expr="//head" position="inside">
+	 <style>
+        .custom-class {
+            display: flex;
+        }
+ 
+        @media (min-width: 576px) {
+            .custom-class {
+                display: none;
+            }
+        }
+    </style>
+	</xpath>
+	 <xpath expr="//footer" position="inside">
+	 	<div class="mobile-bottom-bar custom-class">
+				<div class="bottom-bar-item custom-class">
+					<form method="get" data-snippet="s_searchbar_input" class="o_searchbar_form o_wait_lazy_js s_searchbar_input " action="/website/search">
+						<button type="submit" aria-label="Search" title="Search" class="btn oe_search_button btn-primary">
+						<i class="oi oi-search"/>
+						</button>
+					</form>
+				</div>
+				<div class="bottom-bar-item custom-class">
+					<!-- Corazón de Me gusta -->
+					<t t-set="wishcount" t-value="len(request.env['product.wishlist'].current())"/>
+					<t t-set="show_wishes" t-value="True"/>
+					<span t-attf-class="o_wsale_my_wish #{not show_wishes and 'd-none'} #{_item_class}">
+						<a href="/shop/wishlist" t-attf-class="#{_link_class}">
+							<i class="fa fa-heart"/>
+							<span t-if="_text">Wishlist</span>
+							<sup t-esc="wishcount" t-attf-class="my_wish_quantity o_animate_blink badge text-bg-primary"/>
+						</a>
+					</span>
+				</div>
+				<div class="bottom-bar-item custom-class">
+				<!-- Carrito -->
+					<t t-set="show_cart" t-value="true"/>
+					<t t-set="website_sale_cart_quantity" t-value="request.session['website_sale_cart_quantity'] if 'website_sale_cart_quantity' in request.session else website.sale_get_order().cart_quantity or 0"/>
+					<a href="/shop/cart" t-attf-class="#{_link_class}"> 
+						<i class="fa fa-shopping-cart"/>
+						<span t-if="_text">My Cart</span>
+						<sup class="my_cart_quantity badge text-bg-primary" t-esc="website_sale_cart_quantity" t-att-data-order-id="request.session.get('sale_order_id', '')"/>
+					</a>
+				</div>
+				<div class="bottom-bar-item custom-class">
+					<!-- Perfil de Mi cuenta como botón -->
+					<a href="https://www.classycom.net/my/home">
+						<i class="fa fa-user"/>
+					</a>
+				</div>
+			</div>
+	 </xpath>
+	 </template>
 
 </odoo>
