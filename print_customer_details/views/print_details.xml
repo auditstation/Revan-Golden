@@ -49,7 +49,7 @@
                                 </div>
                                 <div style="padding-left:100px;" class="row col-6">
 
-                                         <h6  class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.phone" />
+                                         <p  class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.phone" />
 
                                 </div>
                             </div>
