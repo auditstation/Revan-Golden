@@ -55,35 +55,6 @@ class WebsitePortalsInherit(WebsiteSale):
             #     req += ['zip']
         return req    
 
-    def values_preprocess(self, values):
-        _logger.info(f'ghhjkkkkkkkk{values}')
-        """ Convert the values for many2one fields to integer since they are used as IDs.
-
-        :param dict values: partner fields to pre-process.
-        :return dict: partner fields pre-processed.
-        """
-        partner_fields = request.env['res.partner']._fields
-        return {
-            k: (bool(v) and int(v)) if k in partner_fields and partner_fields[k].type == 'many2one' else v
-            for k, v in values.items()
-        } 
-    def _checkout_form_save(self, mode, checkout, all_values):
-        _logger.info(f'fffffffff{checkout}')
-        
-        Partner = request.env['res.partner']
-        _logger.info(f'cccccccccc{Partner}')
-        if mode[0] == 'new':
-            partner_id = Partner.sudo().with_context(tracking_disable=True).create(checkout).id
-        elif mode[0] == 'edit':
-            partner_id = int(all_values.get('partner_id', 0))
-            if partner_id:
-                # double check
-                order = request.website.sale_get_order()
-                shippings = Partner.sudo().search([("id", "child_of", order.partner_id.commercial_partner_id.ids)])
-                if partner_id not in shippings.mapped('id') and partner_id != order.partner_id.id:
-                    return Forbidden()
-                Partner.browse(partner_id).sudo().write(checkout)
-        return partner_id    
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
@@ -161,7 +132,8 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-
+        Partner.sudo.write({'didication_letter':kw['didication_letter'])}
+        
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
