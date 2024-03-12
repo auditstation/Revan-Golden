@@ -54,6 +54,19 @@ class WebsitePortalsInherit(WebsiteSale):
             # if country.zip_required:
             #     req += ['zip']
         return req    
+
+    def values_preprocess(self, values):
+        _logger.info(f'ghhjkkkkkkkk{values}')
+        """ Convert the values for many2one fields to integer since they are used as IDs.
+
+        :param dict values: partner fields to pre-process.
+        :return dict: partner fields pre-processed.
+        """
+        partner_fields = request.env['res.partner']._fields
+        return {
+            k: (bool(v) and int(v)) if k in partner_fields and partner_fields[k].type == 'many2one' else v
+            for k, v in values.items()
+        }    
   
 class CountryInherit(models.Model):
     _inherit ="res.country"
