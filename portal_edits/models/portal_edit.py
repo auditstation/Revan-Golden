@@ -21,6 +21,18 @@ class PortalInherit(CustomerPortal):
     OPTIONAL_BILLING_FIELDS = ["zipcode","city","email","vat", "company_name","didication_letter"]
 
 class WebsitePortalInherit(WebsiteSale):
+    WRITABLE_PARTNER_FIELDS = [
+        'name',
+        'email',
+        'phone',
+        'street',
+        'street2',
+        'city',
+        'zip',
+        'country_id',
+        'state_id',
+        'didication_letter'
+    ]
     def _get_mandatory_fields_billing(self, country_id=False):
         req = ["name","country_id"]
         if country_id:
