@@ -20,7 +20,7 @@ class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone","state_id","country_id","street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode","city","email","vat", "company_name","didication_letter"]
 
-class WebsitePortalInherit(WebsiteSale):
+class WebsitePortalsInherit(WebsiteSale):
     WRITABLE_PARTNER_FIELDS = [
         'name',
         'email',
