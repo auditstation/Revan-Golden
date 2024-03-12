@@ -48,9 +48,9 @@
                                     </strong>
                                 </div>
                                 <div style="padding-left:100px;" class="row col-6">
-
+ <strong>
                                          <p  class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.phone" />
-
+ </strong>
                                 </div>
                             </div>
                             <div style="padding-top: 25px;" class="row">
