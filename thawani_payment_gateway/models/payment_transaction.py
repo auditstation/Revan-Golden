@@ -78,7 +78,7 @@ class PaymentTransaction(models.Model):
                 'name': rec.product_id.name,
                 'quantity': int(rec.product_uom_qty),
                 'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.code =='OMR' else
-                int(rec.price_unit * 1000)rec.currency_id.rate_ids[0].company_rate,
+                int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)),
                 }
 
                 invoice_items.append(dic)
