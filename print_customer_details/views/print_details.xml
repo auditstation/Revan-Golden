@@ -43,20 +43,20 @@
                             <div style="padding-top: 105px;" class="row">
                                 <div style="padding-left: 25px;" class="col-6">
                                     <strong>
-                                         <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.name" />
+                                         <p class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.name" />
 
                                     </strong>
                                 </div>
                                 <div style="padding-left:130px;" class="col-6">
 
-                                         <p  class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.phone" />
+                                         <p  class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.phone" />
 
                                 </div>
                             </div>
                             <div style="padding-top: 25px;" class="row">
                                 <div style="padding-left: 30px;" class="row col-12">
                                     <strong>
-                                        <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.country_id.name" /> - <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.state_id.name"/> - <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.street"/>
+                                        <p class="font-weight-bold" style="font-size:20px;" t-out="pack.partner_id.country_id.name" /> - <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.state_id.name"/> - <p class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.street"/>
                            
                                     </strong>
                                 </div>
