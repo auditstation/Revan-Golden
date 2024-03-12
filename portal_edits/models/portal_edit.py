@@ -85,6 +85,7 @@ class WebsitePortalsInherit(WebsiteSale):
             ).create(sanitized_values).id
         return partner_id
     def _get_mandatory_fields_billing(self, country_id=False):
+        _logger.info(f'sssssssssssss')
         req = ["name","country_id"]
         if country_id:
             country = request.env['res.country'].browse(country_id)
