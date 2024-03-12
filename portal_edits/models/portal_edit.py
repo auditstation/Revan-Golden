@@ -69,6 +69,8 @@ class WebsitePortalsInherit(WebsiteSale):
         }   
 
     def _create_or_edit_partner(self, partner_details, edit=False, **custom_values):
+        _logger.info(f'rrrrrrrrrrrrrrwe{values}')
+        
         """ Create or update a partner
 
         To create a partner, this controller usually calls `values_preprocess()`, then
