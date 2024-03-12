@@ -47,7 +47,7 @@
 
                                     </strong>
                                 </div>
-                                <div style="padding-left:125px;" class="col-6">
+                                <div style="padding-left:115px;" class="col-6">
 
                                          <h6  class="font-weight-bold" style="font-size:16px;" t-out="pack.partner_id.phone" />
 
