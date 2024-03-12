@@ -18,7 +18,7 @@ import logging
 _logger = logging.getLogger(__name__)
 class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone","state_id","country_id","street"]
-    OPTIONAL_BILLING_FIELDS = ["zipcode","city","email","vat", "company_name"]
+    OPTIONAL_BILLING_FIELDS = ["zipcode","city","email","vat", "company_name","didication_letter"]
 
 class WebsitePortalInherit(WebsiteSale):
     def _get_mandatory_fields_billing(self, country_id=False):
@@ -43,3 +43,7 @@ class WebsitePortalInherit(WebsiteSale):
 class CountryInherit(models.Model):
     _inherit ="res.country"
     active = fields.Boolean('Active', default=True)
+
+class PartnerInherit(models.Model):
+    _inherit ="res.partner"
+    didication_letter = fields.Text('Didication letter')    
