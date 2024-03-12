@@ -215,7 +215,7 @@
                                             <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
                                         </div>
                                         <div class="w-100"/>
-                                        <div t-attf-class="#{o_has_error' or ''} col-xl-12">
+                                        <div t-attf-class="col-xl-12">
                                         <label class="col-form-label label-optional" for="didication_letter">Didication letter</label>
                                             <input type="text" name="didication_letter" t-attf-class="form-control #{error.get('didication_letter') and 'is-invalid' or ''}" t-att-value="'didication_letter' in checkout and checkout['didication_letter']" />
                                         
