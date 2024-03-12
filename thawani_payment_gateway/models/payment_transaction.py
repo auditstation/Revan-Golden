@@ -77,7 +77,7 @@ class PaymentTransaction(models.Model):
                 dic ={
                 'name': rec.product_id.name,
                 'quantity': int(rec.product_uom_qty),
-                'unit_amount': int(rec.price_unit * 1000),
+                'unit_amount': int((rec.price_unit * 1000)/10),
                 }
 
                 invoice_items.append(dic)
