@@ -25,16 +25,11 @@ class WebsitePortalsInherit(WebsiteSale):
         'name',
         'email',
         'phone',
-        'street',
-        'street2',
-        'city',
-        'zip',
-        'country_id',
         'state_id',
         'didication_letter'
     ]
 
-    def _create_or_edit_partner(self, partner_details, edit=False, **custom_values):
+   
         """ Create or update a partner
 
         To create a partner, this controller usually calls `values_preprocess()`, then
