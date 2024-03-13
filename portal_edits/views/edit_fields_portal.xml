@@ -284,6 +284,18 @@
             </field>
 
     </record>
+     <record id="sale_inherit_form_letter" model="ir.ui.view">
+            <field name="name">sale.order.inherit.form.letter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='payment_term_id']" position="after">
+                    <field name="didication_sale"/>
+
+                </xpath>
+            </field>
+
+    </record>
 
 
 

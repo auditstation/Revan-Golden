@@ -162,3 +162,7 @@ class PartnerInherit(models.Model):
 class AccountInherit(models.Model):    
     _inherit ="account.move"
     didication_invoice = fields.Text('Didication letter',related='partner_id.didication_letter')  
+
+class SaleInherit(models.Model):    
+    _inherit ="sale.order"
+    didication_sale = fields.Text('Didication letter',related='partner_id.didication_letter')  
