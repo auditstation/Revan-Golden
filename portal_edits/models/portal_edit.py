@@ -55,7 +55,7 @@ class WebsitePortalsInherit(WebsiteSale):
             #     req += ['zip']
         return req    
 
-   @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
+    @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
         didication_letters=request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
