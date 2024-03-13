@@ -135,7 +135,8 @@ class WebsitePortalsInherit(WebsiteSale):
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
         _logger.info(f'ssssswww{partner_id}')
-        values['didication_letter']=  request.env['res.partner'].sudo().browse(partner_id).didication_letter
+        values['didication_letter'] =  request.env['res.partner'].sudo().browse(partner_id).didication_letter
+        _logger.info(f'sasasasas{values}')
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
