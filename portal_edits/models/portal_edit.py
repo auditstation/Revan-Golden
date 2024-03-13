@@ -58,7 +58,7 @@ class WebsitePortalsInherit(WebsiteSale):
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
-        didication_letters=request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+        request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
         
         
         order = request.website.sale_get_order()
@@ -133,7 +133,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-        values['didication_letter']=didication_letters
+        values['didication_letter']= kw['didication_letter'] if 'didication_letter' in kw else ''
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
