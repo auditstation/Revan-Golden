@@ -136,16 +136,16 @@ class WebsitePortalsInherit(WebsiteSale):
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
       
        render_values = {
-            'website_sale_order': order,
-            'partner_id': partner_id,
-            'mode': mode,
-            'checkout': values,
-            'can_edit_vat': can_edit_vat,
-            'error': errors,
-            'callback': kw.get('callback'),
-            'only_services': order and order.only_services,
-            'account_on_checkout': request.website.account_on_checkout,
-            'is_public_user': request.website.is_public_user()
+        'website_sale_order': order,
+        'partner_id': partner_id,
+        'mode': mode,
+        'checkout': values,
+        'can_edit_vat': can_edit_vat,
+        'error': errors,
+        'callback': kw.get('callback'),
+        'only_services': order and order.only_services,
+        'account_on_checkout': request.website.account_on_checkout,
+        'is_public_user': request.website.is_public_user()
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
         
