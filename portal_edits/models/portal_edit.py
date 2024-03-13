@@ -59,6 +59,7 @@ class WebsitePortalsInherit(WebsiteSale):
         _logger.info(f'viewwwwwwww{values}')
         new_values = {}
         authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
+        _logger.info(f'eeeredsdf{authorized_fields}')
         for k, v in values.items():
             # don't drop empty value, it could be a field to reset
             if k in authorized_fields and v is not None:
