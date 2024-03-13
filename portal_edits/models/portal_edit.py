@@ -135,9 +135,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
       
-        values['didication_letter'] =  request.env['res.partner'].sudo().browse(partner_id).didication_letter
-        
-        render_values = {
+       render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
             'mode': mode,
@@ -152,8 +150,7 @@ class WebsitePortalsInherit(WebsiteSale):
         
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
-        render_values['didication_letters']=request.env['res.partner'].sudo().browse(partner_id)
-        _logger.info(f'ttttttttttttttttt{render_values}')
+        
         return request.render("website_sale.address", render_values)
 
          
@@ -164,4 +161,4 @@ class CountryInherit(models.Model):
 
 class PartnerInherit(models.Model):
     _inherit ="res.partner"
-    didication_letter = fields.Text('Didication letter')    
+    didication_letter = fields.Text('Didication letter',store=True)    
