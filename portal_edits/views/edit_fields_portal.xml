@@ -289,7 +289,7 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//div[@name='payment_term_id']" position="after">
+                <xpath expr="//div[@name='partner_shipping_address']" position="after">
                     <field name="didication_sale"/>
 
                 </xpath>
