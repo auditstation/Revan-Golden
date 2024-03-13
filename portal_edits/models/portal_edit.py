@@ -61,7 +61,7 @@ class WebsitePortalsInherit(WebsiteSale):
         authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
         authorized_fields.update(
             'didication_letter': {'change_default': False, 'company_dependent': False, 'default_export_compatible': False, 'depends': (), 'exportable': True, 'manual': False, 'name': 'Didication letter', 'readonly': False, 'required': False, 'searchable': True, 'sortable': True, 'store': True, 'string': 'Didication letter','translate': True,'type': 'text'}, 
-        })
+        )
         _logger.info(f'eeeredsdf{authorized_fields}')
         for k, v in values.items():
             # don't drop empty value, it could be a field to reset
