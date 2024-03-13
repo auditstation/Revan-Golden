@@ -57,11 +57,9 @@ class WebsitePortalsInherit(WebsiteSale):
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
+
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
-        
         request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
-        
-        
         order = request.website.sale_get_order()
 
         redirection = self.checkout_redirection(order)
@@ -134,24 +132,23 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-      
-       render_values = {
-        'website_sale_order': order,
-        'partner_id': partner_id,
-        'mode': mode,
-        'checkout': values,
-        'can_edit_vat': can_edit_vat,
-        'error': errors,
-        'callback': kw.get('callback'),
-        'only_services': order and order.only_services,
-        'account_on_checkout': request.website.account_on_checkout,
-        'is_public_user': request.website.is_public_user()
+
+        render_values = {
+            'website_sale_order': order,
+            'partner_id': partner_id,
+            'mode': mode,
+            'checkout': values,
+            'can_edit_vat': can_edit_vat,
+            'error': errors,
+            'callback': kw.get('callback'),
+            'only_services': order and order.only_services,
+            'account_on_checkout': request.website.account_on_checkout,
+            'is_public_user': request.website.is_public_user()
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
-        
         return request.render("website_sale.address", render_values)
 
-         
+    
 
 class CountryInherit(models.Model):
     _inherit ="res.country"
