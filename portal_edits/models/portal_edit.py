@@ -152,7 +152,7 @@ class WebsitePortalsInherit(WebsiteSale):
         
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
-        render_values['didication_letters']=request.env['res.partner'].sudo().browse(partner_id).didication_letter
+        render_values['didication_letters']=request.env['res.partner'].sudo().browse(partner_id)
         _logger.info(f'ttttttttttttttttt{render_values}')
         return request.render("website_sale.address", render_values)
 
