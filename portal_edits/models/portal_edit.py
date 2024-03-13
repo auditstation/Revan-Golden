@@ -56,7 +56,7 @@ class WebsitePortalsInherit(WebsiteSale):
         return req    
 
     def values_postprocess(self, order, mode, values, errors, error_msg):
-        _logger.info(f'testtttttttttt{values}')
+        _logger.info(f'viewwwwwwww{values}')
         new_values = {}
         authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
         for k, v in values.items():
