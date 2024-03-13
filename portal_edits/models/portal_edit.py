@@ -59,7 +59,8 @@ class WebsitePortalsInherit(WebsiteSale):
     def address(self, **kw):
 
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
-        request.env['res.partner'].sudo().browse(int(kw.get('partner_id'))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+        if 'partner_id' in kw:
+            request.env['res.partner'].sudo().browse(int(kw.get('partner_id'))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
         order = request.website.sale_get_order()
 
         redirection = self.checkout_redirection(order)
