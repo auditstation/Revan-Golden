@@ -134,6 +134,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
+        _logger.info(f'ssssswww{partner_id}')
         values['didication_letter']=  delc
         render_values = {
             'website_sale_order': order,
