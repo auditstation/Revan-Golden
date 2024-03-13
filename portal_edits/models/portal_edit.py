@@ -92,7 +92,7 @@ class WebsitePortalsInherit(WebsiteSale):
     def address(self, **kw):
         _logger.info(f'sdsdsdsds{kw}')
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
-        request.env['res.partner'].sudo().browse(partner_id).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+        request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
         
         
         order = request.website.sale_get_order()
