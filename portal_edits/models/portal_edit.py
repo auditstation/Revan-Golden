@@ -92,6 +92,9 @@ class WebsitePortalsInherit(WebsiteSale):
     def address(self, **kw):
         _logger.info(f'sdsdsdsds{kw}')
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
+        request.env['res.partner'].sudo().browse(partner_id).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+        
+        
         order = request.website.sale_get_order()
 
         redirection = self.checkout_redirection(order)
@@ -164,8 +167,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-        Partner.sudo().browse(partner_id).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
-        
+       
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
