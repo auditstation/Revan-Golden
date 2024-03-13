@@ -272,6 +272,19 @@
             </field>
 
     </record>
+     <record id="account_inherit_form_letter" model="ir.ui.view">
+            <field name="name">account.move.inherit.form.letter</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="didication_invoice"/>
+
+                </xpath>
+            </field>
+
+    </record>
+
 
 
 </odoo>

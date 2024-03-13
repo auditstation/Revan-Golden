@@ -158,3 +158,7 @@ class CountryInherit(models.Model):
 class PartnerInherit(models.Model):
     _inherit ="res.partner"
     didication_letter = fields.Text('Didication letter')    
+
+class AccountInherit(models.Model):    
+    _inherit ="account.move"
+    didication_invoice = fields.Text('Didication letter',related='partner_id.didication_letter')  
