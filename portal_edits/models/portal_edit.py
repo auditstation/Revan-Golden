@@ -84,7 +84,7 @@ class WebsitePortalsInherit(WebsiteSale):
         if mode[1] == 'shipping':
             new_values['parent_id'] = order.partner_id.commercial_partner_id.id
             new_values['type'] = 'delivery'
-        _logger.info(f'newwwwwwwwwwwww{new_values}')
+       
         return new_values, errors, error_msg    
 
 
@@ -164,7 +164,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-        # Partner.sudo().write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+        Partner.sudo().browse(partner_id).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
         
         render_values = {
             'website_sale_order': order,
