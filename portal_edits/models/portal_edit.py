@@ -148,10 +148,11 @@ class WebsitePortalsInherit(WebsiteSale):
             'only_services': order and order.only_services,
             'account_on_checkout': request.website.account_on_checkout,
             'is_public_user': request.website.is_public_user(),
-            'didication_letters':request.env['res.partner'].sudo().browse(partner_id).didication_letter
+           
         
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
+        render_values['didication_letters']=request.env['res.partner'].sudo().browse(partner_id).didication_letter
         return request.render("website_sale.address", render_values)
 
          
