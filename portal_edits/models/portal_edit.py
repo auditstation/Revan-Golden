@@ -147,7 +147,7 @@ class WebsitePortalsInherit(WebsiteSale):
             'callback': kw.get('callback'),
             'only_services': order and order.only_services,
             'account_on_checkout': request.website.account_on_checkout,
-            'is_public_user': request.website.is_public_user()
+            'is_public_user': request.website.is_public_user(),
             'didication_letters':request.env['res.partner'].sudo().browse(partner_id).didication_letter
         
         }
