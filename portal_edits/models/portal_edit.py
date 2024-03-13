@@ -134,9 +134,9 @@ class WebsitePortalsInherit(WebsiteSale):
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-        _logger.info(f'ssssswww{partner_id}')
+      
         values['didication_letter'] =  request.env['res.partner'].sudo().browse(partner_id).didication_letter
-        _logger.info(f'sasasasas{values}')
+        
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
@@ -148,6 +148,8 @@ class WebsitePortalsInherit(WebsiteSale):
             'only_services': order and order.only_services,
             'account_on_checkout': request.website.account_on_checkout,
             'is_public_user': request.website.is_public_user()
+            'didication_letters':request.env['res.partner'].sudo().browse(partner_id).didication_letter
+        
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
