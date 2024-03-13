@@ -161,4 +161,4 @@ class CountryInherit(models.Model):
 
 class PartnerInherit(models.Model):
     _inherit ="res.partner"
-    didication_letter = fields.Text('Didication letter',store=True)    
+    didication_letter = fields.Text('Didication letter')    
