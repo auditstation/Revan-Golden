@@ -58,7 +58,7 @@ class WebsitePortalsInherit(WebsiteSale):
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
-        delc = kw['didication_letter'] if 'didication_letter' in kw else ''
+        
         request.env['res.partner'].sudo().browse(int(kw.get('partner_id', -1))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
         
         
@@ -135,7 +135,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
         _logger.info(f'ssssswww{partner_id}')
-        values['didication_letter']=  delc
+        values['didication_letter']=  request.env['res.partner'].sudo().browse(partner_id).didication_letter
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
