@@ -83,7 +83,7 @@ class WebsitePortalsInherit(WebsiteSale):
         if mode[1] == 'shipping':
             new_values['parent_id'] = order.partner_id.commercial_partner_id.id
             new_values['type'] = 'delivery'
-        _logger.info(f'testtttttttttt{new_values}')
+        _logger.info(f'newwwwwwwwwwwww{new_values}')
         return new_values, errors, error_msg    
 
 
