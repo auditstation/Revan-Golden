@@ -266,7 +266,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="didication_letter"/>
+                    <field name="didication_letter" invisible="1"/>
 
                 </xpath>
             </field>
@@ -278,7 +278,7 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='journal_div']" position="after">
-                    <field name="didication_invoice"/>
+                    <field name="didication_invoice" invisible="1"/>
 
                 </xpath>
             </field>
