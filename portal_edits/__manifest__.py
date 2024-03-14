@@ -4,7 +4,7 @@
     'sequence': 10,
     'version': '16.0.0',
     'depends': [
-        'base','portal','account','sale','website'
+        'base','portal','account','sale','website_sale'
     ],
 
     'data': [
