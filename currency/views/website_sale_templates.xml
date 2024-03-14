@@ -5,10 +5,10 @@
 <!--                <div id="unavailable_variant" t-att-data-values="product.get_variant_count()">-->
 <!--                </div>-->
 <!--            </xpath>-->
-            <xpath expr="//t[@t-set='combination']" position="replace">
+            <!-- <xpath expr="//t[@t-set='combination']" position="replace">
                 <t t-set="combination"
                    t-value="product.with_context(special_call=True)._get_first_possible_combination()"/>
-            </xpath>
+            </xpath> -->
         </template>
 
         <template id="variants" inherit_id="sale.variants">
