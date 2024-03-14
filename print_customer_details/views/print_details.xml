@@ -41,7 +41,7 @@
 
                         <div>
                             <div style="padding-top: 100px;" class="row">
-                                <div style="padding-left: 25px;" class="col-6">
+                                <div style="padding-left: 25px;" class="row col-6">
                                     <strong>
                                          <p class="font-weight-bold" style="font-size:242px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.name" />
 
