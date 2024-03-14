@@ -168,7 +168,7 @@ class SaleInherit(models.Model):
     didication_sale = fields.Text('Didication letter',related='partner_id.didication_letter')  
 
 class WebsiteInherit(models.Model):
-    _inherit="webiste"
+    _inherit="website"
     def sale_get_order(self, force_create=False, update_pricelist=False):
         """ Return the current sales order after mofications specified by params.
 
