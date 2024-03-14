@@ -49,7 +49,7 @@
                  <t t-if="combination" t-call="website_custom_code.revan_variants">
                     <t t-set="ul_class" t-valuef="flex-column" />
                   
-                    <!-- <t t-set="parent_combination" t-value="None" /> -->
+                    <t t-set="parent_combination" t-value="None" />
                  </t>
             </xpath>
         </template>
