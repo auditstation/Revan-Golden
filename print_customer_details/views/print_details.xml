@@ -43,20 +43,20 @@
                             <div style="padding-top: 100px;" class="row">
                                 <div style="padding-left: 25px;" class="col-6">
                                     <strong>
-                                         <p class="font-weight-bold" style="font-size:22px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.name" />
+                                         <p class="font-weight-bold" style="font-size:242px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.name" />
 
                                     </strong>
                                 </div>
                                 <div style="padding-left:100px;" class="row col-6">
  <strong>
-                                         <p  class="font-weight-bold" style="font-size:22px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.phone" />
+                                         <p  class="font-weight-bold" style="font-size:24px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.phone" />
  </strong>
                                 </div>
                             </div>
                             <div style="padding-top: 25px;" class="row">
                                 <div style="padding-left: 30px;" class="row col-12">
                                     <strong>
-                                        <p class="font-weight-bold" style="font-size:22px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.state_id.name"/> - <p class="font-weight-bold" style="font-size:22px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.street"/>
+                                        <p class="font-weight-bold" style="font-size:24px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.state_id.name"/> - <p class="font-weight-bold" style="font-size:24px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.street"/>
                            
                                     </strong>
                                 </div>
