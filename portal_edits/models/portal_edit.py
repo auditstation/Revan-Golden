@@ -161,11 +161,11 @@ class PartnerInherit(models.Model):
 
 class AccountInherit(models.Model):    
     _inherit ="account.move"
-    didication_invoice = fields.Text('Didication letter',related='partner_id.didication_letter')  
+    didication_invoice = fields.Text('Didication letter')  
 
 class SaleInherit(models.Model):    
     _inherit ="sale.order"
-    didication_sale = fields.Text('Didication letter',related='partner_id.didication_letter')  
+    didication_sale = fields.Text('Didication letter')  
 
 class WebsiteInherit(models.Model):
     _inherit="website"
@@ -277,8 +277,9 @@ class WebsiteInherit(models.Model):
             request.session['website_sale_current_pl'] = pricelist_id
             sale_order_sudo.write({'pricelist_id': pricelist_id})
             sale_order_sudo._recompute_prices()
-        if sale_order_sudo.didication_sale:
-            sale_order_sudo.partner_id.didication_letter=''
+        if sale_order_sudo.partner_id.didication_letter:
+            sale_order_sudo.didication_sale=sale_order_sudo.partner_id.didication_letter
+            sale_order_sudo.partner_id.didication_letter =''
         return sale_order_sudo
 
     
