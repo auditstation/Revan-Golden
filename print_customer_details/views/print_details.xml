@@ -47,7 +47,7 @@
 
                                     </strong>
                                 </div>
-                                <div style="padding-left:80px;" class="row col-6">
+                                <div style="padding-left:65px;" class="row col-6">
  <strong>
                                          <p  class="font-weight-bold" style="font-size:24px; font-family: Calibri, sans-serif;" t-out="pack.partner_id.phone" />
  </strong>
