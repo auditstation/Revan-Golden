@@ -73,7 +73,7 @@ class PaymentTransaction(models.Model):
             [('id', '=', self.id)]).sale_order_ids.order_line
         invoice_items =[]
         for rec in order_line:
-            if rec.price_unit != 0: 
+            if rec.price_unit > 0 : 
                 dic ={
                 'name': rec.product_id.name,
                 'quantity': int(rec.product_uom_qty),
@@ -82,6 +82,13 @@ class PaymentTransaction(models.Model):
                 }
 
                 invoice_items.append(dic)
+            elif rec.price_unit < 0 : 
+                dic ={
+                'name': rec.product_id.name,
+                'quantity': int(rec.product_uom_qty),
+                'unit_amount': int(rec.price_unit * 10) if rec.currency_id.name =='OMR' else
+                int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)),
+                }    
         # if len(self.partner_phone.replace('-', "").rsplit(' ', 1)[1]) > 11:
         #     raise ValidationError(
         #         _("Phone number must not  be greater than 11 characters"))
