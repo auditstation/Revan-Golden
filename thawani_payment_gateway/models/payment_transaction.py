@@ -89,6 +89,7 @@ class PaymentTransaction(models.Model):
                 'unit_amount': int(rec.price_unit * 10) if rec.currency_id.name =='OMR' else
                 int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)),
                 }    
+                invoice_items.append(dic)
         # if len(self.partner_phone.replace('-', "").rsplit(' ', 1)[1]) > 11:
         #     raise ValidationError(
         #         _("Phone number must not  be greater than 11 characters"))
