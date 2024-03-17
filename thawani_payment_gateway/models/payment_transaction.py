@@ -76,6 +76,7 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit < 0 : 
                 dis = rec.price_unit
+                _logger.info(f'ssdsdsd{dis}')
 
             if rec.price_unit > 0: 
                 _logger.info(f'ddsdsdsds{dis}')
