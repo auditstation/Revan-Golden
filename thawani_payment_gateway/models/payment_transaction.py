@@ -76,15 +76,25 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit < 0 : 
                 dis = rec.price_unit
-            if rec.price_unit > 0 and rec.product_template_id.detailed_type!='service': 
-                dic ={
-                'name': rec.product_id.name,
-                'quantity': int(rec.product_uom_qty),
-                'unit_amount': int(rec.price_unit * 1000) - int(dis * 1000) if rec.currency_id.name =='OMR' else
-                int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) - int(dis * 1000),
-                }
+            if rec.price_unit > 0: 
+                if rec.product_template_id.detailed_type!='service':
+                    dic ={
+                    'name': rec.product_id.name,
+                    'quantity': int(rec.product_uom_qty),
+                    'unit_amount': int(rec.price_unit * 1000) - int(dis * 1000) if rec.currency_id.name =='OMR' else
+                    int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) - int(dis * 1000),
+                    }
 
-                invoice_items.append(dic)
+                    invoice_items.append(dic)
+                else:
+                    dic ={
+                        'name': rec.product_id.name,
+                        'quantity': int(rec.product_uom_qty),
+                        'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.name =='OMR' else
+                        int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)),
+                        }  
+                    invoice_items.append(dic)      
+
            
         # if len(self.partner_phone.replace('-', "").rsplit(' ', 1)[1]) > 11:
         #     raise ValidationError(
