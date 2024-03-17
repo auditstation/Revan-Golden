@@ -84,7 +84,7 @@ class PaymentTransaction(models.Model):
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
-                    'unit_amount': int(rec.price_unit * 1000) - int((rec.price_unit * 1000)/dis) if rec.currency_id.name =='OMR' else
+                    'unit_amount': int(rec.price_unit * 1000) - int((rec.price_unit * 1000* dis)/100) if rec.currency_id.name =='OMR' else
                     int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) + int(dis * 1000),
                     }
 
