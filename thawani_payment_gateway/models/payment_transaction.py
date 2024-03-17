@@ -73,7 +73,7 @@ class PaymentTransaction(models.Model):
             [('id', '=', self.id)]).sale_order_ids.order_line
         invoice_items =[]
         dis=[]
-        dis = 0
+       
         for rec in order_line:
             if rec.price_unit < 0 : 
                 dis.append(rec.price_unit)
