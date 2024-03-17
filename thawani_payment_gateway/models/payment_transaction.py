@@ -72,11 +72,12 @@ class PaymentTransaction(models.Model):
         order_line = self.env['payment.transaction'].sudo().search(
             [('id', '=', self.id)]).sale_order_ids.order_line
         invoice_items =[]
+        dis=[]
         dis = 0
         for rec in order_line:
             if rec.price_unit < 0 : 
-                dis = rec.price_unit
-                _logger.info(f'ssdsdsd{dis}')
+                dis.append(rec.price_unit)
+               
 
             if rec.price_unit > 0: 
                 _logger.info(f'ddsdsdsds{dis}')
@@ -84,8 +85,8 @@ class PaymentTransaction(models.Model):
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
-                    'unit_amount': int(rec.price_unit * 1000) - int(dis * 1000) if rec.currency_id.name =='OMR' else
-                    int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) - int(dis * 1000),
+                    'unit_amount': int(rec.price_unit * 1000) - int(dis[0] * 1000) if rec.currency_id.name =='OMR' else
+                    int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) - int(dis[0] * 1000),
                     }
 
                     invoice_items.append(dic)
