@@ -76,7 +76,9 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit < 0 : 
                 dis = rec.price_unit
+
             if rec.price_unit > 0: 
+                _logger.info(f'ddsdsdsds{dis}')
                 if rec.product_template_id.detailed_type!='service':
                     dic ={
                     'name': rec.product_id.name,
