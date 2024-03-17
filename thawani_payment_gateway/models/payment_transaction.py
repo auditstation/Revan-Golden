@@ -75,7 +75,7 @@ class PaymentTransaction(models.Model):
         dis = 0
         for rec in order_line:
             if rec.price_unit < 0 : 
-                dis = rec.price_unit
+                dis = int(rec.product_template_id[:2])
                 _logger.info(f'ssdsdsd{dis}')
         for rec in order_line:
             if rec.price_unit > 0: 
@@ -84,7 +84,7 @@ class PaymentTransaction(models.Model):
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
-                    'unit_amount': int(rec.price_unit * 1000) + int(dis * 1000) if rec.currency_id.name =='OMR' else
+                    'unit_amount': int(rec.price_unit * 1000) - int((rec.price_unit * 1000)/dis) if rec.currency_id.name =='OMR' else
                     int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) + int(dis * 1000),
                     }
 
