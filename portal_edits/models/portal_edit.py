@@ -190,16 +190,16 @@ class CountryInherit(models.Model):
 
 class PartnerInherit(models.Model):
     _inherit ="res.partner"
-    didication_letter = fields.Text('Didication letter',website_form_blacklisted=False)  
+    didication_letter = fields.Text('Didication letter')  
        
 
 class AccountInherit(models.Model):    
     _inherit ="account.move"
-    didication_invoice = fields.Text('Didication letter',website_form_blacklisted=False)  
+    didication_invoice = fields.Text('Didication letter')  
 
 class SaleInherit(models.Model):    
     _inherit ="sale.order"
-    didication_sale = fields.Text('Didication letter',website_form_blacklisted=False)  
+    didication_sale = fields.Text('Didication letter')  
 
 class WebsiteInherit(models.Model):
     _inherit="website"
