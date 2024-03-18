@@ -15,13 +15,16 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo import api, fields, models
 import logging
 from werkzeug.exceptions import Forbidden, NotFound
+
 _logger = logging.getLogger(__name__)
+
+
 class PortalInherit(CustomerPortal):
-    MANDATORY_BILLING_FIELDS = ["name", "phone","state_id","country_id","street"]
-    OPTIONAL_BILLING_FIELDS = ["zipcode","city","email","vat", "company_name","didication_letter"]
+    MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
+    OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
+
 
 class WebsitePortalsInherit(WebsiteSale):
-
     WRITABLE_PARTNER_FIELDS = [
         'name',
         'email',
@@ -36,7 +39,7 @@ class WebsitePortalsInherit(WebsiteSale):
     ]
 
     def _get_mandatory_fields_billing(self, country_id=False):
-        req = ["name","country_id"]
+        req = ["name", "country_id"]
         if country_id:
             country = request.env['res.country'].browse(country_id)
             if country.state_required:
@@ -44,15 +47,16 @@ class WebsitePortalsInherit(WebsiteSale):
             # if country.zip_required:
             #     req += ['zip']
         return req
+
     def _get_mandatory_fields_shipping(self, country_id=False):
-        req = ["name","country_id"]
+        req = ["name", "country_id"]
         if country_id:
             country = request.env['res.country'].browse(country_id)
             if country.state_required:
                 req += ['state_id']
             # if country.zip_required:
             #     req += ['zip']
-        return req    
+        return req
 
     def checkout_form_validate(self, mode, all_form_values, data):
         # mode: tuple ('new|edit', 'billing|shipping')
@@ -65,24 +69,26 @@ class WebsitePortalsInherit(WebsiteSale):
             error["phone"] = 'error'
             error_message.append(_('Invalid number! Please enter a valid number'))
         return error, error_message
-   @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
-    def address(self, **kw):
 
+
+    @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
+    def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
         if 'partner_id' in kw:
-            request.env['res.partner'].sudo().browse(int(kw.get('partner_id'))).write({'didication_letter':kw['didication_letter'] if 'didication_letter' in kw else ''})
+            request.env['res.partner'].sudo().browse(int(kw.get('partner_id'))).write(
+                {'didication_letter': kw['didication_letter'] if 'didication_letter' in kw else ''})
         order = request.website.sale_get_order()
-
+    
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
-
+    
         mode = (False, False)
         can_edit_vat = False
         values, errors = {}, {}
-
+    
         partner_id = int(kw.get('partner_id', -1))
-
+    
         # IF PUBLIC ORDER
         if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
             mode = ('new', 'billing')
@@ -106,15 +112,15 @@ class WebsitePortalsInherit(WebsiteSale):
                     values = Partner.browse(partner_id)
             elif partner_id == -1:
                 mode = ('new', 'shipping')
-            else: # no mode - refresh without post?
+            else:  # no mode - refresh without post?
                 return request.redirect('/shop/checkout')
-
+    
         # IF POSTED
         if 'submitted' in kw and request.httprequest.method == "POST":
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
-
+    
             if errors:
                 errors['error_message'] = error_msg
                 values = kw
@@ -130,20 +136,21 @@ class WebsitePortalsInherit(WebsiteSale):
                     order.partner_invoice_id = partner_id
                     if not kw.get('use_same'):
                         kw['callback'] = kw.get('callback') or \
-                            (not order.only_services and (mode[0] == 'edit' and '/shop/checkout' or '/shop/address'))
+                                         (not order.only_services and (
+                                                 mode[0] == 'edit' and '/shop/checkout' or '/shop/address'))
                     # We need to update the pricelist(by the one selected by the customer), because onchange_partner reset it
                     # We only need to update the pricelist when it is not redirected to /confirm_order
                     if kw.get('callback', '') != '/shop/confirm_order':
                         request.website.sale_get_order(update_pricelist=True)
                 elif mode[1] == 'shipping':
                     order.partner_shipping_id = partner_id
-
+    
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-
+    
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
@@ -158,32 +165,34 @@ class WebsitePortalsInherit(WebsiteSale):
         }
         render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
-
     
 
 class CountryInherit(models.Model):
-    _inherit ="res.country"
+    _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
 
+
 class PartnerInherit(models.Model):
-    _inherit ="res.partner"
-    didication_letter = fields.Text('Didication letter',website_form_blacklisted=False)  
-       
+    _inherit = "res.partner"
+    didication_letter = fields.Text('Didication letter', website_form_blacklisted=False)
 
-class AccountInherit(models.Model):    
-    _inherit ="account.move"
-    didication_invoice = fields.Text('Didication letter')  
 
-class SaleInherit(models.Model):    
-    _inherit ="sale.order"
-    didication_sale = fields.Text('Didication letter')  
+class AccountInherit(models.Model):
+    _inherit = "account.move"
+    didication_invoice = fields.Text('Didication letter')
+
+
+class SaleInherit(models.Model):
+    _inherit = "sale.order"
+    didication_sale = fields.Text('Didication letter')
+
 
 class WebsiteInherit(models.Model):
-    _inherit="website"
+    _inherit = "website"
+
     def sale_get_order(self, *args, **kwargs):
         so = super().sale_get_order(*args, **kwargs)
         if so.partner_id.didication_letter:
-            so.didication_sale=so.partner_id.didication_letter
-            so.partner_id.didication_letter =''
+            so.didication_sale = so.partner_id.didication_letter
+            so.partner_id.didication_letter = ''
         return so
-  
