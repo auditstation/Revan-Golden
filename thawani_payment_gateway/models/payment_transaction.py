@@ -75,7 +75,7 @@ class PaymentTransaction(models.Model):
         dis = 0
         for rec in order_line:
             if rec.price_unit < 0 : 
-                dis = int(rec.product_template_id[:2])
+                dis = int(rec.product_template_id.name[:2])
                 _logger.info(f'ssdsdsd{dis}')
         for rec in order_line:
             if rec.price_unit > 0: 
