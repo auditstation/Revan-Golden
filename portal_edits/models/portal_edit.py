@@ -191,7 +191,7 @@ class CountryInherit(models.Model):
 class PartnerInherit(models.Model):
     _inherit ="res.partner"
     didication_letter = fields.Text('Didication letter',website_form_blacklisted=False)  
-    didication_letters = fields.Text('Didication letter new',website_form_blacklisted=False)    
+       
 
 class AccountInherit(models.Model):    
     _inherit ="account.move"
