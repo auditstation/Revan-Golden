@@ -79,7 +79,9 @@ class PaymentTransaction(models.Model):
                 _logger.info(f'ssdsdsd{dis}')
         for rec in order_line:
             if rec.price_unit > 0: 
-                _logger.info(f'ewwwwww{dis}')
+                _logger.info(f'ssdsdss{dis}')
+                _logger.info(f'ewwwwww{int(((rec.price_unit * 1000)* dis )/100)}')
+                
                 #  int((rec.price_unit * 1000 )/dis) 
                 if rec.product_template_id.detailed_type!='service':
                     dic ={
