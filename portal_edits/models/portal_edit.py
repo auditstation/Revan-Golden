@@ -36,7 +36,6 @@ class WebsitePortalsInherit(WebsiteSale):
     ]
 
     def _get_mandatory_fields_billing(self, country_id=False):
-        _logger.info(f'sssssssssssss')
         req = ["name","country_id"]
         if country_id:
             country = request.env['res.country'].browse(country_id)
@@ -61,83 +60,12 @@ class WebsitePortalsInherit(WebsiteSale):
         # data: values after preprocess
         error = dict()
         error_message = []
-
-        # prevent name change if invoices exist
-        if data.get('partner_id'):
-            partner = request.env['res.partner'].browse(int(data['partner_id']))
-            if partner.exists() and partner.name and not partner.sudo().can_edit_vat() and 'name' in data and (data['name'] or False) != (partner.name or False):
-                error['name'] = 'error'
-                error_message.append(_('Changing your name is not allowed once invoices have been issued for your account. Please contact us directly for this operation.'))
-
-        # Required fields from form
-        required_fields = [f for f in (all_form_values.get('field_required') or '').split(',') if f]
-
-        # Required fields from mandatory field function
-        country_id = int(data.get('country_id', False))
-        required_fields += mode[1] == 'shipping' and self._get_mandatory_fields_shipping(country_id) or self._get_mandatory_fields_billing(country_id)
-
-        # error message for empty required fields
-        for field_name in required_fields:
-            if not data.get(field_name):
-                error[field_name] = 'missing'
-
-        # email validation
-        if data.get('email') and not tools.single_email_re.match(data.get('email')):
-            error["email"] = 'error'
-            error_message.append(_('Invalid Email! Please enter a valid email address.'))
+        error, error_message = super().checkout_form_validate(mode, all_form_values, data)
         if data.get('phone') and len(data.get('phone')) < 8:
             error["phone"] = 'error'
-            error_message.append(_('Invalid number!Please enter a valid number'))
-        # vat validation
-        Partner = request.env['res.partner']
-        if data.get("vat") and hasattr(Partner, "check_vat"):
-            if country_id:
-                data["vat"] = Partner.fix_eu_vat_number(country_id, data.get("vat"))
-            partner_dummy = Partner.new(self._get_vat_validation_fields(data))
-            try:
-                partner_dummy.check_vat()
-            except ValidationError as exception:
-                error["vat"] = 'error'
-                error_message.append(exception.args[0])
-
-        if [err for err in error.values() if err == 'missing']:
-            error_message.append(_('Some required fields are empty.'))
-
+            error_message.append(_('Invalid number! Please enter a valid number'))
         return error, error_message
-    def values_postprocess(self, order, mode, values, errors, error_msg):
-        new_values = {}
-        authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
-        _logger.info(f'testsssssssssssssss{authorized_fields}')
-        for k, v in values.items():
-            # don't drop empty value, it could be a field to reset
-            if k in authorized_fields and v is not None:
-                new_values[k] = v
-            else:  # DEBUG ONLY
-                if k not in ('field_required', 'partner_id', 'callback', 'submitted'): # classic case
-                    _logger.debug("website_sale postprocess: %s value has been dropped (empty or not writable)" % k)
-
-        if request.website.specific_user_account:
-            new_values['website_id'] = request.website.id
-
-        if mode[0] == 'new':
-            new_values['company_id'] = request.website.company_id.id
-            new_values['team_id'] = request.website.salesteam_id and request.website.salesteam_id.id
-            new_values['user_id'] = request.website.salesperson_id.id
-
-        lang = request.lang.code if request.lang.code in request.website.mapped('language_ids.code') else None
-        if lang:
-            new_values['lang'] = lang
-        if mode == ('edit', 'billing') and order.partner_id.type == 'contact':
-            new_values['type'] = 'other'
-        if mode[1] == 'shipping':
-            new_values['parent_id'] = order.partner_id.commercial_partner_id.id
-            new_values['type'] = 'delivery'
-
-        return new_values, errors, error_msg
-
-        
-
-    @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
+   @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
 
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
@@ -252,117 +180,10 @@ class SaleInherit(models.Model):
 
 class WebsiteInherit(models.Model):
     _inherit="website"
-    def sale_get_order(self, force_create=False, update_pricelist=False):
-        """ Return the current sales order after mofications specified by params.
-
-        :param bool force_create: Create sales order if not already existing
-        :param bool update_pricelist: Force to recompute all the lines from sales order to adapt the price with the current pricelist.
-        :returns: record for the current sales order (might be empty)
-        :rtype: `sale.order` recordset
-        """
-        self.ensure_one()
-
-        self = self.with_company(self.company_id)
-        SaleOrder = self.env['sale.order'].sudo()
-
-        sale_order_id = request.session.get('sale_order_id')
-
-        if sale_order_id:
-            sale_order_sudo = SaleOrder.browse(sale_order_id).exists()
-        elif self.env.user and not self.env.user._is_public():
-            sale_order_sudo = self.env.user.partner_id.last_website_so_id
-            if sale_order_sudo:
-                available_pricelists = self.get_pricelist_available()
-                if sale_order_sudo.pricelist_id not in available_pricelists:
-                    # Do not reload the cart of this user last visit
-                    # if the cart uses a pricelist no longer available.
-                    sale_order_sudo = SaleOrder
-                else:
-                    # Do not reload the cart of this user last visit
-                    # if the Fiscal Position has changed.
-                    fpos = sale_order_sudo.env['account.fiscal.position'].with_company(
-                        sale_order_sudo.company_id
-                    )._get_fiscal_position(
-                        sale_order_sudo.partner_id,
-                        delivery=sale_order_sudo.partner_shipping_id
-                    )
-                    if fpos.id != sale_order_sudo.fiscal_position_id.id:
-                        sale_order_sudo = SaleOrder
-        else:
-            sale_order_sudo = SaleOrder
-
-        # Ignore the current order if a payment has been initiated. We don't want to retrieve the
-        # cart and allow the user to update it when the payment is about to confirm it.
-        if sale_order_sudo and sale_order_sudo.get_portal_last_transaction().state in (
-            'pending', 'authorized', 'done'
-        ):
-            sale_order_sudo = None
-
-        if not (sale_order_sudo or force_create):
-            # Do not create a SO record unless needed
-            if request.session.get('sale_order_id'):
-                request.session.pop('sale_order_id')
-                request.session.pop('website_sale_cart_quantity', None)
-            return self.env['sale.order']
-
-        # Only set when neeeded
-        pricelist_id = False
-
-        partner_sudo = self.env.user.partner_id
-
-        # cart creation was requested
-        if not sale_order_sudo:
-            so_data = self._prepare_sale_order_values(partner_sudo)
-            sale_order_sudo = SaleOrder.with_user(SUPERUSER_ID).create(so_data)
-
-            request.session['sale_order_id'] = sale_order_sudo.id
-            request.session['website_sale_cart_quantity'] = sale_order_sudo.cart_quantity
-            # The order was created with SUPERUSER_ID, revert back to request user.
-            sale_order_sudo = sale_order_sudo.with_user(self.env.user).sudo()
-            return sale_order_sudo
-
-        # Existing Cart:
-        #   * For logged user
-        #   * In session, for specified partner
-
-        # case when user emptied the cart
-        if not request.session.get('sale_order_id'):
-            request.session['sale_order_id'] = sale_order_sudo.id
-            request.session['website_sale_cart_quantity'] = sale_order_sudo.cart_quantity
-
-        # check for change of partner_id ie after signup
-        if sale_order_sudo.partner_id.id != partner_sudo.id and request.website.partner_id.id != partner_sudo.id:
-            previous_fiscal_position = sale_order_sudo.fiscal_position_id
-            previous_pricelist = sale_order_sudo.pricelist_id
-
-            pricelist_id = self._get_current_pricelist_id(partner_sudo)
-
-            # change the partner, and trigger the computes (fpos)
-            sale_order_sudo.write({
-                'partner_id': partner_sudo.id,
-                'partner_invoice_id': partner_sudo.id,
-                'payment_term_id': self.sale_get_payment_term(partner_sudo),
-                # Must be specified to ensure it is not recomputed when it shouldn't
-                'pricelist_id': pricelist_id,
-            })
-
-            if sale_order_sudo.fiscal_position_id != previous_fiscal_position:
-                sale_order_sudo.order_line._compute_tax_id()
-
-            if sale_order_sudo.pricelist_id != previous_pricelist:
-                update_pricelist = True
-        elif update_pricelist:
-            # Only compute pricelist if needed
-            pricelist_id = self._get_current_pricelist_id(partner_sudo)
-
-        # update the pricelist
-        if update_pricelist:
-            request.session['website_sale_current_pl'] = pricelist_id
-            sale_order_sudo.write({'pricelist_id': pricelist_id})
-            sale_order_sudo._recompute_prices()
-        if sale_order_sudo.partner_id.didication_letter:
-            sale_order_sudo.didication_sale=sale_order_sudo.partner_id.didication_letter
-            sale_order_sudo.partner_id.didication_letter =''
-        return sale_order_sudo
-
-    
+    def sale_get_order(self, *args, **kwargs):
+        so = super().sale_get_order(*args, **kwargs)
+        if so.partner_id.didication_letter:
+            so.didication_sale=so.partner_id.didication_letter
+            so.partner_id.didication_letter =''
+        return so
+  
