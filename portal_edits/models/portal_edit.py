@@ -86,8 +86,8 @@ class WebsitePortalsInherit(WebsiteSale):
         mode = (False, False)
         can_edit_vat = False
         values, errors = {}, {}
-        if 'partner_id' in kw:
-            partner_id = int(kw.get('partner_id'))
+    
+        partner_id = int(kw.get('partner_id', -1))
     
         # IF PUBLIC ORDER
         if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
@@ -110,8 +110,8 @@ class WebsitePortalsInherit(WebsiteSale):
                         return Forbidden()
                 if mode and partner_id != -1:
                     values = Partner.browse(partner_id)
-            elif partner_id == -1:
-                mode = ('new', 'shipping')
+            # elif partner_id == -1:
+            #     mode = ('new', 'shipping')
             else:  # no mode - refresh without post?
                 return request.redirect('/shop/checkout')
     
