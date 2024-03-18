@@ -74,21 +74,16 @@ class PaymentTransaction(models.Model):
         invoice_items =[]
         dis = 0
         for rec in order_line:
-            if rec.price_unit < 0 : 
+            if rec.price_unit < 0 and rec.product_template_id.detailed_type =='service': 
                 dis = int(rec.product_template_id.name[:2])
-                _logger.info(f'ssdsdsd{dis}')
         for rec in order_line:
             if rec.price_unit > 0: 
-                _logger.info(f'ssdsdss{dis}')
-                _logger.info(f'ewwwwww{int(((rec.price_unit * 1000)* dis )/100)}')
-                
-                #  int((rec.price_unit * 1000 )/dis) 
                 if rec.product_template_id.detailed_type!='service':
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
                     'unit_amount': int(rec.price_unit * 1000) - int(((rec.price_unit * 1000)* dis )/100) if rec.currency_id.name =='OMR' else
-                    int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)),
+                    int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[0].company_rate)) - int(((rec.price_unit * 1000)* dis )/100),
                     }
 
                     invoice_items.append(dic)
