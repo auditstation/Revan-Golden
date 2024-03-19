@@ -86,8 +86,9 @@ class WebsitePortalsInherit(WebsiteSale):
         mode = (False, False)
         can_edit_vat = False
         values, errors = {}, {}
-        _logger.info(f'ssasasas{partner_id}')
+        
         partner_id = int(kw.get('partner_id', -1))
+        _logger.info(f'ssasasas{partner_id}')
     
         # IF PUBLIC ORDER
         if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
