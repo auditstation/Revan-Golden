@@ -113,8 +113,8 @@ class WebsitePortalsInherit(WebsiteSale):
                         return Forbidden()
                 if mode and partner_id != -1:
                     values = Partner.browse(partner_id)
-            elif partner_id == -1:
-                mode = ('new', 'shipping')
+            # elif partner_id == -1:
+            #     mode = ('new', 'shipping')
             else:  # no mode - refresh without post?
                 return request.redirect('/shop/checkout')
     
