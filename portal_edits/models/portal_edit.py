@@ -22,6 +22,14 @@ _logger = logging.getLogger(__name__)
 class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
+    def details_form_validate(self, data, partner_creation=False):
+        error = dict()
+        error_message = []
+        error, error_message = super().details_form_validate(data)
+        if data.get('phone') and len(data.get('phone')) < 8:
+            error["phone"] = 'error'
+            error_message.append(_('Invalid number! Please enter a valid number'))
+        return error, error_message
 
 
 class WebsitePortalsInherit(WebsiteSale):
