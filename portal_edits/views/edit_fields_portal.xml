@@ -14,7 +14,7 @@
         </div>
         <div t-attf-class="#{error.get('email')} col-xl-6">
             <label class="col-form-label" for="email">Email</label>
-            <t t-set="email_detail" t-esc="partner.email"/>
+           
             <input type="text" name="email" t-attf-class="form-control" t-att-value="email or partner.email" />
         </div>
 
