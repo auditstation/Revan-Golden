@@ -23,6 +23,9 @@ class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
     def details_form_validate(self, data, partner_creation=False):
+        partner = request.env['res.partner'].browse(int(data['partner_id']))
+        _logger.info(f'testttttttttttttt{partner.exists(),partner.name,not partner.sudo().can_edit_vat(),partner.sudo().can_edit_vat()}')
+           
         error = dict()
         error_message = []
         error, error_message = super().details_form_validate(data)
