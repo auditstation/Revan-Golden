@@ -75,10 +75,7 @@ class WebsitePortalsInherit(WebsiteSale):
         error = dict()
         error_message = []
 
-        error, error_message = super().checkout_form_validate(mode, all_form_values, data)
-        partner = request.env['res.partner'].browse(int(data['partner_id']))
-        _logger.info(f'testttttttttttttt{partner.exists(),partner.name,not partner.sudo().can_edit_vat(),partner.sudo().can_edit_vat()}')
-           
+        error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
         if data.get('phone') and len(data.get('phone')) < 8:
             error["phone"] = 'error'
             error_message.append(_('Invalid number! Please enter a valid number'))
@@ -102,16 +99,16 @@ class WebsitePortalsInherit(WebsiteSale):
         values, errors = {}, {}
         
         partner_id = int(kw.get('partner_id', -1))
-        _logger.info(f'ssasasas{partner_id}')
+        
     
         # IF PUBLIC ORDER
         if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
-            _logger.info(f'ssssssssssssssss{partner_id}')
+           
             mode = ('new', 'billing')
             can_edit_vat = True
         # IF ORDER LINKED TO A PARTNER
         else:
-            _logger.info(f'ssssqqqqqqqqqqq{partner_id}')
+            
             if partner_id > 0:
                 if partner_id == order.partner_id.id:
                     mode = ('edit', 'billing')
