@@ -23,9 +23,8 @@ class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
     def details_form_validate(self, data, partner_creation=False):
-        partner = request.env['res.partner'].browse(int(data['partner_id']))
-        _logger.info(f'testttttttttttttt{partner.exists(),partner.name,not partner.sudo().can_edit_vat(),partner.sudo().can_edit_vat()}')
-           
+        
+        
         error = dict()
         error_message = []
         error, error_message = super().details_form_validate(data)
@@ -75,7 +74,11 @@ class WebsitePortalsInherit(WebsiteSale):
         # data: values after preprocess
         error = dict()
         error_message = []
+
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)
+        partner = request.env['res.partner'].browse(int(data['partner_id']))
+        _logger.info(f'testttttttttttttt{partner.exists(),partner.name,not partner.sudo().can_edit_vat(),partner.sudo().can_edit_vat()}')
+           
         if data.get('phone') and len(data.get('phone')) < 8:
             error["phone"] = 'error'
             error_message.append(_('Invalid number! Please enter a valid number'))
