@@ -76,6 +76,7 @@ class WebsitePortalsInherit(WebsiteSale):
         error_message = []
 
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
+        self.env['ir.model.fields'].sudo().formbuilder_whitelist('res.partner', ['didication_letter'])
         if data.get('phone') and len(data.get('phone')) < 8:
             error["phone"] = 'error'
             error_message.append(_('Invalid number! Please enter a valid number'))
