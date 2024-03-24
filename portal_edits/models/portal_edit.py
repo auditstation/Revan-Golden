@@ -76,7 +76,6 @@ class WebsitePortalsInherit(WebsiteSale):
         error_message = []
 
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
-        self.env['ir.model.fields'].sudo().formbuilder_whitelist('res.partner', ['didication_letter'])
         if data.get('phone') and len(data.get('phone')) < 8:
             error["phone"] = 'error'
             error_message.append(_('Invalid number! Please enter a valid number'))
@@ -84,6 +83,8 @@ class WebsitePortalsInherit(WebsiteSale):
 
     def values_postprocess(self, order, mode, values, errors, error_msg):
         new_values = {}
+        self.env['ir.model.fields'].sudo().formbuilder_whitelist('res.partner', ['didication_letter'])
+        
         authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
         _logger.info(f'fffffffffffffffff{authorized_fields}')
         for k, v in values.items():
