@@ -81,40 +81,6 @@ class WebsitePortalsInherit(WebsiteSale):
             error_message.append(_('Invalid number! Please enter a valid number'))
         return error, error_message
 
-    def values_postprocess(self, order, mode, values, errors, error_msg):
-        new_values = {}
-        self.env['ir.model.fields'].sudo().formbuilder_whitelist('res.partner', ['didication_letter'])
-        
-        authorized_fields = request.env['ir.model']._get('res.partner')._get_form_writable_fields()
-        _logger.info(f'fffffffffffffffff{authorized_fields}')
-        for k, v in values.items():
-            # don't drop empty value, it could be a field to reset
-            if k in authorized_fields and v is not None:
-                new_values[k] = v
-            else:  # DEBUG ONLY
-                if k not in ('field_required', 'partner_id', 'callback', 'submitted'): # classic case
-                    _logger.debug("website_sale postprocess: %s value has been dropped (empty or not writable)" % k)
-
-        if request.website.specific_user_account:
-            new_values['website_id'] = request.website.id
-
-        if mode[0] == 'new':
-            new_values['company_id'] = request.website.company_id.id
-            new_values['team_id'] = request.website.salesteam_id and request.website.salesteam_id.id
-            new_values['user_id'] = request.website.salesperson_id.id
-
-        lang = request.lang.code if request.lang.code in request.website.mapped('language_ids.code') else None
-        if lang:
-            new_values['lang'] = lang
-        if mode == ('edit', 'billing') and order.partner_id.type == 'contact':
-            new_values['type'] = 'other'
-        if mode[1] == 'shipping':
-            new_values['parent_id'] = order.partner_id.commercial_partner_id.id
-            new_values['type'] = 'delivery'
-        _logger.info(f'dddddddddddd{new_values}')
-        return new_values, errors, error_msg
-
-    
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
