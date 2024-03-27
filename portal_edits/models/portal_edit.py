@@ -155,12 +155,13 @@ class WebsitePortalsInherit(WebsiteSale):
                         request.website.sale_get_order(update_pricelist=True)
                 elif mode[1] == 'shipping':
                     order.partner_shipping_id = partner_id
+                    order.partner_id = order.partner_shipping_id.id
     
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
-                _logger.info(f'dssssssssffd{partner_shipping_id,partner_id}')
-                order.partner_id = partner_id
+                
+                
                 if 'didication_letter' in kw:
                     order.partner_shipping_id.didication_letter = kw['didication_letter']
             
