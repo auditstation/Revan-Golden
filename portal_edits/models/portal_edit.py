@@ -123,8 +123,8 @@ class WebsitePortalsInherit(WebsiteSale):
                         return Forbidden()
                 if mode and partner_id != -1:
                     values = Partner.browse(partner_id)
-            # elif partner_id == -1:
-            #     mode = ('new', 'shipping')
+            elif partner_id == -1:
+                mode = ('new', 'shipping')
             else:  # no mode - refresh without post?
                 return request.redirect('/shop/checkout')
     
@@ -133,7 +133,7 @@ class WebsitePortalsInherit(WebsiteSale):
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
-    
+            _logger.info(f'ddddddssaawww{post}')
             if errors:
                 errors['error_message'] = error_msg
                 values = kw
