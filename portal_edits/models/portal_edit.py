@@ -95,6 +95,7 @@ class WebsitePortalsInherit(WebsiteSale):
         values, errors = {}, {}
         
         partner_id = int(kw.get('partner_id', -1))
+        _logger.info(f'hhhhhhhhhhhhhhh{ partner,order.partner_id.id}')
         
     
         # IF PUBLIC ORDER
@@ -155,7 +156,7 @@ class WebsitePortalsInherit(WebsiteSale):
                         request.website.sale_get_order(update_pricelist=True)
                 elif mode[1] == 'shipping':
                     order.partner_shipping_id = partner_id
-                    order.partner_id = order.partner_shipping_id.id
+                    
     
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
