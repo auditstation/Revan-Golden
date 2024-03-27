@@ -95,7 +95,7 @@ class WebsitePortalsInherit(WebsiteSale):
         values, errors = {}, {}
         
         partner_id = int(kw.get('partner_id', -1))
-        _logger.info(f'hhhhhhhhhhhhhhh{ partner,order.partner_id.id}')
+        _logger.info(f'hhhhhhhhhhhhhhh{ partner_id,order.partner_id.id}')
         
     
         # IF PUBLIC ORDER
