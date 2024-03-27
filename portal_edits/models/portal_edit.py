@@ -133,9 +133,7 @@ class WebsitePortalsInherit(WebsiteSale):
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
-            if 'didication_letter' in kw:
-                post['didication_letter']= kw['didication_letter']
-            
+          
 
             if errors:
                 errors['error_message'] = error_msg
@@ -164,7 +162,9 @@ class WebsitePortalsInherit(WebsiteSale):
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
-                _logger.info(f'dsdsdsdwwwwwwww{order}')
+                  if 'didication_letter' in kw:
+                    order.partner_shipping_id.didication_letter = kw['didication_letter']
+            
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
     
