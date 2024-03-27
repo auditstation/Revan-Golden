@@ -211,7 +211,7 @@ class WebsiteInherit(models.Model):
 
     def sale_get_order(self, *args, **kwargs):
         so = super().sale_get_order(*args, **kwargs)
-        if so.partner_id.didication_letter:
-            so.didication_sale = so.partner_id.didication_letter
-            so.partner_id.didication_letter = ''
+        if so.partner_shipping_id.didication_letter:
+            so.didication_sale = so.partner_shipping_id.didication_letter
+            so.partner_shipping_id.didication_letter = ''
         return so
