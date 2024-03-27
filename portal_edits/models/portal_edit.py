@@ -133,7 +133,9 @@ class WebsitePortalsInherit(WebsiteSale):
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
-            _logger.info(f'ddddddssaawww{post}')
+            if 'didication_letter' in kw:
+                post['didication_letter']= kw['didication_letter']
+                
             if errors:
                 errors['error_message'] = error_msg
                 values = kw
