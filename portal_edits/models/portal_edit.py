@@ -161,7 +161,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
-                order.partner_id = order.partner_shipping_id.id
+        
                 
                 if 'didication_letter' in kw:
                     order.partner_shipping_id.didication_letter = kw['didication_letter']
