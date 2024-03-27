@@ -95,7 +95,7 @@ class WebsitePortalsInherit(WebsiteSale):
         values, errors = {}, {}
         
         partner_id = int(kw.get('partner_id', -1))
-        _logger.info(f'hhhhhhhhhhhhhhh{ partner_id,order.partner_id.id}')
+      
         
     
         # IF PUBLIC ORDER
@@ -212,6 +212,7 @@ class WebsiteInherit(models.Model):
 
     def sale_get_order(self, *args, **kwargs):
         so = super().sale_get_order(*args, **kwargs)
+        so.partner_id = partner_shipping_id.id
         if so.partner_shipping_id.didication_letter:
             so.didication_sale = so.partner_shipping_id.didication_letter
             so.partner_shipping_id.didication_letter = ''
