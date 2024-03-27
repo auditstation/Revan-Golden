@@ -133,10 +133,9 @@ class WebsitePortalsInherit(WebsiteSale):
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
-            _logger.info(f'aaaaaaaaaaaaaa{post}')
-            _logger.info(f'tttttttttttt{kw}')
             if 'didication_letter' in kw:
                 post['didication_letter']= kw['didication_letter']
+            
 
             if errors:
                 errors['error_message'] = error_msg
@@ -168,6 +167,8 @@ class WebsitePortalsInherit(WebsiteSale):
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
     
+            
+            _looger.info(f'sdsdsdsds{order}')    
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
