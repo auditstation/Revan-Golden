@@ -106,9 +106,9 @@ class PaymentTransaction(models.Model):
         "client_reference_id":str(client_reference_id) ,
         "mode": "payment",
         "products": invoice_items,
-        "success_url": f"{odoo_base_url}/payment/thawani/success/{self.id}",
+        "success_url": f"https://www.classycom.net/payment/thawani/success/{self.id}",
         # "success_url": "https://webhook.site/fa69f47b-5b18-4da2-91c8-8d0afff849d2",
-        "cancel_url": f"{odoo_base_url}/payment/thawani/cancel/{self.id}",
+        "cancel_url": f"https://www.classycom.net/payment/thawani/cancel/{self.id}",
         "metadata": {
             "Customer name": self.partner_name,
             "order id":sale_order.id ,
