@@ -120,10 +120,10 @@ class PaymentMyFatoorahController(http.Controller):
             if 'ar' in request.env.lang:
                 _logger.info(f"hhhhhhhhh{request.redirect(website_id +'/ar/payment/status')}")
                 domain_from = request.httprequest.environ.get('HTTP_HOST', '')
-                domain_to = get_base_domain(website.domain)
+                domain_to = get_base_domain(website_id)
                 # if domain_from != domain_to:
                     # redirect to correct domain for a correct routing map
-                url_to = werkzeug.urls.url_join(website.domain,'/ar/payment/status')
+                url_to = werkzeug.urls.url_join(website_id,'/ar/payment/status')
                 return request.redirect(url_to)
                     # return werkzeug.utils.redirect(website_id +'')
             else:
