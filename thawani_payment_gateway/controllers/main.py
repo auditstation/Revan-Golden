@@ -16,7 +16,8 @@ import werkzeug
 import werkzeug.exceptions
 import werkzeug.routing
 import werkzeug.utils
-
+import werkzeug.urls
+from odoo.addons.website.tools import get_base_domain
 _logger = logging.getLogger(__name__)
 
 
@@ -118,7 +119,13 @@ class PaymentMyFatoorahController(http.Controller):
         if website_id:
             if 'ar' in request.env.lang:
                 _logger.info(f"hhhhhhhhh{request.redirect(website_id +'/ar/payment/status')}")
-                return werkzeug.utils.redirect(website_id +'/ar/payment/status')
+                domain_from = request.httprequest.environ.get('HTTP_HOST', '')
+                domain_to = get_base_domain(website.domain)
+                # if domain_from != domain_to:
+                    # redirect to correct domain for a correct routing map
+                url_to = werkzeug.urls.url_join(website.domain,'/ar/payment/status')
+                return request.redirect(url_to)
+                    # return werkzeug.utils.redirect(website_id +'')
             else:
                 return request.redirect(website_id +'/payment/status')  
 
