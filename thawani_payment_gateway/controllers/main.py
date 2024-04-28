@@ -115,5 +115,5 @@ class PaymentMyFatoorahController(http.Controller):
             if request.env.lang =='ar':
                 return request.redirect(website_id +'/ar/payment/status')
             else:
-                return request.redirect('/payment/status')  
+                return request.redirect(website_id+'/payment/status')  
 
