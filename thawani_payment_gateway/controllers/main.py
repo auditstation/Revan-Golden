@@ -112,7 +112,7 @@ class PaymentMyFatoorahController(http.Controller):
         website_id = request.website.domain
         _logger.info(f'ssssssssssssssss{website_id,request.env.lang}')
         if website_id:
-            if request.env.lang =='ar'
+            if request.env.lang =='ar':
                 return request.redirect(website_id +'/ar/payment/status')
             else:
                 return request.redirect('/payment/status')  
