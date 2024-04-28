@@ -112,6 +112,6 @@ class PaymentMyFatoorahController(http.Controller):
         website_id = request.website.domain
         if website_id:
             return request.redirect(website_id +'/payment/status')
-        else:
-            return request.redirect('/payment/status')  
+        # else:
+        #     return request.redirect('/payment/status')  
 
