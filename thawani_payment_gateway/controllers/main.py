@@ -12,6 +12,10 @@ import psycopg2
 
 from odoo import fields
 
+import werkzeug
+import werkzeug.exceptions
+import werkzeug.routing
+import werkzeug.utils
 
 _logger = logging.getLogger(__name__)
 
@@ -114,7 +118,7 @@ class PaymentMyFatoorahController(http.Controller):
         if website_id:
             if 'ar' in request.env.lang:
                 _logger.info(f"hhhhhhhhh{request.redirect(website_id +'/ar/payment/status')}")
-                return request.redirect(website_id +'payment/status')
+                return werkzeug.utils.redirect(website_id +'/ar/payment/status')
             else:
                 return request.redirect(website_id +'/payment/status')  
 
