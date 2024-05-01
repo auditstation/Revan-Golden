@@ -47,8 +47,8 @@ class UserInherit(models.Model):
             if rec.share:
                 passw = rec.random_password()
 
-                if rec.partner_id.phone:
-                    rec.sudo().write({'password':passw,'tel_pass':passw,'login':rec.partner_id.phone})
+                
+                rec.sudo().write({'password':passw,'tel_pass':passw})
             else:
                 rec.sudo().write({'login':rec.partner_id.phone})
 
