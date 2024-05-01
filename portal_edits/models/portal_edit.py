@@ -2,9 +2,9 @@ import base64
 import json
 import math
 import re
-
+import random
 from werkzeug import urls
-
+import hashlib
 from odoo import http, tools, _, SUPERUSER_ID
 from odoo.exceptions import AccessDenied, AccessError, MissingError, UserError, ValidationError
 from odoo.http import content_disposition, Controller, request, route
@@ -15,6 +15,42 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo import api, fields, models
 import logging
 from werkzeug.exceptions import Forbidden, NotFound
+from odoo.addons.auth_signup.controllers.main import AuthSignupHome
+import logging
+import werkzeug
+from werkzeug.urls import url_encode
+import os
+from odoo.addons.web.controllers.home import ensure_db, Home, SIGN_UP_REQUEST_PARAMS, LOGIN_SUCCESSFUL_PARAMS
+
+from odoo import http, tools, _
+from odoo.addons.auth_signup.models.res_users import SignupError
+from odoo.addons.web.controllers.home import ensure_db, SIGN_UP_REQUEST_PARAMS, LOGIN_SUCCESSFUL_PARAMS
+from odoo.addons.base_setup.controllers.main import BaseSetup
+from odoo.exceptions import UserError
+from odoo.http import request
+import json
+import logging
+
+
+import odoo
+import odoo.modules.registry
+from odoo import http
+from odoo.exceptions import AccessError
+from odoo.http import request
+from odoo.service import security
+from odoo.tools import ustr
+from odoo.tools.translate import _
+from odoo.addons.web.controllers.utils import ensure_db, _get_login_redirect_url, is_user_internal
+
+
+_logger = logging.getLogger(__name__)
+
+
+# Shared parameters for all login/signup flows
+SIGN_UP_REQUEST_PARAMS = {'db', 'login', 'debug', 'token', 'message', 'error', 'scope', 'mode',
+                          'redirect', 'redirect_hostname', 'email', 'name', 'partner_id',
+                          'password', 'confirm_password', 'city', 'country_id', 'lang', 'signup_email'}
+LOGIN_SUCCESSFUL_PARAMS = set()
 
 _logger = logging.getLogger(__name__)
 
