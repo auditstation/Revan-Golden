@@ -272,6 +272,18 @@
             </field>
 
     </record>
+    <record id="user_inherit_form_letter" model="ir.ui.view">
+            <field name="name">res.user.inherit.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='share']" position="after">
+                    <field name="tel_pass" password="True" invisible="1"/>
+
+                </xpath>
+            </field>
+
+    </record>
      <record id="account_inherit_form_letter" model="ir.ui.view">
             <field name="name">account.move.inherit.form.letter</field>
             <field name="model">account.move</field>
@@ -296,6 +308,19 @@
             </field>
 
     </record>
+    <record id="model_change" model="ir.actions.server">
+            <field name="name">Change pass</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="binding_model_id" ref="base.model_res_users"/>
+             <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.change_user_pass()
+            </field>
+    </record>
+
+
 
 
 

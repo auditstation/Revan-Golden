@@ -18,6 +18,24 @@ from werkzeug.exceptions import Forbidden, NotFound
 
 _logger = logging.getLogger(__name__)
 
+class UserInherit(models.Model):
+    _inherit="res.users"
+    tel_pass = fields.Char(groups='base.group_no_one',invisible=True, copy=False)
+    def random_password(length=40, prefix="pass"):
+        import secrets
+        import string
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(20))
+        return password
+    def change_user_pass(self):
+        for rec in self:
+            if rec.share:
+                passw = rec.random_password()
+
+                if rec.partner_id.phone:
+                rec.sudo().write({'password':passw,'tel_pass':passw,'login':rec.partner_id.phone})
+            else:
+                rec.sudo().write({'login':rec.partner_id.phone})
 
 class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
@@ -217,3 +235,67 @@ class WebsiteInherit(models.Model):
             so.didication_sale = so.partner_shipping_id.didication_letter
             so.partner_shipping_id.didication_letter = ''
         return so
+class InheritLogin(AuthSignupHome):
+
+    
+    @http.route()
+    def web_login(self, *args, **kw):
+      
+        ensure_db()
+        user=request.env['res.users'].sudo().search([('login','=',kw.get('login'))])
+        
+        if user:
+            if user.tel_pass and user.share:
+                
+               
+                user.partner_id.email=''
+                kw['password'] = user.tel_pass
+                request.params["password"] = user.tel_pass
+            elif not user.share:
+                user.partner_id.email=''
+               
+                if 'password' in kw:
+                    request.params["password"] = kw['password']
+                else:
+                    request.params["password"] = ''
+                    return request.render('web.login',{'error':'you should fill password'})
+        elif not user and kw.get('login'):   
+            request.params["password"] = ''
+            return request.redirect('/web/signup')
+        response = super().web_login(*args, **kw)
+        
+        response.qcontext.update(self.get_auth_signup_config())
+        if request.session.uid:
+            if request.httprequest.method == 'GET' and request.params.get('redirect'):
+                # Redirect if already logged in and redirect param is present
+                return request.redirect(request.params.get('redirect'))
+            # Add message for non-internal user account without redirect if account was just created
+            if response.location == '/web/login_successful' and kw.get('confirm_password'):
+                return request.redirect_query('/web/login_successful', query={'account_created': True})
+       
+        return response
+    
+
+    def random_password(length=40, prefix="pass"):
+        import secrets
+        import string
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(20))
+        return password
+    
+    @http.route()
+    def web_auth_signup(self, *args, **kw):
+        passw = self.random_password()
+        if 'password' in kw:
+            kw['password'] = passw
+            kw['confirm_password'] = passw
+            request.params["password"] = passw
+            request.params["confirm_password"] = passw
+        response = super().web_auth_signup(*args, **kw)
+        user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
+        user.tel_pass = passw
+        user.sudo().write({'password':passw})
+        user.partner_id.email=''
+        user.partner_id.mobile =  kw.get("login")
+        user.partner_id.phone = kw.get("login")
+        return response
