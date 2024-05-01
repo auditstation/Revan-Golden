@@ -114,17 +114,18 @@ class PaymentMyFatoorahController(http.Controller):
 
         # Redirect the user to the status page.
         
-        website_id = request.website.domain
-        _logger.info(f'ssssssssssssssss{website_id,request.env.lang}')
-        if website_id:
-            domain_from = request.httprequest.environ.get('HTTP_HOST', '')
-            domain_to = get_base_domain(website_id)
-            if 'ar' in request.env.lang:
-                url_to = werkzeug.urls.url_join(website_id,'/ar/payment/status')
-                return request.redirect(url_to)
-                    # return werkzeug.utils.redirect(website_id +'')
-            else:
-                url_to = werkzeug.urls.url_join(website_id,'/payment/status')
-                return request.redirect(url_to)
+        # website_id = request.website.domain
+        # _logger.info(f'ssssssssssssssss{website_id,request.env.lang}')
+        # if website_id:
+        #     domain_from = request.httprequest.environ.get('HTTP_HOST', '')
+        #     domain_to = get_base_domain(website_id)
+        #     if 'ar' in request.env.lang:
+        #         url_to = werkzeug.urls.url_join(website_id,'/ar/payment/status')
+        #         return request.redirect(url_to)
+        #             # return werkzeug.utils.redirect(website_id +'')
+        #     else:
+        #         url_to = werkzeug.urls.url_join(website_id,'/payment/status')
+        #         return request.redirect(url_to)
              
-
+        # else:
+        return request.redirect('/payment/status')
