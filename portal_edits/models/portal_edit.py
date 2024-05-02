@@ -339,8 +339,9 @@ class MailThreadInherit(models.AbstractModel):
                 email_from = author.email_formatted
 
         # superuser mode without author email -> probably public user; anyway we don't want to crash
-        # if not email_from and raise_on_email and not self.env.su:
-        #     raise exceptions.UserError(_("Unable to send message, please configure the sender's email address."))
+        if not email_from and raise_on_email and not self.env.su:
+            _logger.info(f'wwwwwwwwwwww{email_from,raise_on_email,self.env.su}')
+            # raise exceptions.UserError(_("Unable to send message, please configure the sender's email address."))
 
         return author_id, email_from
 
