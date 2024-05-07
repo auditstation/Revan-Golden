@@ -224,7 +224,8 @@ class WebsitePortalsInherit(WebsiteSale):
     def confirm_order(self, **post):
         order = request.website.sale_get_order()
         if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
-            _logger.info(f'dssddsddsdsddsdsddsdsad')
+           order.pricelist_id = request.env['product.pricelist'].sudo().browse(order.partner_shipping_id.country_id.currency_id.id)
+           order.sudo().action_update_prices()
 
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
