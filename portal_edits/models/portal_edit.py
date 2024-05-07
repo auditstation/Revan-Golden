@@ -11,6 +11,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo import api, fields, models
 
+
 from werkzeug.exceptions import Forbidden, NotFound
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
 
@@ -219,7 +220,24 @@ class WebsitePortalsInherit(WebsiteSale):
         render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
     
+    @http.route(['/shop/confirm_order'], type='http', auth="public", website=True, sitemap=False)
+    def confirm_order(self, **post):
+        order = request.website.sale_get_order()
+        if order.partner_shipping_id.country_id.currency_id.id != order.price_list.currency_id.id:
+            _logger.info(f'dssddsddsdsddsdsddsdsad')
 
+        redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
+        if redirection:
+            return redirection
+
+        order.order_line._compute_tax_id()
+        request.session['sale_last_order_id'] = order.id
+        request.website.sale_get_order(update_pricelist=True)
+        extra_step = request.website.viewref('website_sale.extra_info_option')
+        if extra_step.active:
+            return request.redirect("/shop/extra_info")
+
+        return request.redirect("/shop/payment")
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
@@ -314,5 +332,7 @@ class InheritLogin(AuthSignupHome):
         user.partner_id.phone = kw.get("login")
         return response
 
+
+    
 
     
