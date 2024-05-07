@@ -223,7 +223,7 @@ class WebsitePortalsInherit(WebsiteSale):
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True, sitemap=False)
     def confirm_order(self, **post):
         order = request.website.sale_get_order()
-        if order.partner_shipping_id.country_id.currency_id.id != order.price_list.currency_id.id:
+        if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
             _logger.info(f'dssddsddsdsddsdsddsdsad')
 
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
