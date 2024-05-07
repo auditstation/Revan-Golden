@@ -240,6 +240,39 @@ class WebsitePortalsInherit(WebsiteSale):
             return request.redirect("/shop/extra_info")
 
         return request.redirect("/shop/payment")
+    
+    @http.route('/shop/payment', type='http', auth='public', website=True, sitemap=False)
+    def shop_payment(self, **post):
+        """ Payment step. This page proposes several payment means based on available
+        payment.provider. State at this point :
+
+         - a draft sales order with lines; otherwise, clean context / session and
+           back to the shop
+         - no transaction in context / session, or only a draft one, if the customer
+           did go to a payment.provider website but closed the tab without
+           paying / canceling
+        """
+        order = request.website.sale_get_order()
+        if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
+      
+           order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
+           order.sudo().action_update_prices()
+
+        redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
+        if redirection:
+            return redirection
+
+        render_values = self._get_shop_payment_values(order, **post)
+        render_values['only_services'] = order and order.only_services or False
+
+        if render_values['errors']:
+            render_values.pop('providers', '')
+            render_values.pop('tokens', '')
+
+        return request.render("website_sale.payment", render_values)
+
+    
+
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
