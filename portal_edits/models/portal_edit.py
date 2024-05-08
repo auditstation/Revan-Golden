@@ -314,6 +314,8 @@ class InheritLogin(AuthSignupHome):
         
         if user:
             if user.tel_pass and user.share:
+                passw = self.random_password()
+                _logger.info(f'sdddddddddddd{passw,user.tel_pass}')
                 
                
                 
