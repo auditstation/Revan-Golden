@@ -228,7 +228,9 @@ class WebsitePortalsInherit(WebsiteSale):
            order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-              
+                prd= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)]).product_id.product_tmpl_id.id
+                
+                rec.product_template_id = prd
                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                 care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
                 rec.order_id.set_delivery_line(care,res['price'])
@@ -248,15 +250,6 @@ class WebsitePortalsInherit(WebsiteSale):
     
     @http.route('/shop/payment', type='http', auth='public', website=True, sitemap=False)
     def shop_payment(self, **post):
-        """ Payment step. This page proposes several payment means based on available
-        payment.provider. State at this point :
-
-         - a draft sales order with lines; otherwise, clean context / session and
-           back to the shop
-         - no transaction in context / session, or only a draft one, if the customer
-           did go to a payment.provider website but closed the tab without
-           paying / canceling
-        """
         order = request.website.sale_get_order()
         if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
       
@@ -264,7 +257,9 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-              
+                prd= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)]).product_id.product_tmpl_id.id
+                
+                rec.product_template_id = prd
                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                 care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
                 rec.order_id.set_delivery_line(care,res['price'])
