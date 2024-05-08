@@ -314,7 +314,7 @@ class InheritLogin(AuthSignupHome):
         if user:
             if user.tel_pass and user.share:
                 passw = user.sudo().random_password()
-                user.sudo().write({'password':passw})
+                user.sudo().write({'password':passw,'tel_pass':passw})
                
                 
                 kw['password'] = passw
