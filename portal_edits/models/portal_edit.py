@@ -38,8 +38,7 @@ class UserInherit(models.Model):
     _inherit="res.users"
     tel_pass = fields.Char(groups='base.group_no_one',invisible=True, copy=False)
     def random_password(length=40, prefix="pass"):
-        import secrets
-        import string
+        
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(20))
         return password
@@ -314,11 +313,12 @@ class InheritLogin(AuthSignupHome):
         
         if user:
             if user.tel_pass and user.share:
-                
+                passw = user.sudo().random_password()
+                user.sudo().write({'password':passw})
                
-                user.partner_id.email=''
-                kw['password'] = user.tel_pass
-                request.params["password"] = user.tel_pass
+                
+                kw['password'] = passw
+                request.params["password"] = passw
             elif not user.share:
                 
                
