@@ -228,15 +228,15 @@ class WebsitePortalsInherit(WebsiteSale):
            order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-                if order.partner_shipping_id.country_id.currency_id.name!='OMR':
-                    _logger.info(f'wwwwwwwwwwwwww{order.partner_shipping_id.country_id.currency_id.name}')
+                if rec.order_id.partner_shipping_id.country_id.currency_id.name!='OMR':
+                   
                     prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
-                    _logger.info(f'sadsadasdsa{prd}')
+                   
                     rec.product_template_id = prd
                     res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                     care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
                     rec.order_id.set_delivery_line(care,res['price'])
-        
+                
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
             return redirection
@@ -259,9 +259,9 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-                if order.partner_shipping_id.country_id.currency_id.name!='ORM':
+                if rec.order_id.partner_shipping_id.country_id.currency_id.name!='OMR':
                     prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
-                    _logger.info(f'sadsadasdsa{prd}')
+                    
                     rec.product_template_id = prd
                     res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                     care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
