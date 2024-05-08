@@ -318,6 +318,7 @@ class InheritLogin(AuthSignupHome):
                 _logger.info(f'sdddddddddddd{passw,user.tel_pass}')
                 test=user.sudo().write({'password':passw})
                 _logger.info(f'ttttttttttttt{test}')
+                user.tel_pass=passw
                 
                
                 
