@@ -258,7 +258,6 @@ class WebsitePortalsInherit(WebsiteSale):
       
            order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
            order.sudo().action_update_prices()
-           
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
                 if rec.order_id.pricelist_id.currency_id.name!='OMR':
                     _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
