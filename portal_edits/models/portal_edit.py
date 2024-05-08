@@ -264,8 +264,8 @@ class WebsitePortalsInherit(WebsiteSale):
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
                 _logger.info(f'xssssssssssss{rec.product_template_id.product_variant_id.id}')
                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
-                
-                rec.order_id.set_delivery_line(rec.product_template_id.product_variant_id.id,res['price'])
+                care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
+                rec.order_id.set_delivery_line(care,res['price'])
 
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
