@@ -230,11 +230,7 @@ class WebsitePortalsInherit(WebsiteSale):
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id == 'service')
                 res = rec.order_id.carrier_id.rate_shipment()
                 rec.order_id.set_delivery_line(rec.product_template_id.product_variant_id,res['price'])
-        self.order_id.write({
-            'recompute_delivery_price': False,
-            'delivery_message': self.delivery_message,
-        })
-
+      
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
             return redirection
