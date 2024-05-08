@@ -260,6 +260,11 @@ class WebsitePortalsInherit(WebsiteSale):
       
            order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
            order.sudo().action_update_prices()
+           order.sudo().action_update_prices()
+           for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
+                res = rec.order_id.carrier_id.rate_shipment()
+                _logger.info(f'sdasdasdsd{res}')
+                rec.order_id.set_delivery_line(rec.product_template_id.product_variant_id,res['price'])
 
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
