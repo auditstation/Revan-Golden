@@ -229,6 +229,7 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
                 if order.partner_shipping_id.country_id.currency_id.name!='ORM':
+                    _logger.info(f'wwwwwwwwwwwwww{order.partner_shipping_id.country_id.currency_id.name}')
                     prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
                     _logger.info(f'sadsadasdsa{prd}')
                     rec.product_template_id = prd
