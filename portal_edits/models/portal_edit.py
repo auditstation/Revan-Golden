@@ -229,7 +229,7 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
                 prd= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)]).product_id.product_tmpl_id.id
-                
+                _logger.info(f'sadsadasdsa{prd}')
                 rec.product_template_id = prd
                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                 care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
