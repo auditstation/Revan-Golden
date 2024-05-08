@@ -262,8 +262,9 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
+                _logger.info(f'xssssssssssss{rec.product_template_id.product_variant_id.id}')
                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
-                _logger.info(f'sdasdasdsd{res}')
+                
                 rec.order_id.set_delivery_line(rec.product_template_id.product_variant_id.id,res['price'])
 
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
