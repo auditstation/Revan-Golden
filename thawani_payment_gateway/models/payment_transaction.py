@@ -79,8 +79,9 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
-                    _logger.info(f'xsaxsxasxasx{(rec.price_unit * 1000 * 1.25),rec.currency_id.rate_ids[0],int(((rec.price_unit * 1000)* dis )/100)}')
                     if dis != 0:
+                        _logger.info(f'xsaxsxasxasx{(rec.price_unit * 1000 * 1.25),sorted(rec.currency_id.rate_ids)[0].company_rate,rec.currency_id.rate_ids[0],int(((rec.price_unit * 1000)* dis )/100)}')
+                    
                         dic ={
                         'name': rec.product_id.name,
                         'quantity': int(rec.product_uom_qty),
