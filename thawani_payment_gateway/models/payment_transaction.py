@@ -79,6 +79,7 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
+                    _logger.info(f'SDASDASDSAD{rec.currency_id.rate_ids,rec.currency_id.rate_ids[-1].company_rate,(rec.price_unit * 1000 * 1.25),int((rec.price_unit * 1000 * 1.25)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis ),int(((rec.price_unit * 1000)* dis )}')
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
