@@ -236,8 +236,7 @@ class WebsitePortalsInherit(WebsiteSale):
                     res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                     care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
                     rec.order_id.set_delivery_line(care,res['price'])
-                else:
-                    rec.unlink()
+                
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
             return redirection
@@ -267,8 +266,7 @@ class WebsitePortalsInherit(WebsiteSale):
                     res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                     care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
                     rec.order_id.set_delivery_line(care,res['price'])
-                else:
-                    rec.unlink()
+                
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
             return redirection
