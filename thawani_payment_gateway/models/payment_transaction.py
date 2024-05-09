@@ -80,7 +80,7 @@ class PaymentTransaction(models.Model):
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
                     
-                    _logger.info(f'cxxxcxc{sorted(rec.currency_id.rate_ids),rec.currency_id.rate_ids[0],int(((rec.price_unit * 1000)* dis )/100)}')
+                    _logger.info(f'cxxxcxc{sorted(rec.currency_id.rate_ids.company_rate)}')
                     
                     dic ={
                     'name': rec.product_id.name,
