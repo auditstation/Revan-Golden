@@ -86,7 +86,7 @@ class PaymentTransaction(models.Model):
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
                     'unit_amount': int(rec.price_unit * 1000) - int(((rec.price_unit * 1000)* dis )/100) if rec.currency_id.name =='OMR' else
-                    int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)) - int(((rec.price_unit * 1000)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100),
+                    int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)) - int(((rec.price_unit * 1000)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)) - int(((rec.price_unit * 1000)* dis )/100),
                     }
 
                     invoice_items.append(dic)
@@ -95,7 +95,7 @@ class PaymentTransaction(models.Model):
                         'name': rec.product_id.name,
                         'quantity': int(rec.product_uom_qty),
                         'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.name =='OMR' else
-                        int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000 *1.25)/int(rec.currency_id.rate_ids[-1].company_rate)),
+                        int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000 *1.25)/int(sorted(rec.currency_id.rate_ids)[0].company_rate)),
                         }  
                     invoice_items.append(dic)      
 
