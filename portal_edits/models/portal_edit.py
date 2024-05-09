@@ -229,9 +229,9 @@ class WebsitePortalsInherit(WebsiteSale):
            order.sudo().action_update_prices()
            for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
                 if rec.order_id.pricelist_id.currency_id.name!='OMR':
-                   
+                    _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
                     prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
-                   
+                    
                     rec.product_template_id = prd
                     res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
                     care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
