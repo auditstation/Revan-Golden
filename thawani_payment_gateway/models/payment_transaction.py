@@ -79,6 +79,15 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
+<<<<<<< HEAD
+                    _logger.info(f'xsaxsxasxasx{(rec.price_unit * 1000 * 1.25),rec.currency_id.rate_ids[-1],int(((rec.price_unit * 1000)* dis )/100)}')
+                    dic ={
+                    'name': rec.product_id.name,
+                    'quantity': int(rec.product_uom_qty),
+                    'unit_amount': int(rec.price_unit * 1000) - int(((rec.price_unit * 1000)* dis )/100) if rec.currency_id.name =='OMR' else
+                    int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100),
+                    }
+=======
                     _logger.info(f'xsaxsxasxasx{(rec.price_unit * 1000 * 1.25),rec.currency_id.rate_ids[-1].company_rate,int(((rec.price_unit * 1000)* dis )/100)}')
                     if dis != 0:
                         dic ={
@@ -87,6 +96,7 @@ class PaymentTransaction(models.Model):
                         'unit_amount': int(rec.price_unit * 1000) - int(((rec.price_unit * 1000)* dis )/100) if rec.currency_id.name =='OMR' else
                         int((rec.price_unit * 1000 * 1.25)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(rec.currency_id.rate_ids[-1].company_rate)) - int(((rec.price_unit * 1000)* dis )/100),
                         }
+>>>>>>> 3723f753695c5bd1ac6502760011027d23b626ce
 
                         invoice_items.append(dic)
                 else:
@@ -94,7 +104,7 @@ class PaymentTransaction(models.Model):
                         'name': rec.product_id.name,
                         'quantity': int(rec.product_uom_qty),
                         'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.name =='OMR' else
-                        int((rec.price_unit * 1000 * 1.25)/int(rec.currency_id.rate_ids[-1].company_rate)) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000 *1.25)/int(rec.currency_id.rate_ids[-1].company_rate)),
+                        int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[-1].company_rate)) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000 *1.25)/int(rec.currency_id.rate_ids[-1].company_rate)),
                         }  
                     invoice_items.append(dic)      
 
