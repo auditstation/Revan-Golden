@@ -79,7 +79,7 @@ class PaymentTransaction(models.Model):
         for rec in order_line:
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
-                    _logger.info(f'sdsasasa{rec.currency_id.name,(rec.currency_id.rate_ids)[-1].company_rate}')
+                    
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
