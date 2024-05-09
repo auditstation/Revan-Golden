@@ -96,6 +96,7 @@ class PaymentTransaction(models.Model):
                         'quantity': int(rec.product_uom_qty),
                         'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.name =='OMR' else
                         int((rec.price_unit * 1000 * 1.25)/int(sorted(rec.currency_id.rate_ids)[-1].company_rate)) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/int(sorted(rec.currency_id.rate_ids)[-1].company_rate)),
+                        
                         }  
                     invoice_items.append(dic)      
 
