@@ -16,7 +16,7 @@ class ProductTemplate(models.Model):
     @api.depends('qty_available')
     def _compute_product_visibility(self):
         for product_temp in self:
-            if product_temp.qty_available == 0
+            if product_temp.qty_available == 0:
                 variants = product_temp.product_variant_ids
                 is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
                 product_temp.is_visible = is_visible
