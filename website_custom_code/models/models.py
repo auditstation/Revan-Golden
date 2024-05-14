@@ -13,13 +13,14 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     is_visible = fields.Boolean('Visible', compute='_compute_product_visibility')
-
+    @api.depends('qty_available')
     def _compute_product_visibility(self):
         for product_temp in self:
-            variants = product_temp.product_variant_ids
-            is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
-            product_temp.is_visible = is_visible
-            product_temp.is_published = is_visible
+            if product_temp.qty_available == 0
+                variants = product_temp.product_variant_ids
+                is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
+                product_temp.is_visible = is_visible
+                product_temp.is_published = is_visible
 
     def get_possible_combinations_available(self):
 
