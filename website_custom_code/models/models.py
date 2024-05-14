@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 
-from odoo import models, fields
+from odoo import models, fields,api
 from odoo.http import request
 import logging
 import json
