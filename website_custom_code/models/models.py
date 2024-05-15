@@ -126,7 +126,7 @@ class ProductTemplate(models.Model):
         resulting empty combination is actually possible or not.
         """
 
-        com = next(self.sudo()_get_possible_combinations(parent_combination, necessary_values),
+        com = next(self.sudo()._get_possible_combinations(parent_combination, necessary_values),
                    self.env['product.template.attribute.value'])
         no_variant_attr_val = self.env['product.template.attribute.value']
         for ptav in com:
