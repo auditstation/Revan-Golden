@@ -29,14 +29,13 @@
                                     <div class="o_setting_left_pane">
                                         <label for="delivery_done"/>
                                         <div class="text-muted">
-                                           Make delivery done
+                                           Loan Approval from account manager
                                         </div>
                                     </div>
-                                    
+                                   
                                 </div>
                             </div>
-             </xpath>
-               
+          
             </field>
         </record>
     
