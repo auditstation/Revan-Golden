@@ -17,26 +17,29 @@
             </group>
         </field>
     </record>
-   <record id="res_config_settings_view_form_delivery" model="ir.ui.view">
-    <field name="name">res.config.settings.view.form.inherit.sale</field>
-    <field name="model">res.config.settings</field>
-    <field name="priority" eval="10"/>
-    <field name="inherit_id" ref="sale.res_config_settings_view_form" />
-    <field name="arch" type="xml">
-        <xpath expr="//div[@data-key='sale_management']/div" position="after">             
-                    <div class="row mt16 o_settings_container">
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                             <div class="o_setting_right_pane">                                
-                                <group>                                   
-                                <field name="delivery_done"/>
-                               
-                                </group>
-                            </div>
-                        </div>
-                </div>
-            </xpath>
-    </field>
-</record>
+ <record id="res_config_settings_inheit_view_delivery" model="ir.ui.view">
+       <field name="name">res.config.settings.inherit.view</field>
+       <field name="model">res.config.settings</field>
+       <!--        <field name="priority" eval="10"/>-->
+       <field name="inherit_id"
+              ref="sale.res_config_settings_view_form"/>
+       <field name="arch" type="xml">
+           <xpath expr="//div[@id='discount_sale_order_lines']"
+                  position="after">
+               <div class="col-12 col-lg-6 o_setting_box" id="delivery_dome ">
+                   <div class="o_setting_left_pane">
+                       <field name="delivery_done"/>
+                   </div>
+                   <div class="o_setting_right_pane">
+                       <label for="delivery_done" string="Make delivery done"/>
+                       <div class="text-muted mb16">
+                           Make delivery done
+                       </div>
+                   </div>
+               </div>
+           </xpath>
+       </field>
+   </record>
     
 
 </odoo>
