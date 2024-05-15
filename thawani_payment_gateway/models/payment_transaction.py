@@ -238,7 +238,8 @@ class PaymentTransaction(models.Model):
             #     return tx
         domain = [('provider_code', '=', 'thawani')]
         tx = request.env['payment.transaction'].sudo().search([('id','=',int(tx_id))])
-
+        check_done = request.env['ir.config_parameter'].sudo().get_param(
+                    'thawani_payment_gateway.delivery_done')
         if response_data.get('success',False) == True and response_data.get('code',False) == 2000:
                     payment_status = response_data['data']['payment_status']
                     _logger.info('statusssss')
@@ -248,9 +249,10 @@ class PaymentTransaction(models.Model):
                         self.sudo()._set_done()
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
-                        # pick=self.env['sale.order'].sudo().search([('name','=',self.reference)]).picking_ids[0]
-                        # pick.action_set_quantities_to_reservation()
-                        # pick.button_validate()
+                        if 'true' in check_done:
+                            pick=self.env['sale.order'].sudo().search([('name','=',self.reference)]).picking_ids[0]
+                            pick.action_set_quantities_to_reservation()
+                            pick.button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()

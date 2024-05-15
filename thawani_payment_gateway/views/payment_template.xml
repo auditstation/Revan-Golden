@@ -33,7 +33,7 @@
                    <div class="o_setting_right_pane">
                        <label for="delivery_done" string="Make delivery done"/>
                        <div class="text-muted mb16">
-                           Make delivery done
+                        Make delivery done after payment in thawani to increase the onhand automatically
                        </div>
                    </div>
                </div>
