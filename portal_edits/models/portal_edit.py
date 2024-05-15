@@ -370,7 +370,6 @@ class InheritLogin(AuthSignupHome):
         user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
         user.tel_pass = passw
         user.sudo().write({'password':passw})
-        user.partner_id.email=''
         user.partner_id.mobile =  kw.get("login")
         user.partner_id.phone = kw.get("login")
         return response
