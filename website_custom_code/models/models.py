@@ -126,20 +126,20 @@ class ProductTemplate(models.Model):
         resulting empty combination is actually possible or not.
         """
 
-        com = next(self._get_possible_combinations(parent_combination, necessary_values),
+        com = next(self.sudo()_get_possible_combinations(parent_combination, necessary_values),
                    self.env['product.template.attribute.value'])
         no_variant_attr_val = self.env['product.template.attribute.value']
         for ptav in com:
             if ptav.attribute_id.create_variant == "no_variant":
                 no_variant_attr_val += ptav
 
-        for combination in self._get_possible_combinations(parent_combination, necessary_values):
+        for combination in self.sudo()._get_possible_combinations(parent_combination, necessary_values):
             
             org_combination = combination
             combination -= no_variant_attr_val
             # variant_id = self.product_variant_ids.filtered(
             #     lambda variant: variant.product_template_attribute_value_ids == combination)
-            variant_id = self._get_variant_for_combination(combination)
+            variant_id = self.sudo()._get_variant_for_combination(combination)
            
             if variant_id and not variant_id.hide_on_website:
                 
