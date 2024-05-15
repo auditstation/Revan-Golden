@@ -28,7 +28,7 @@ class DevConfig(models.TransientModel):
     _inherit = 'res.config.settings'
 
 
-    delivery_done = fields.Boolean(default=True, string="Make delivery done after payment in thawani",
+    delivery_done = fields.Boolean(string="Make delivery done after payment in thawani",
                                config_parameter='thawani_payment_gateway.delivery_done',help="Make delivery done after payment in thawani")
 
 
