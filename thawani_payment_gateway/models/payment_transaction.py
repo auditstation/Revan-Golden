@@ -249,7 +249,7 @@ class PaymentTransaction(models.Model):
                         self.sudo()._set_done()
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
-                        _logger.info(f'dsddddddddddddd{check_done}')
+                        _logger.info(f'dsddddddddddddd{type(check_done)}')
                         # if 'true' in check_done:
                         pick=self.env['sale.order'].sudo().search([('name','=',self.reference)]).picking_ids[0]
                         _logger.info(f'zzzzzzzzzzzzz{pick}')
