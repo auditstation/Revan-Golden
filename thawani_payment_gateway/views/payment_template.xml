@@ -17,25 +17,26 @@
             </group>
         </field>
     </record>
-    <record id="view_delivery_config_inherit" model="ir.ui.view">
-            <field name="name">Delivery  settings</field>
-            <field name="model">res.config.settings</field>
-            <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
-            <field name="arch" type="xml">
-            <xpath expr="//div[@id='sale_config_online_confirmation_pay']" position="after">
-           
-                        <div class="row mt16 o_settings_container">
-                                <div class="col-12 col-lg-6 o_setting_box">
-                                    <div class="o_setting_left_pane">
-                                        <field name="delivery_done"/>
-                                    </div>
-                                    
-                                </div>
+   <record id="res_config_settings_view_form_delivery" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.sale</field>
+    <field name="model">res.config.settings</field>
+    <field name="priority" eval="10"/>
+    <field name="inherit_id" ref="sale.res_config_settings_view_form" />
+    <field name="arch" type="xml">
+        <xpath expr="//div[@data-key='sale_management']/div" position="after">             
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                             <div class="o_setting_right_pane">                                
+                                <group>                                   
+                                <field name="delivery_done"/>
+                               
+                                </group>
                             </div>
-             </xpath>
-               
-            </field>
-        </record>
+                        </div>
+                </div>
+            </xpath>
+    </field>
+</record>
     
 
 </odoo>
