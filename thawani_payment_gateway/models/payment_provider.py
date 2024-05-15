@@ -29,23 +29,10 @@ class DevConfig(models.TransientModel):
 
 
     delivery_done = fields.Boolean(default=True, string="Make delivery done after payment in thawani",
-                               help="Make delivery done after payment in thawani")
+                               config_parameter='thawani_payment_gateway.delivery_done',help="Make delivery done after payment in thawani")
 
 
-    @api.model
-    def get_values(self):
-        res = super(DevConfig, self).get_values()
-        res.update(
-            delivery_done=self.env['ir.config_parameter'].sudo().get_param('thawani_payment_gateway.delivery_done')
-        )
-        return res
-
-
-    def set_values(self):
-        super(DevConfig, self).set_values()
-        self.env['ir.config_parameter'].sudo().set_param('thawani_payment_gateway.delivery_done', self.delivery_done)
-
-
+    
 class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
 
