@@ -248,8 +248,9 @@ class PaymentTransaction(models.Model):
                         self.sudo()._set_done()
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
-                        _logger.info(f'selfffffffffffff{self}')
-                      
+                        # pick=self.env['sale.order'].sudo().search([('name','=',self.reference)]).picking_ids[0]
+                        # pick.action_set_quantities_to_reservation()
+                        # pick.button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()

@@ -134,6 +134,7 @@ class ProductTemplate(models.Model):
                 no_variant_attr_val += ptav
 
         for combination in self._get_possible_combinations(parent_combination, necessary_values):
+            _logger.info(f'dsdsdsddd{combination}')
             org_combination = combination
             combination -= no_variant_attr_val
             # variant_id = self.product_variant_ids.filtered(
