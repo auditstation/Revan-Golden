@@ -27,9 +27,7 @@ class DevConfig(models.TransientModel):
 	_inherit = 'res.config.settings'
 
 
-    delivery_done= fields.Boolean(default=True,string="Make delivery done after payment in thawani",
-                                  help="Make delivery done after payment in thawani")
-
+    delivery_done= fields.Boolean(default=True,string="Make delivery done after payment in thawani",help="Make delivery done after payment in thawani")
     @api.model
     def get_values(self):
         res = super(DevConfig, self).get_values()
