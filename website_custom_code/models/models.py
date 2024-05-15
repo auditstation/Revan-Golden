@@ -140,12 +140,13 @@ class ProductTemplate(models.Model):
             # variant_id = self.product_variant_ids.filtered(
             #     lambda variant: variant.product_template_attribute_value_ids == combination)
             variant_id = self._get_variant_for_combination(combination)
-            _logger.info(f'sdsadasdasd{variant_id}')
+           
             if variant_id and not variant_id.hide_on_website:
-                _logger.info(f'sssssssssssssss{org_combination}')
+                
 
                 return org_combination
-
+            else:
+                return org_combination
            
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
