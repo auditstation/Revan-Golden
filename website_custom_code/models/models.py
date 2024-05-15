@@ -134,14 +134,18 @@ class ProductTemplate(models.Model):
                 no_variant_attr_val += ptav
 
         for combination in self._get_possible_combinations(parent_combination, necessary_values):
-            _logger.info(f'dsdsdsddd{combination}')
+            
             org_combination = combination
             combination -= no_variant_attr_val
             # variant_id = self.product_variant_ids.filtered(
             #     lambda variant: variant.product_template_attribute_value_ids == combination)
             variant_id = self._get_variant_for_combination(combination)
+            _logger.info(f'sdsadasdasd{variant_id}')
             if variant_id and not variant_id.hide_on_website:
+
                 return org_combination
+
+           
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
         result = super(ProductTemplate, self)._is_combination_possible(combination, parent_combination,
