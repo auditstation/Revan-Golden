@@ -145,7 +145,7 @@ class ProductTemplate(models.Model):
                 
 
                 return org_combination
-            else:
+            elif variant_id.product_tmpl_id.qty_available == 0:
                 return org_combination
            
 
