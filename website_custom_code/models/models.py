@@ -142,6 +142,7 @@ class ProductTemplate(models.Model):
             variant_id = self._get_variant_for_combination(combination)
             _logger.info(f'sdsadasdasd{variant_id}')
             if variant_id and not variant_id.hide_on_website:
+                _logger.info(f'sssssssssssssss{org_combination}')
 
                 return org_combination
 
