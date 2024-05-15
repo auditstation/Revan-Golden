@@ -23,11 +23,15 @@
 
 from odoo import fields, models, api, _
 
+
 class DevConfig(models.TransientModel):
-	_inherit = 'res.config.settings'
+    _inherit = 'res.config.settings'
 
 
-    delivery_done= fields.Boolean(default=True,string="Make delivery done after payment in thawani",help="Make delivery done after payment in thawani")
+    delivery_done = fields.Boolean(default=True, string="Make delivery done after payment in thawani",
+                               help="Make delivery done after payment in thawani")
+
+
     @api.model
     def get_values(self):
         res = super(DevConfig, self).get_values()
@@ -36,11 +40,11 @@ class DevConfig(models.TransientModel):
         )
         return res
 
-    
+
     def set_values(self):
-        
         super(DevConfig, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param('thawani_payment_gateway.delivery_done', self.delivery_done)
+
 
 class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
@@ -52,8 +56,6 @@ class PaymentProvider(models.Model):
     thawani_client_reference_id = fields.Char(string='Thawani Merchant ID', required_if_provider='thawani')
     thawani_secret_key = fields.Char(string='Thawani Secret Key', required_if_provider='thawani')
     thawani_publishable_key = fields.Char(string='Thawani publishable Key', required_if_provider='thawani')
-    
-
 
     @api.model
     def _get_payment_method_information(self):
