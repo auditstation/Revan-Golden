@@ -249,12 +249,11 @@ class PaymentTransaction(models.Model):
                         self.sudo()._set_done()
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
-                        _logger.info(f'dsddddddddddddd{type(check_done)}')
-                        # if 'true' in check_done:
-                        pick=self.env['sale.order'].sudo().search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
-                        _logger.info(f'zzzzzzzzzzzzz{pick}')
-                        pick.sudo().action_set_quantities_to_reservation()
-                        pick.sudo().button_validate()
+                        
+                        if 'True' in check_done:
+                            pick=self.env['sale.order'].sudo().search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
+                            pick.sudo().action_set_quantities_to_reservation()
+                            pick.sudo().button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
