@@ -314,19 +314,26 @@ class WebsiteInherit(models.Model):
             so.didication_sale = so.partner_shipping_id.didication_letter
             so.partner_shipping_id.didication_letter = ''
         return so
+
+
 class InheritLogin(AuthSignupHome):
 
     
     @http.route()
     def web_login(self, *args, **kw):
-      
+        
         ensure_db()
         user=request.env['res.users'].sudo().search([('login','=',kw.get('login'))])
-        
+        passw = self.random_password()
         if user:
             if user.tel_pass and user.share:
-                kw['password'] = user.tel_pass
+              
+
+                kw['password'] =user.tel_pass
                 request.params["password"] = user.tel_pass
+                
+                user.tel_pass = passw
+                
             elif not user.share:
                 
                
@@ -338,7 +345,11 @@ class InheritLogin(AuthSignupHome):
         elif not user and kw.get('login'):   
             request.params["password"] = ''
             return request.redirect('/web/signup')
+        
+       
         response = super().web_login(*args, **kw)
+        if user.tel_pass and user.share:
+            self.changed_pass(user.id,passw)
         
         response.qcontext.update(self.get_auth_signup_config())
         if request.session.uid:
@@ -351,6 +362,10 @@ class InheritLogin(AuthSignupHome):
        
         return response
     
+    def changed_pass(self,user,passw):
+       
+        request.env['res.users'].with_user(SUPERUSER_ID).browse(user)._change_password(passw)
+        request.env['res.users'].with_user(SUPERUSER_ID).browse(user).write({'password':passw})
 
     def random_password(length=40, prefix="pass"):
         
@@ -369,7 +384,6 @@ class InheritLogin(AuthSignupHome):
         response = super().web_auth_signup(*args, **kw)
         user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
         user.tel_pass = passw
-        user.sudo().write({'password':passw})
         user.partner_id.mobile =  kw.get("login")
         user.partner_id.phone = kw.get("login")
         return response
