@@ -332,7 +332,7 @@ class InheritLogin(AuthSignupHome):
                 kw['password'] =user.tel_pass
                 request.params["password"] = user.tel_pass
                 
-                user.tel_pass = passw
+               
                 
             elif not user.share:
                 
@@ -348,8 +348,7 @@ class InheritLogin(AuthSignupHome):
         
        
         response = super().web_login(*args, **kw)
-        if user.tel_pass and user.share:
-            self.changed_pass(user.id,passw)
+       
         
         response.qcontext.update(self.get_auth_signup_config())
         if request.session.uid:
