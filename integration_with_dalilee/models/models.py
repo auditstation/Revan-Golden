@@ -1,0 +1,211 @@
+import base64
+import json
+import secrets
+import string
+import logging
+from werkzeug import urls
+from odoo import http, tools, _, SUPERUSER_ID
+from odoo.exceptions import AccessDenied, AccessError, MissingError, UserError, ValidationError
+from odoo.http import content_disposition, Controller, request, route
+from datetime import date
+import requests
+import io
+import datetime
+import PyPDF2
+import base64
+
+
+import codecs
+from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
+
+class DataConfig(models.TransientModel):
+    _inherit = 'res.config.settings'
+
+    url_integrate = fields.Char(string="Use Following url",
+                                config_parameter='integration_with_dalilee.url_integrate', help="Use Following url")
+
+    user_name = fields.Char(default="testaccount@dalilee.om", string="Email for Dalilee",
+                            config_parameter='integration_with_dalilee.user_name', help="Email")
+
+    password = fields.Char(default="1234567899", string="Password for Dalilee",
+                           config_parameter='integration_with_dalilee.password', help="Password")
+
+    access_token = fields.Char(string="Token",
+                               config_parameter='integration_with_dalilee.access_token', help="token")
+
+
+class LogInfo(models.Model):
+    _name = "log.info"
+
+    log_name = fields.Char('Log name', readonly=True)
+    description = fields.Char('Description', readonly=True)
+    logdetails = fields.Char('Log details', readonly=True)
+    log_name = fields.Char('Log name', readonly=True)
+    cpid =  fields.Char('cpid', readonly=True)
+    created_at = fields.Char('Created at', readonly=True)
+    sale_id = fields.Many2one('sale.order')
+    order_id = fields.Char('order ID')
+    log_id = fields.Integer('log_id')
+
+class UserInherit(models.Model):
+    _inherit = "res.users"
+
+    def auth_dalilee(self):
+        data = {
+            "email": self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.user_name'),
+            "password": self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.password'),
+            "password_confirmation": self.env['ir.config_parameter'].sudo().get_param(
+                'integration_with_dalilee.password'),
+        }
+
+        base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        url = base_url+"login"
+        _logger.info(f'qqqqq{url}')
+        create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
+        response_body = json.loads(create_request_get_data.content)
+        _logger.info(f'zzzzzzzzz{create_request_get_data}')
+        if 'token' in response_body:
+            access_token = response_body['token']
+            self.env['ir.config_parameter'].set_param('integration_with_dalilee.access_token', access_token)
+            auth = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.access_token')
+            return access_token
+
+
+class SaleOrederInherit(models.Model):
+    _inherit = "sale.order"
+    orderId = fields.Char('Order Id from Dalilee', readonly=True)
+    ship_price = fields.Char('Ship price from Dalilee',readonly = True)
+    file_ship = fields.Binary('File from DalileeTrade')
+    log_info = fields.One2many(
+        'log.info',
+        'sale_id',
+        string='Order Log',
+        
+    )
+    status_order = fields.Selection([
+        ('I', 'Not Collected'),
+        ('completed', 'Delivered'),
+        ('F', 'Undelivered'),
+        ('pickupbydriver', 'pickup by Driver'),
+        ('intransit', 'In Transit'),
+        ('receivedbybranch', 'Received by Station'),
+        ('return', 'Return'),
+        ('logsheetconfirm', 'Order Confirm received in Pickup Station'),
+        ('FW', 'Undelivered Back to Warehouse'),
+        ('RISS', 'Order arrive in sort station'),
+        ('OFD', 'OFD'),
+        ('assigned', 'Assigned to driver'),
+        ('receivedbyoutlet', 'received by outlet'),
+        ('intransittooutlet', 'intransit to outlet'),
+        ('intransittostation', 'intransit to station'),
+    ], string='Order status', readonly=True)
+
+   
+    def call_data(self, url_data, data):
+        auth = self.env.user.auth_dalilee()
+        
+        base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
+      
+        headers = {"Authorization": f'Bearer {auth}', "Content-Type": "application/json", "Accept": "application/json"}
+        url = base_url + url_data
+        create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
+        response_body_data = json.loads(create_request_get_data.content)
+        return response_body_data
+
+
+    def add_order(self,sale_id):
+        data = {
+            "customer_name": str(sale_id.name),
+            "customer_number": str(sale_id.phone),
+            "order_price": str(sale_id.amount_total),
+            "wilaya_id": "1",
+            "external_way_bill_number":sale_id.name,
+            "address": str(sale_id.partner_shipping_id.country_id.name)+"-"+str(sale_id.partner_shipping_id.state_id.name)+"-"+str(sale_id.partner_shipping_id.street),
+            "volume_weight": "2"
+        }
+    
+        response = self.sudo().call_data('add-order', data)
+        if response['status'] == "success":
+            self.status_order = response_body_data['data']['status']
+            self.orderId = response_body_data['data']['orderId']
+            self.ship_price = response_body_data['data']['ship_price']
+
+
+    def action_confirm(self):
+        res = super(SaleOrederInherit, self).action_confirm()
+        for order in self:
+            self.sudo().add_order(order)
+            self.sudo().order_status()
+        return res
+
+    def order_log(self):
+        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
+                lambda l: l.create_date.date() >= date.today()
+                          and l.create_date.date() <= date.today()):
+            if rec.orderId !='':
+                data = {
+                    "order_id": rec.orderId,
+            
+                }
+                response = self.sudo().call_data('order-logs', data)
+                data_create=[]
+                if rec.log_info:
+                    for i in rec.log_info:
+                        data_create.append(i.id)
+                for j in response['data']:
+                   if j['id'] not in data_create:
+                        logs=self.env['log.info'].sudo().create({
+                            "log_name":j['log_name'],
+                            "description":j['description'],
+                            "logdetails":j['logdetails'],
+                            "created_at":j['created_at'],
+                            "order_id":j["order_id"],
+                            "cpid":j["cpid"],
+                            "log_id":j["id"],
+                            "sale_id":self.env['sale.order'].sudo().search([('orderId','=',str(j["order_id"]))]).id,
+                        })
+                        rec.log_info = [(4, logs.id)]
+
+
+
+    def order_status(self):
+        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
+                lambda l: l.create_date.date() >= date.today()
+                          and l.create_date.date() <= date.today()):
+            if rec.orderId !='':
+                data = {
+                    "order_id": rec.orderId,
+        
+                }
+        
+                response = self.sudo().call_data('order-status', data)
+        
+                if response['status'] == "success":
+                    rec.order_status = response_body_data['data']['status']
+                    if rec.order_status == 'completed' or rec.order_status == "return":
+                        rec.order_print()
+
+
+    def order_print(self):
+        auth = self.env.user.auth_dalilee()
+        data = {
+            "order_ids": [self.orderId]
+    
+        }
+    
+        base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
+      
+        headers = {"Authorization": f'Bearer {auth}', "Content-Type": "application/json", "Accept": "application/json"}
+        url = base_url + 'print-orders'
+        create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
+        response_body_data = create_request_get_data.content
+       
+        b64PDF = codecs.encode(response_body_data, 'base64')
+        self.file_ship=b64PDF
+       
+
+    
+        

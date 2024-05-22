@@ -1,0 +1,105 @@
+<odoo>
+        <record model="ir.ui.view" id="state_ribbon">
+            <field name="name">state_ribbon</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+             <xpath expr="//form//sheet/div" position="after">
+
+         
+
+             <field name="status_order" invisible="1"/>
+              <widget name="web_ribbon" title="Not Collected" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'I')]}"/>
+              <widget name="web_ribbon" title="Delivered" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'completed')]}"/>
+              <widget name="web_ribbon" title="Undelivered" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'F')]}"/>
+              <widget name="web_ribbon" title="pickup by Driver" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'pickupbydriver')]}"/>
+              <widget name="web_ribbon" title="In Transit" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransit')]}"/>
+              <widget name="web_ribbon" title="Received by Station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'receivedbybranch')]}"/>
+              <widget name="web_ribbon" title="Return" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'return')]}"/>
+              <widget name="web_ribbon" title="Order Confirm received in Pickup Station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'logsheetconfirm')]}"/>
+              <widget name="web_ribbon" title="Undelivered Back to Warehouse" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'FW')]}"/>
+              <widget name="web_ribbon" title="Order arrive in sort station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'RISS')]}"/>
+              <widget name="web_ribbon" title="OFD" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'OFD')]}"/>
+              <widget name="web_ribbon" title="Assigned to driver" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'assigned')]}"/>
+              <widget name="web_ribbon" title="received by outlet" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'receivedbyoutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to outlet" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransittooutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransittostation')]}"/>
+             </xpath>
+              <xpath expr="//field[@name='partner_shipping_id']" position="after">
+        <field name="orderId"/>
+        <field name="ship_price"/>
+
+        </xpath>
+        <xpath expr="//page[@name='other_information']" position="after">
+           <page string="Order log from DalileeTrader" name="logs">
+           <field name="log_info" widget="one2many">
+                                    <tree string="Order log"  editable="top" limit="25">
+                                        <field name="log_name"/>
+                                        <field name="description"/>
+                                        <field name="logdetails"/>
+                                        <field name="cpid"/>
+                                        <field name="created_at"/>
+                                        <field name="sale_id" invisible="1"/>
+                                    </tree>
+                                </field>
+            </page>
+                <page string="Order Pdf from DalileeTrade" name="print_order">
+                <field name="file_ship" widget="pdf_viewer"/>
+                </page>
+          </xpath>
+          <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="order_print" type="object" class="oe_highlight" string="Print Order from DalileeTrade"/>
+            </xpath>
+           
+           
+          
+            </field>
+           
+    
+        </record>
+    <record id="res_config_settings_delivery" model="ir.ui.view">
+       <field name="name">res.config.settings.inherit.dalilee</field>
+       <field name="model">res.config.settings</field>
+     
+       <field name="inherit_id"
+              ref="sale.res_config_settings_view_form"/>
+       <field name="arch" type="xml">
+           <xpath expr="//div[@id='discount_sale_order_lines']"
+                  position="after">
+               <div class="col-12 col-lg-12 o_setting_box" id="url-integrate ">
+                  <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Url</span>
+                               
+                                <div class="text-muted">
+                                    URL Live
+                                </div>
+                                <div class="col-12">
+                                    <field name="url_integrate"/>
+                                </div>
+                            </div>
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Email</span>
+                               
+                               
+                                 <div class="col-12">
+                                    <field name="user_name"/>
+                                </div>
+                            </div>
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Password</span>
+                               
+                                
+                                 <div class="col-12">
+                                    <field name="password"/>
+                                </div>
+                            </div>
+               </div>
+           </xpath>
+       </field>
+   </record>
+        
+</odoo>
