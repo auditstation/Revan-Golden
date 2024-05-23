@@ -76,8 +76,8 @@ class UserInherit(models.Model):
 
 class SaleOrederInherit(models.Model):
     _inherit = "sale.order"
-    orderId = fields.Char('Order Id from Dalilee', readonly=True)
-    ship_price = fields.Char('Ship price from Dalilee',readonly = True)
+    orderId = fields.Char('Order Id from Dalilee')
+    ship_price = fields.Char('Ship price from Dalilee')
     file_ship = fields.Binary('File from DalileeTrade')
     log_info = fields.One2many(
         'log.info',
@@ -118,8 +118,8 @@ class SaleOrederInherit(models.Model):
 
     def add_order(self,sale_id):
         data = {
-            "customer_name": str(sale_id.name),
-            "customer_number": str(sale_id.phone),
+            "customer_name": str(sale_id.partner_id.name),
+            "customer_number": str(sale_id.partner_id.phone),
             "order_price": str(sale_id.amount_total),
             "wilaya_id": "1",
             "external_way_bill_number":sale_id.name,
@@ -129,11 +129,29 @@ class SaleOrederInherit(models.Model):
     
         response = self.sudo().call_data('add-order', data)
         if response['status'] == "success":
-            self.status_order = response_body_data['data']['status']
-            self.orderId = response_body_data['data']['orderId']
-            self.ship_price = response_body_data['data']['ship_price']
+            _logger.info(f"tesssssssssst{response}")
+            # sale_id.status_order = get_key_for_gov(response['data']['status'])
+            sale_id.orderId = response['data']['orderId']
+            sale_id.ship_price = response['data']['ship_price']
 
-
+    def get_key_for_gov(self,gov_val):    
+        switcher = {'Not Collected':'I',
+            'Delivered':'completed', 
+            'Undelivered':'F',
+            'pickup by Driver':'pickupbydriver',
+            'In Transit':'intransit',
+             'Received by Station':'receivedbybranch',
+            'Return':'return',
+            'Order Confirm received in Pickup Station':'logsheetconfirm',
+            'Undelivered Back to Warehouse':'FW',
+            'Order arrive in sort station':'RISS',
+            'OFD':'OFD',
+            'Assigned to driver':'assigned',
+            'received by outlet':'receivedbyoutlet',
+            'intransit to outlet':'intransittooutlet',
+            'intransit to station':'intransittostation',        
+        }    
+        return switcher.get(gov_val,'I')
     def action_confirm(self):
         res = super(SaleOrederInherit, self).action_confirm()
         for order in self:
@@ -152,11 +170,12 @@ class SaleOrederInherit(models.Model):
                 }
                 response = self.sudo().call_data('order-logs', data)
                 data_create=[]
-                if rec.log_info:
-                    for i in rec.log_info:
-                        data_create.append(i.id)
+                # if rec.log_info:
+                for i in rec.log_info:
+                    data_create.append(i.id)
                 for j in response['data']:
-                   if j['id'] not in data_create:
+                    
+                    if j['id'] not in data_create:
                         logs=self.env['log.info'].sudo().create({
                             "log_name":j['log_name'],
                             "description":j['description'],
@@ -184,8 +203,10 @@ class SaleOrederInherit(models.Model):
                 response = self.sudo().call_data('order-status', data)
         
                 if response['status'] == "success":
-                    rec.order_status = response_body_data['data']['status']
-                    if rec.order_status == 'completed' or rec.order_status == "return":
+                    test=response['data']['status']
+                  
+                    rec.status_order = self.get_key_for_gov(response['data']['status'])
+                    if rec.status_order == 'completed' or rec.status_order == "return":
                         rec.order_print()
 
 
