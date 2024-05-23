@@ -169,30 +169,33 @@ class SaleOrederInherit(models.Model):
         for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
                 lambda l: l.create_date.date() >= date.today()
                           and l.create_date.date() <= date.today()):
-            if rec.orderId !='':
-                data = {
-                    "order_id": rec.orderId,
-            
-                }
-                response = self.sudo().call_data('order-logs', data)
-                data_create=[]
-                # if rec.log_info:
-                for i in rec.log_info:
-                    data_create.append(i.id)
-                for j in response['data']:
-                    
-                    if j['id'] not in data_create:
-                        logs=self.env['log.info'].sudo().create({
-                            "log_name":j['log_name'],
-                            "description":j['description'],
-                            "logdetails":j['logdetails'],
-                            "created_at":j['created_at'],
-                            "order_id":j["order_id"],
-                            "cpid":j["cpid"],
-                            "log_id":j["id"],
-                            "sale_id":self.env['sale.order'].sudo().search([('orderId','=',str(j["order_id"]))]).id,
-                        })
-                        rec.log_info = [(4, logs.id)]
+            if rec.order_line.filtered(lambda l: l.price_total == 0):
+                 rec.status_order=self.sudo().get_key_for_gov('Not')
+            else:
+                if rec.orderId !='':
+                    data = {
+                        "order_id": rec.orderId,
+                
+                    }
+                    response = self.sudo().call_data('order-logs', data)
+                    data_create=[]
+                    # if rec.log_info:
+                    for i in rec.log_info:
+                        data_create.append(i.id)
+                    for j in response['data']:
+                        
+                        if j['id'] not in data_create:
+                            logs=self.env['log.info'].sudo().create({
+                                "log_name":j['log_name'],
+                                "description":j['description'],
+                                "logdetails":j['logdetails'],
+                                "created_at":j['created_at'],
+                                "order_id":j["order_id"],
+                                "cpid":j["cpid"],
+                                "log_id":j["id"],
+                                "sale_id":self.env['sale.order'].sudo().search([('orderId','=',str(j["order_id"]))]).id,
+                            })
+                            rec.log_info = [(4, logs.id)]
 
 
 
@@ -200,20 +203,23 @@ class SaleOrederInherit(models.Model):
         for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
                 lambda l: l.create_date.date() >= date.today()
                           and l.create_date.date() <= date.today()):
-            if rec.orderId !='':
-                data = {
-                    "order_id": rec.orderId,
-        
-                }
-        
-                response = self.sudo().call_data('order-status', data)
-        
-                if response['status'] == "success":
-                    test=response['data']['status']
-                  
-                    rec.status_order = self.get_key_for_gov(response['data']['status'])
-                    if rec.status_order == 'completed' or rec.status_order == "return":
-                        rec.order_print()
+            if rec.order_line.filtered(lambda l: l.price_total == 0):
+                 rec.status_order=self.sudo().get_key_for_gov('Not')
+            else:
+                if rec.orderId !='':
+                    data = {
+                        "order_id": rec.orderId,
+            
+                    }
+            
+                    response = self.sudo().call_data('order-status', data)
+            
+                    if response['status'] == "success":
+                        test=response['data']['status']
+                    
+                        rec.status_order = self.get_key_for_gov(response['data']['status'])
+                        if rec.status_order == 'completed' or rec.status_order == "return":
+                            rec.order_print()
 
 
     def order_print(self):
