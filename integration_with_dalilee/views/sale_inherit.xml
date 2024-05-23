@@ -59,12 +59,12 @@
     
         </record>
         <record model="ir.ui.view" id="state_tree">
-            <field name="name">state_ribbon</field>
+            <field name="name">state_tree</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
              <xpath expr="//field[@name='invoice_status']" position="after">
-                <button name="order_print" type="object" class="oe_highlight"  attrs="{'invisible': [('state', 'not in', ['sent','sale'])]}" string="Print Order from DalileeTrade"/>
+                <field name="status_order" widget="label_selection"/>
             </xpath>
             </field>
             </record>
