@@ -26,10 +26,10 @@ class DataConfig(models.TransientModel):
     url_integrate = fields.Char(string="Use Following url",
                                 config_parameter='integration_with_dalilee.url_integrate', help="Use Following url")
 
-    user_name = fields.Char(default="testaccount@dalilee.om", string="Email for Dalilee",
+    user_name = fields.Char(default="Classycom1@hotmail.com", string="Email for Dalilee",
                             config_parameter='integration_with_dalilee.user_name', help="Email")
 
-    password = fields.Char(default="1234567899", string="Password for Dalilee",
+    password = fields.Char(default="Classy0!&^@410!@", string="Password for Dalilee",
                            config_parameter='integration_with_dalilee.password', help="Password")
 
     access_token = fields.Char(string="Token",
@@ -63,10 +63,10 @@ class UserInherit(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         url = base_url+"login"
-        _logger.info(f'qqqqq{url}')
+       
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body = json.loads(create_request_get_data.content)
-        _logger.info(f'zzzzzzzzz{create_request_get_data}')
+       
         if 'token' in response_body:
             access_token = response_body['token']
             self.env['ir.config_parameter'].set_param('integration_with_dalilee.access_token', access_token)
