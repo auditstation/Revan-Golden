@@ -207,7 +207,7 @@ class SaleOrederInherit(models.Model):
             # .filtered(
             #         lambda l: l.create_date.date() >= date.today()
             #                   and l.create_date.date() <= date.today()):
-            _logger.info(f'nnnnnnnnnnnnnnn')
+            _logger.info(f'nnnnnnnnnnnnnnn{date.today()}')
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
             else:
