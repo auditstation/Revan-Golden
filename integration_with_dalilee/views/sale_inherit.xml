@@ -11,20 +11,20 @@
 
              <field name="status_order" invisible="1"/>
               <widget name="web_ribbon" title="Not Collected" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'I')]}"/>
-              <widget name="web_ribbon" title="Delivered" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'completed')]}"/>
+              <widget name="web_ribbon" title="Delivered" bg_color="bg-success" attrs="{'invisible': [('status_order', '!=', 'completed')]}"/>
               <widget name="web_ribbon" title="Undelivered" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'F')]}"/>
-              <widget name="web_ribbon" title="pickup by Driver" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'pickupbydriver')]}"/>
-              <widget name="web_ribbon" title="In Transit" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransit')]}"/>
-              <widget name="web_ribbon" title="Received by Station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'receivedbybranch')]}"/>
+              <widget name="web_ribbon" title="pickup by Driver" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'pickupbydriver')]}"/>
+              <widget name="web_ribbon" title="In Transit" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransit')]}"/>
+              <widget name="web_ribbon" title="Received by Station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'receivedbybranch')]}"/>
               <widget name="web_ribbon" title="Return" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'return')]}"/>
-              <widget name="web_ribbon" title="Order Confirm received in Pickup Station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'logsheetconfirm')]}"/>
-              <widget name="web_ribbon" title="Undelivered Back to Warehouse" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'FW')]}"/>
-              <widget name="web_ribbon" title="Order arrive in sort station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'RISS')]}"/>
-              <widget name="web_ribbon" title="OFD" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'OFD')]}"/>
-              <widget name="web_ribbon" title="Assigned to driver" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'assigned')]}"/>
-              <widget name="web_ribbon" title="received by outlet" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'receivedbyoutlet')]}"/>
-              <widget name="web_ribbon" title="intransit to outlet" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransittooutlet')]}"/>
-              <widget name="web_ribbon" title="intransit to station" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'intransittostation')]}"/>
+              <widget name="web_ribbon" title="Order Confirm received in Pickup Station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'logsheetconfirm')]}"/>
+              <widget name="web_ribbon" title="Undelivered Back to Warehouse" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'FW')]}"/>
+              <widget name="web_ribbon" title="Order arrive in sort station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'RISS')]}"/>
+              <widget name="web_ribbon" title="OFD" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'OFD')]}"/>
+              <widget name="web_ribbon" title="Assigned to driver" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'assigned')]}"/>
+              <widget name="web_ribbon" title="received by outlet" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'receivedbyoutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to outlet" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransittooutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransittostation')]}"/>
              </xpath>
               <xpath expr="//field[@name='partner_shipping_id']" position="after">
         <field name="orderId"/>
