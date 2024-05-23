@@ -209,7 +209,7 @@ class SaleOrederInherit(models.Model):
             else:
                 
                 if rec.orderId:
-                    _logger.info(f'dss{type(rec.orderId)}')
+                   
                     data = {
                         "order_id": rec.orderId,
             
@@ -218,7 +218,7 @@ class SaleOrederInherit(models.Model):
                     response = self.sudo().call_data('order-status', data)
             
                     if response['status'] == "success":
-                        test=response['data']['status']
+                       
                     
                         rec.status_order = self.get_key_for_gov(response['data']['status'])
                         rec.order_print()
