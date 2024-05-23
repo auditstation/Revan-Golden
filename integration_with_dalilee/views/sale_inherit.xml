@@ -27,13 +27,13 @@
               <widget name="web_ribbon" title="intransit to station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransittostation')]}"/>
              </xpath>
               <xpath expr="//field[@name='partner_shipping_id']" position="after">
-        <field name="orderId"/>
-        <field name="ship_price"/>
+        <field name="orderId" readonly="1"/>
+        <field name="ship_price"  readonly="1"/>
 
         </xpath>
         <xpath expr="//page[@name='other_information']" position="after">
            <page string="Order log from DalileeTrader" name="logs">
-           <field name="log_info" widget="one2many">
+           <field name="log_info" widget="one2many"  readonly="1">
                                     <tree string="Order log"  editable="top" limit="25">
                                         <field name="log_name"/>
                                         <field name="description"/>
@@ -45,7 +45,7 @@
                                 </field>
             </page>
                 <page string="Order Pdf from DalileeTrade" name="print_order">
-                <field name="file_ship" widget="pdf_viewer"/>
+                <field name="file_ship" widget="pdf_viewer" attrs="{'invisible': [('state', 'not in', ['sent','sale'])]}" readonly="1"/>
                 </page>
           </xpath>
           <xpath expr="//form/header/button[@name='action_cancel']" position="after">
