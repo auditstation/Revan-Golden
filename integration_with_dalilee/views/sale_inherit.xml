@@ -32,7 +32,7 @@
 
         </xpath>
         <xpath expr="//page[@name='other_information']" position="after">
-           <page string="Order log from DalileeTrader" name="logs" attrs="{'invisible': ['|'('status_order', '=','not'),('state', 'not in',['sale'])]}">
+           <page string="Order log from DalileeTrader" name="logs" attrs="{'invisible': ['|',('status_order', '=','not'),('state', 'not in',['sale'])]}">
            <field name="log_info" widget="one2many"  readonly="1">
                                     <tree string="Order log"  editable="top" limit="25">
                                         <field name="log_name"/>
@@ -49,7 +49,7 @@
                 </page>
           </xpath>
           <xpath expr="//form/header/button[@name='action_cancel']" position="after">
-                <button name="order_print" type="object" class="oe_highlight" attrs="{'invisible': ['|'('status_order', '=','not'),('state', 'not in',['sale'])]}" string="Print Order from DalileeTrade"/>
+                <button name="order_print" type="object" class="oe_highlight" attrs="{'invisible': ['|',('status_order', '=','not'),('state', 'not in',['sale'])]}" string="Print Order from DalileeTrade"/>
             </xpath>
            
            
