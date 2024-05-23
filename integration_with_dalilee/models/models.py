@@ -102,7 +102,7 @@ class SaleOrederInherit(models.Model):
         ('receivedbyoutlet', 'received by outlet'),
         ('intransittooutlet', 'intransit to outlet'),
         ('intransittostation', 'intransit to station'),
-    ], string='Order status', readonly=True)
+    ], string='Order status')
 
    
     def call_data(self, url_data, data):
@@ -217,6 +217,7 @@ class SaleOrederInherit(models.Model):
                     }
             
                     response = self.sudo().call_data('order-status', data)
+                    _logger.info(f'ddddddddddddddd{response}')
             
                     if response['status'] == "success":
                        
