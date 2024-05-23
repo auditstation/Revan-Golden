@@ -173,7 +173,7 @@ class SaleOrederInherit(models.Model):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
             else:
-                if rec.orderId !='':
+                if rec.orderId:
                     data = {
                         "order_id": rec.orderId,
                 
@@ -207,8 +207,9 @@ class SaleOrederInherit(models.Model):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
             else:
-                _logger.info(f'dss{type(rec.orderId)}')
-                if rec.orderId !='':
+                
+                if rec.orderId:
+                    _logger.info(f'dss{type(rec.orderId)}')
                     data = {
                         "order_id": rec.orderId,
             
