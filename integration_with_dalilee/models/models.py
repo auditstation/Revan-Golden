@@ -203,9 +203,11 @@ class SaleOrederInherit(models.Model):
 
     def order_status(self):
         _logger.info(f'ccccccccccccccccc')
-        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale')]).filtered(
-                lambda l: l.create_date.date() >= date.today()
-                          and l.create_date.date() <= date.today()):
+        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale')]):
+            # .filtered(
+            #         lambda l: l.create_date.date() >= date.today()
+            #                   and l.create_date.date() <= date.today()):
+            _logger.info(f'nnnnnnnnnnnnnnn')
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
             else:
