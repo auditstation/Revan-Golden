@@ -167,7 +167,7 @@ class SaleOrederInherit(models.Model):
         return res
 
     def order_log(self):
-        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return','not'])]).filtered(
+        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
                 lambda l: l.create_date.date() >= date.today()
                           and l.create_date.date() <= date.today()):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
@@ -203,7 +203,7 @@ class SaleOrederInherit(models.Model):
 
     def order_status(self):
         _logger.info(f'sasasasasasasas')
-        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return','not'])]).filtered(
+        for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return'])]).filtered(
                 lambda l: l.create_date.date() >= date.today()
                           and l.create_date.date() <= date.today()):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
