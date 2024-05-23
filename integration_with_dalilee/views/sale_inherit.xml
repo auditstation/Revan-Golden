@@ -45,11 +45,11 @@
                                 </field>
             </page>
                 <page string="Order Pdf from DalileeTrade" name="print_order">
-                <field name="file_ship" widget="pdf_viewer" attrs="{'invisible': [('state', 'not in', ['sent','sale'])]}" readonly="1"/>
+                <field name="file_ship" widget="pdf_viewer"/>
                 </page>
           </xpath>
           <xpath expr="//form/header/button[@name='action_cancel']" position="after">
-                <button name="order_print" type="object" class="oe_highlight" string="Print Order from DalileeTrade"/>
+                <button name="order_print" type="object" class="oe_highlight"  attrs="{'invisible': [('state', 'not in', ['sent','sale'])]}" string="Print Order from DalileeTrade"/>
             </xpath>
            
            
