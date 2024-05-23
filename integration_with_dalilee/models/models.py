@@ -158,8 +158,8 @@ class SaleOrederInherit(models.Model):
     def action_confirm(self):
         res = super(SaleOrederInherit, self).action_confirm()
         for order in self:
-            if order.order_line..filtered(lambda l: l.price_total == 0):
-                self.get_key_for_gov('Not')
+            if order.order_line.filtered(lambda l: l.price_total == 0):
+                 order.status_order=self.sudo().get_key_for_gov('Not')
             else:
                 self.sudo().add_order(order)
                 self.sudo().order_status()
