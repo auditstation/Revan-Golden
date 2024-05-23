@@ -163,6 +163,7 @@ class SaleOrederInherit(models.Model):
             else:
                 self.sudo().add_order(order)
                 self.sudo().order_status()
+                self.order_print()
         return res
 
     def order_log(self):
@@ -218,8 +219,7 @@ class SaleOrederInherit(models.Model):
                         test=response['data']['status']
                     
                         rec.status_order = self.get_key_for_gov(response['data']['status'])
-                        if rec.status_order == 'completed' or rec.status_order == "return":
-                            rec.order_print()
+                        rec.order_print()
 
 
     def order_print(self):
