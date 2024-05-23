@@ -162,6 +162,7 @@ class SaleOrederInherit(models.Model):
                  order.status_order=self.sudo().get_key_for_gov('Not')
             else:
                 self.sudo().add_order(order)
+                order.status_order='I'
                 self.sudo().order_status()
                 
         return res
@@ -172,7 +173,7 @@ class SaleOrederInherit(models.Model):
                           and l.create_date.date() <= date.today()):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
-            else:
+            elif rec.status_order!='completed' or rec.status_order!='return':
                 if rec.orderId:
                     data = {
                         "order_id": rec.orderId,
@@ -202,7 +203,7 @@ class SaleOrederInherit(models.Model):
 
 
     def order_status(self):
-        _logger.info(f'ccccccccccccccccc')
+       
         for rec in self.env['sale.order'].sudo().search([('state','=', 'sale')]).filtered(
                     lambda l: l.create_date.date() >= date.today()
                               and l.create_date.date() <= date.today()):
@@ -210,7 +211,7 @@ class SaleOrederInherit(models.Model):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
             elif rec.status_order!='completed' or rec.status_order!='return':
-                _logger.info(f'sdsadasddddswwwwwwwwww')
+               
                 
                 if rec.orderId:
                    
@@ -220,11 +221,10 @@ class SaleOrederInherit(models.Model):
                     }
             
                     response = self.sudo().call_data('order-status', data)
-                    _logger.info(f'ddddddddddddddd{response}')
+                    
             
                     if response['status'] == "success":
-                        _logger.info(f"sadsaddasda{response['data']['status_code']}")
-                        _logger.info(f"qqqqqqqq{rec}")
+                       
                        
                     
                         rec.sudo().write({'status_order':response['data']['status_code']}) 
