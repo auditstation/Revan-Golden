@@ -202,6 +202,7 @@ class SaleOrederInherit(models.Model):
 
 
     def order_status(self):
+        _logger.info(f'sasasasasasasas')
         for rec in self.env['sale.order'].sudo().search([('state','=', 'sale'),('status_order','not in',['completed','return','not'])]).filtered(
                 lambda l: l.create_date.date() >= date.today()
                           and l.create_date.date() <= date.today()):
