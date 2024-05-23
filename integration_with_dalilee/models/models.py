@@ -179,7 +179,7 @@ class SaleOrederInherit(models.Model):
                 
                     }
                     response = self.sudo().call_data('order-logs', data)
-                    _logger.info(f'sdsdss{response}')
+                   
                     data_create=[]
                     # if rec.log_info:
                     for i in rec.log_info:
