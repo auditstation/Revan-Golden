@@ -58,7 +58,7 @@
            
     
         </record>
-    <record id="res_config_settings_delivery" model="ir.ui.view">
+    <record id="res_config_settings_dalilee" model="ir.ui.view">
        <field name="name">res.config.settings.inherit.dalilee</field>
        <field name="model">res.config.settings</field>
      
