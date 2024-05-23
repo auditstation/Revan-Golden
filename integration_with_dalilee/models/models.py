@@ -220,6 +220,7 @@ class SaleOrederInherit(models.Model):
                     _logger.info(f'ddddddddddddddd{response}')
             
                     if response['status'] == "success":
+                        _logger.info(f'sadsaddasda{response['data']['status_code']}')
                        
                     
                         rec.status_order = response['data']['status_code']
