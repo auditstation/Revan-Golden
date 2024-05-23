@@ -86,6 +86,7 @@ class SaleOrederInherit(models.Model):
         
     )
     status_order = fields.Selection([
+        ('not','Not'),
         ('I', 'Not Collected'),
         ('completed', 'Delivered'),
         ('F', 'Undelivered'),
@@ -135,7 +136,9 @@ class SaleOrederInherit(models.Model):
             sale_id.ship_price = response['data']['ship_price']
 
     def get_key_for_gov(self,gov_val):    
-        switcher = {'Not Collected':'I',
+        switcher = {
+            'Not':'not',
+            'Not Collected':'I',
             'Delivered':'completed', 
             'Undelivered':'F',
             'pickup by Driver':'pickupbydriver',
@@ -155,8 +158,11 @@ class SaleOrederInherit(models.Model):
     def action_confirm(self):
         res = super(SaleOrederInherit, self).action_confirm()
         for order in self:
-            self.sudo().add_order(order)
-            self.sudo().order_status()
+            if order.order_line..filtered(lambda l: l.price_total == 0):
+                self.get_key_for_gov('Not')
+            else:
+                self.sudo().add_order(order)
+                self.sudo().order_status()
         return res
 
     def order_log(self):
