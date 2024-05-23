@@ -163,7 +163,7 @@ class SaleOrederInherit(models.Model):
             else:
                 self.sudo().add_order(order)
                 self.sudo().order_status()
-                self.order_print()
+                
         return res
 
     def order_log(self):
@@ -221,10 +221,11 @@ class SaleOrederInherit(models.Model):
             
                     if response['status'] == "success":
                         _logger.info(f"sadsaddasda{response['data']['status_code']}")
+                        _logger.info(f"qqqqqqqq{rec}")
                        
                     
-                        rec.status_order = response['data']['status_code']
-                        rec.order_print()
+                        rec.sudo().write({'status_order':response['data']['status_code']}) 
+                        rec.sudo().order_print()
 
 
     def order_print(self):
