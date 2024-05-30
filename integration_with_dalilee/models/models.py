@@ -173,7 +173,7 @@ class SaleOrederInherit(models.Model):
                           and l.create_date.date() <= date.today()):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
-            elif rec.status_order =='completed' or rec.status_order =='return':
+            elif rec.status_order == 'completed' or rec.status_order =='return':
                 if rec.orderId:
                     data = {
                         "order_id": rec.orderId,
