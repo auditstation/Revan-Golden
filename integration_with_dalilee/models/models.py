@@ -121,7 +121,7 @@ class SaleOrederInherit(models.Model):
         data = {
             "customer_name": str(sale_id.partner_id.name),
             "customer_number": str(sale_id.partner_id.phone),
-            "order_price": str(sale_id.amount_total),
+            "order_price": 0,
             "wilaya_id": "1",
             "external_way_bill_number":sale_id.name,
             "address": str(sale_id.partner_shipping_id.country_id.name)+"-"+str(sale_id.partner_shipping_id.state_id.name)+"-"+str(sale_id.partner_shipping_id.street),
@@ -173,7 +173,7 @@ class SaleOrederInherit(models.Model):
                           and l.create_date.date() <= date.today()):
             if rec.order_line.filtered(lambda l: l.price_total == 0):
                  rec.status_order=self.sudo().get_key_for_gov('Not')
-            elif rec.status_order!='completed' or rec.status_order!='return' or rec.status_order!='not':
+            elif rec.status_order =='completed' or rec.status_order =='return':
                 if rec.orderId:
                     data = {
                         "order_id": rec.orderId,
