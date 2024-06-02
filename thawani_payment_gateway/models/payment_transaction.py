@@ -81,11 +81,12 @@ class PaymentTransaction(models.Model):
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
                     new_price += int(rec.price_total * 1000)/int(rec.product_uom_qty)
+                    _logger.info(f'sssssaaaaaaaa{int(new_price) - int(((new_price)* dis )/100)}')
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
                     'unit_amount': int(new_price) - int(((rec.price_unit * 1000)* dis )/100) if rec.currency_id.name =='OMR' else
-                    int((rec.price_unit * 1000 * 1.25)/sorted([i.company_rate for i in rec.currency_id.rate_ids])[-1]) - int(((rec.price_unit * 1000*1.25)* dis )/100)  if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/sorted(rec.currency_id.rate_ids)[-1].company_rate) - int(((rec.price_unit * 1000)* dis )/100),
+                    int((new_price * 1000 * 1.25)/sorted([i.company_rate for i in rec.currency_id.rate_ids])[-1]) - int(((rec.price_unit * 1000*1.25)* dis )/100)  if rec.currency_id.name =='KWD' else int((new_price)/sorted(rec.currency_id.rate_ids)[-1].company_rate) - int(((rec.price_unit * 1000)* dis )/100),
                     }
 
                     invoice_items.append(dic)
