@@ -80,7 +80,7 @@ class PaymentTransaction(models.Model):
             new_price =0
             if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
-                    new_price = int(rec.price_total * 1000)/int(rec.product_uom_qty)
+                    new_price += int(rec.price_total * 1000)/int(rec.product_uom_qty)
                     dic ={
                     'name': rec.product_id.name,
                     'quantity': int(rec.product_uom_qty),
