@@ -234,7 +234,7 @@ class SaleOrederInherit(models.Model):
     def order_print(self):
        
         auth = self.env.user.auth_dalilee()
-        self.add_order(self.id)
+        self.add_order(self)
         data = {
             "order_ids": [self.orderId]
     
