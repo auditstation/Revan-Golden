@@ -129,6 +129,7 @@ class SaleOrederInherit(models.Model):
         }
     
         response = self.sudo().call_data('add-order', data)
+        _logger.info(f'tessssssssssssst{response}')
         if response['status'] == "success":
            
             # sale_id.status_order = get_key_for_gov(response['data']['status'])
