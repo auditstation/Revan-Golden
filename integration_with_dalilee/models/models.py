@@ -129,7 +129,7 @@ class SaleOrederInherit(models.Model):
         }
     
         response = self.sudo().call_data('add-order', data)
-        _logger.info(f'tessssssssssssst{response}')
+      
         if response['status'] == "success":
            
             # sale_id.status_order = get_key_for_gov(response['data']['status'])
@@ -235,7 +235,7 @@ class SaleOrederInherit(models.Model):
     def order_print(self):
        
         auth = self.env.user.auth_dalilee()
-        self.add_order(self)
+       
         data = {
             "order_ids": [self.orderId]
     
