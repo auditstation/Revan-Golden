@@ -107,11 +107,15 @@ class SaleOrederInherit(models.Model):
    
     def call_data(self, url_data, data):
         auth = self.env.user.auth_dalilee()
+        _logger.info(f'ssssssssssssssss{auth}')
         
         base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
+        _logger.info(f'aaaaaaaaaaaa{base_url}')
       
         headers = {"Authorization": f'Bearer {auth}', "Content-Type": "application/json", "Accept": "application/json"}
+        _logger.info(f'sddddddddddddddddds{headers}')
         url = base_url + url_data
+        _logger.info(f'dddddddddddddddddddddd{url,data}')
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body_data = json.loads(create_request_get_data.content)
         return response_body_data
