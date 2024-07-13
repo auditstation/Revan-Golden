@@ -109,15 +109,15 @@ class SaleOrederInherit(models.Model):
    
     def call_data(self, url_data, data):
         auth = self.env.user.auth_dalilee()
-        _logger.info(f'ssssssssssssssss{auth}')
+    
         
         base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
-        _logger.info(f'aaaaaaaaaaaa{base_url}')
+    
       
         headers = {"Authorization": f'Bearer {auth}', "Content-Type": "application/json", "Accept": "application/json"}
-        _logger.info(f'sddddddddddddddddds{headers}')
+
         url = base_url + url_data
-        _logger.info(f'dddddddddddddddddddddd{url,data}')
+       
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body_data = json.loads(create_request_get_data.content)
         return response_body_data
@@ -135,13 +135,13 @@ class SaleOrederInherit(models.Model):
         }
     
         response = self.sudo().call_data('add-order', data)
-        _logger.info(f'heeeeeeeeeeeeee{response}')
       
-        if response['status'] == "success":
-           
-            # sale_id.status_order = get_key_for_gov(response['data']['status'])
-            sale_id.orderId = response['data']['orderId']
-            sale_id.ship_price = response['data']['ship_price']
+        if "status" in response:
+            if response['status'] == "success":
+               
+                # sale_id.status_order = get_key_for_gov(response['data']['status'])
+                sale_id.orderId = response['data']['orderId']
+                sale_id.ship_price = response['data']['ship_price']
 
     def get_key_for_gov(self,gov_val):    
         switcher = {
