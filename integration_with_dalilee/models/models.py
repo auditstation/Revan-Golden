@@ -129,6 +129,7 @@ class SaleOrederInherit(models.Model):
         }
     
         response = self.sudo().call_data('add-order', data)
+        _logger.info(f'heeeeeeeeeeeeee{response}')
       
         if response['status'] == "success":
            
