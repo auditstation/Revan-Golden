@@ -59,10 +59,12 @@ class UserInherit(models.Model):
             "password_confirmation": self.env['ir.config_parameter'].sudo().get_param(
                 'integration_with_dalilee.password'),
         }
+        _logger.info(f'tttttttttttttttttt{data}')
 
         base_url = self.env['ir.config_parameter'].sudo().get_param('integration_with_dalilee.url_integrate')
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         url = base_url+"login"
+        _logger.info(f'ssssssaqqqqqqqqqqq{url}')
        
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body = json.loads(create_request_get_data.content)
