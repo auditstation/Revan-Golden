@@ -133,8 +133,9 @@ class SaleOrederInherit(models.Model):
             "address": str(sale_id.partner_shipping_id.country_id.name)+"-"+str(sale_id.partner_shipping_id.state_id.name)+"-"+str(sale_id.partner_shipping_id.street),
             "volume_weight": "2"
         }
-    
+        
         response = self.sudo().call_data('add-order', data)
+        _logger.info(f'xxxxxxxxxxxxxxxxx{response}')
       
         if "status" in response:
             if response['status'] == "success":
