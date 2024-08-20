@@ -243,6 +243,7 @@ class SaleOrederInherit(models.Model):
     def order_print(self):
        
         auth = self.env.user.auth_dalilee()
+        _logger.info(f'zzzzzzzzzzzzz{auth}')
        
         data = {
             "order_ids": [self.orderId]
