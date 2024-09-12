@@ -254,10 +254,10 @@ class PaymentTransaction(models.Model):
                         
                         if check_done and 'True' in check_done:
                             _logger.info(f'dddddddddd')
-                            pick=self.env['sale.order'].self.with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
+                            pick=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
                             _logger.info(f'bbbbbbbbbb{pick}')
-                            pick.self.with_user(SUPERUSER_ID).action_set_quantities_to_reservation()
-                            pick.self.with_user(SUPERUSER_ID).button_validate()
+                            pick.with_user(SUPERUSER_ID).action_set_quantities_to_reservation()
+                            pick.with_user(SUPERUSER_ID).button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
