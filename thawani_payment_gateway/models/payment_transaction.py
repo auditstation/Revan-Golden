@@ -240,7 +240,7 @@ class PaymentTransaction(models.Model):
             #     return tx
         domain = [('provider_code', '=', 'thawani')]
         tx = request.env['payment.transaction'].sudo().search([('id','=',int(tx_id))])
-        check_done = request.env['ir.config_parameter'].sudo().get_param(
+        check_done = request.env['ir.config_parameter'].self.with_user(SUPERUSER_ID).get_param(
                     'thawani_payment_gateway.delivery_done')
         if response_data.get('success',False) == True and response_data.get('code',False) == 2000:
                     payment_status = response_data['data']['payment_status']
@@ -252,14 +252,14 @@ class PaymentTransaction(models.Model):
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
                         
-                        # if check_done and 'True' in check_done:
-                        #     pick=self.env['sale.order'].sudo().search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
-                        #     pick.sudo().action_set_quantities_to_reservation()
-                        #     pick.sudo().button_validate()
-                        # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
-                        # self._log_message_on_linked_documents
-                        # self._send_order_confirmation_mail()
-                        # self.sudo()._cron_finalize_post_processing()
+                        if check_done and 'True' in check_done:
+                            pick=self.env['sale.order'].self.with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
+                            pick.self.with_user(SUPERUSER_ID).action_set_quantities_to_reservation()
+                            pick.self.with_user(SUPERUSER_ID).button_validate()
+                        self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
+                        self._log_message_on_linked_documents
+                        self._send_order_confirmation_mail()
+                        self.sudo()._cron_finalize_post_processing()
 
                         # self.sudo()._reconcile_after_done()
                         
