@@ -253,9 +253,8 @@ class PaymentTransaction(models.Model):
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
                         
                         if check_done and 'True' in check_done:
-                            _logger.info(f'dddddddddd')
+                           
                             pick=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
-                            _logger.info(f'bbbbbbbbbb{pick}')
                             pick.with_user(SUPERUSER_ID).action_set_quantities_to_reservation()
                             pick.with_user(SUPERUSER_ID).button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
