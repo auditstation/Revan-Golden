@@ -252,10 +252,10 @@ class PaymentTransaction(models.Model):
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
                         
-                        if check_done and 'True' in check_done:
-                            pick=self.env['sale.order'].sudo().search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
-                            pick.sudo().action_set_quantities_to_reservation()
-                            pick.sudo().button_validate()
+                        # if check_done and 'True' in check_done:
+                        #     pick=self.env['sale.order'].sudo().search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
+                        #     pick.sudo().action_set_quantities_to_reservation()
+                        #     pick.sudo().button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
