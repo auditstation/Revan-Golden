@@ -119,6 +119,7 @@ class SaleOrederInherit(models.Model):
         url = base_url + url_data
        
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
+        _logger.info(f'zzzzzzzzzzzzzzzzzzzzzzz{create_request_get_data}')
         response_body_data = json.loads(create_request_get_data.content)
         return response_body_data
 
