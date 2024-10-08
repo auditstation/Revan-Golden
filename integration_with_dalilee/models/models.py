@@ -68,7 +68,7 @@ class UserInherit(models.Model):
        
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body = json.loads(create_request_get_data.content)
-        _logger.info(f'ccccccccccccccccc{response_body}')
+       
        
         if 'token' in response_body:
             access_token = response_body['token']
@@ -120,7 +120,7 @@ class SaleOrederInherit(models.Model):
         url = base_url + url_data
        
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
-        if create_request_get_data.status ==200:
+        if create_request_get_data.status_code == 200:
             response_body_data = json.loads(create_request_get_data.content)
             return response_body_data
 
