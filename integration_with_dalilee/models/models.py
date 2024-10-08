@@ -68,6 +68,7 @@ class UserInherit(models.Model):
        
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body = json.loads(create_request_get_data.content)
+        _logger.info(f'ccccccccccccccccc{response_body}')
        
         if 'token' in response_body:
             access_token = response_body['token']
