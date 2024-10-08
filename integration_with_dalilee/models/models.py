@@ -139,12 +139,13 @@ class SaleOrederInherit(models.Model):
         response = self.sudo().call_data('add-order', data)
         _logger.info(f'xxxxxxxxxxxxxxxxx{response}')
       
-        if "status" in response:
-            if response['status'] == "success":
-               
-                # sale_id.status_order = get_key_for_gov(response['data']['status'])
-                sale_id.orderId = response['data']['orderId']
-                sale_id.ship_price = response['data']['ship_price']
+        if response:
+            if "status" in response:
+                if response['status'] == "success":
+                
+                    # sale_id.status_order = get_key_for_gov(response['data']['status'])
+                    sale_id.orderId = response['data']['orderId']
+                    sale_id.ship_price = response['data']['ship_price']
 
     def get_key_for_gov(self,gov_val):    
         switcher = {
@@ -191,25 +192,26 @@ class SaleOrederInherit(models.Model):
                 
                     }
                     response = self.sudo().call_data('order-logs', data)
+                    if response:
                    
-                    data_create=[]
-                    # if rec.log_info:
-                    for i in rec.log_info:
-                        data_create.append(i.id)
-                    for j in response['data']:
-                        
-                        if j['id'] not in data_create:
-                            logs=self.env['log.info'].sudo().create({
-                                "log_name":j['log_name'],
-                                "description":j['description'],
-                                "logdetails":j['logdetails'],
-                                "created_at":j['created_at'],
-                                "order_id":j["order_id"],
-                                "cpid":j["cpid"],
-                                "log_id":j["id"],
-                                "sale_id":self.env['sale.order'].sudo().search([('orderId','=',str(j["order_id"]))]).id,
-                            })
-                            rec.log_info = [(4, logs.id)]
+                        data_create=[]
+                        # if rec.log_info:
+                        for i in rec.log_info:
+                            data_create.append(i.id)
+                        for j in response['data']:
+                            
+                            if j['id'] not in data_create:
+                                logs=self.env['log.info'].sudo().create({
+                                    "log_name":j['log_name'],
+                                    "description":j['description'],
+                                    "logdetails":j['logdetails'],
+                                    "created_at":j['created_at'],
+                                    "order_id":j["order_id"],
+                                    "cpid":j["cpid"],
+                                    "log_id":j["id"],
+                                    "sale_id":self.env['sale.order'].sudo().search([('orderId','=',str(j["order_id"]))]).id,
+                                })
+                                rec.log_info = [(4, logs.id)]
 
 
 
@@ -232,14 +234,15 @@ class SaleOrederInherit(models.Model):
                     }
             
                     response = self.sudo().call_data('order-status', data)
+                    if response:
                     
             
-                    if response['status'] == "success":
-                       
-                       
-                    
-                        rec.sudo().write({'status_order':response['data']['status_code']}) 
-                        rec.sudo().order_print()
+                        if response['status'] == "success":
+                        
+                        
+                        
+                            rec.sudo().write({'status_order':response['data']['status_code']}) 
+                            rec.sudo().order_print()
 
 
     def order_print(self):
