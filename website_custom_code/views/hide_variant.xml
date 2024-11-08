@@ -1,6 +1,7 @@
 <odoo>
     <data>
-        <template id="revan_variants" inherit_id="website_sale.variants">
+        <!-- Custom Variants Template -->
+        <template id="revan_variants" inherit_id="website_sale.variants" priority="10000">
             <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
@@ -17,6 +18,8 @@
                     </option>
                 </t>
             </xpath>
+
+            <!-- Custom Radio Button Display -->
             <xpath expr="//t[@t-foreach='ptal.product_template_value_ids._only_active()' and @t-as='ptav']"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
@@ -45,13 +48,11 @@
             </xpath>
         </template>
 
-        <template id="revan_product" inherit_id="website_sale.product" priority="2000">
-<!--            <t t-call="website_sale.variants">-->
-
+        <!-- Custom Product Template -->
+        <template id="revan_product" inherit_id="website_sale.product" priority="10000">
             <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
                 <t t-call="website_custom_code.revan_variants">
                     <t t-set="ul_class" t-valuef="flex-column"/>
-
                     <t t-set="parent_combination" t-value="None"/>
                 </t>
             </xpath>
