@@ -49,7 +49,7 @@
             <!--            <t t-call="website_sale.variants">-->
 
             <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
-                <t t-call="website_custom_code.revan_variants">
+                <t t-call="website_custom_code.variants">
                     <t t-set="ul_class" t-valuef="flex-column"/>
 
                     <t t-set="parent_combination" t-value="None"/>
