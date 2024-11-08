@@ -2,8 +2,8 @@
     <data>
         <!-- Custom Variants Template -->
         <template id="revan_variants" inherit_id="website_sale.variants">
-            <!-- Replace the variant dropdown with custom radio button logic -->
-            <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
+            <!-- Replace the product template attribute list rendering -->
+            <xpath expr="//ul[contains(@t-attf-class, 'js_add_cart_variants')]/t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
                     <option t-att-value="ptav.id"
@@ -20,7 +20,7 @@
                 </t>
             </xpath>
 
-            <!-- Replace existing list display with custom radio button logic -->
+            <!-- Replace the product template variant options rendering -->
             <xpath expr="//t[@t-foreach='ptal.product_template_value_ids._only_active()' and @t-as='ptav']"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
@@ -49,8 +49,9 @@
             </xpath>
         </template>
 
-        <!-- Custom Product Template to Use New Variants -->
-        <template id="revan_product" inherit_id="website_sale.product">
+        <!-- Custom Product Template -->
+        <template id="revan_product" inherit_id="website_sale.product" priority="200">
+            <!-- Replace the call to default variants template with custom one -->
             <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
                 <t t-call="website_custom_code.revan_variants">
                     <t t-set="ul_class" t-value="'flex-column'"/>
