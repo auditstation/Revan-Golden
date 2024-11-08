@@ -11,7 +11,7 @@
             </xpath> -->
         </template>
 
-        <template id="variants" inherit_id="sale.variants">
+        <template id="variants" inherit_id="website_sale.variants">
             <xpath expr="//t[@t-foreach='product.valid_product_template_attribute_line_ids']" position="before">
                 <t t-set="is_first_attr" t-value="True"/>
             </xpath>
