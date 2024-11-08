@@ -19,7 +19,7 @@
     'version': '1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['website', 'website_sale', 'stock', 'web'],
+    'depends': ['website','website_sale','stock'],
 
     # always loaded
     'data': [
@@ -31,14 +31,10 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            'website_custom_code/static/src/scss/main.css',  # Your CSS
-            'website_custom_code/static/src/js/hide.js',  # Your JS file
-        ],
-        'web.assets_backend': [
+            'website_custom_code/static/src/scss/main.css',
             'website_custom_code/static/src/js/hide.js',
-        ],
+        ]
     },
-
     # only loaded in demonstration mode
     'installable': True,
     'application': True,
