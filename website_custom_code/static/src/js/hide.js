@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import { ajax } from '@web/core/ajax';
-import publicWidget from 'web.public.widget';
+import ajax from '@web/core/ajax';
+import { publicWidget } from 'web.public.widget';
 
 let id_tuples = undefined;
 
