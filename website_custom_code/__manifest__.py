@@ -19,7 +19,7 @@
     'version': '1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['website', 'website_sale', 'stock', 'web_editor'],
+    'depends': ['website', 'website_sale', 'stock', 'web_editor', 'web'],
     # always loaded
     'data': [
         'views/product_view.xml',
@@ -29,7 +29,7 @@
         'views/hide_variant.xml',
     ],
     'assets': {
-        'web.assets_frontend': [
+        'web.assets': [
             'website_custom_code/static/src/scss/main.css',
             'website_custom_code/static/src/js/hide.js',
         ]
