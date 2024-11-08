@@ -4,17 +4,21 @@
             <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
-                    <option t-att-value="ptav.id"
-                            t-att-data-value_id="ptav.id"
-                            t-att-data-value_name="ptav.name"
-                            t-att-data-attribute_name="ptav.attribute_id.name"
-                            t-att-data-is_custom="ptav.is_custom"
-                            t-att-selected="ptav in combination"
-                            t-att-data-is_single="single"
-                            t-att-data-is_single_and_custom="single_and_custom">
-                        <span t-field="ptav.name"/>
-                        <t t-call="sale.badge_extra_price"/>
-                    </option>
+                  <t t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav">
+                                <option t-att-value="ptav.id"
+                                    t-att-data-value_id="ptav.id"
+                                    t-att-data-value_name="ptav.name"
+                                    t-att-data-attribute_name="ptav.attribute_id.name"
+                                    t-att-data-is_custom="ptav.is_custom"
+                                    t-att-selected="ptav in combination"
+                                    t-att-data-is_single="single"
+                                    t-att-data-is_single_and_custom="single_and_custom">
+                                    <span t-field="ptav.name"/>
+                                    <t t-call="website_sale.badge_extra_price"/>
+                                </option>
+                            </t>
+
+
                 </t>
             </xpath>
             <xpath expr="//t[@t-foreach='ptal.product_template_value_ids._only_active()' and @t-as='ptav']"
