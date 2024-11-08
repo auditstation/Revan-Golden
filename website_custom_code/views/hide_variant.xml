@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <template id="revan_variants" inherit_id="website_sale.variants">
+        <template id="variants" inherit_id="website_sale.variants">
             <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
@@ -49,7 +49,7 @@
 <!--            <t t-call="website_sale.variants">-->
 
             <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
-                <t t-call="website_custom_code.revan_variants">
+                <t t-call="website_custom_code.variants">
                     <t t-set="ul_class" t-valuef="flex-column"/>
 
                     <t t-set="parent_combination" t-value="None"/>
