@@ -48,7 +48,7 @@
         <template id="revan_product" inherit_id="website_sale.product">
 <!--            <t t-call="website_sale.variants">-->
 
-            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
+            <xpath expr="//t[@t-call='website_sale.variants']" position="after">
                 <t t-call="website_custom_code.revan_variants">
                     <t t-set="ul_class" t-valuef="flex-column"/>
 
