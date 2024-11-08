@@ -1,8 +1,7 @@
 /** @odoo-module **/
-import ajax from 'web.ajax';
+
+import { ajax } from '@web/core/ajax';
 import publicWidget from 'web.public.widget';
-import { Component } from 'owl';
-import { useService } from "@web/core/utils/hooks";
 
 let id_tuples = undefined;
 
@@ -13,7 +12,7 @@ publicWidget.registry.WebsiteSale = publicWidget.registry.WebsiteSale.extend({
         const $parent = $('.js_product');
         const product_tmpl_id = parseInt($parent.find('.product_template_id').val());
         if (product_tmpl_id) {
-            const data = await ajax.jsonRpc('/get_product_variant_data', 'call', {
+            const data = await ajax.rpc('/get_product_variant_data', {
                 'product_tmpl_id': product_tmpl_id,
             });
             id_tuples = data;
@@ -59,7 +58,6 @@ publicWidget.registry.WebsiteSale = publicWidget.registry.WebsiteSale.extend({
                         const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
                         return tupla === t1 || tupla === t2;
                     });
-
                     if (!found) {
                         input.parent().hide();
                         input.prop("checked", false);
