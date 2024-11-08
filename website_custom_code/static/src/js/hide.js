@@ -1,18 +1,18 @@
 /** @odoo-module **/
 
-import ajax from '@web/core/ajax';
-import { publicWidget } from 'web.public.widget';
+import { rpc } from '@web/core/network/rpc_service';
+import publicWidget from 'web.public.widget';
 
 let id_tuples = undefined;
 
-publicWidget.registry.WebsiteSale = publicWidget.registry.WebsiteSale.extend({
+publicWidget.registry.WebsiteSale = publicWidget.Widget.extend({
 
     async willStart() {
         await this._super(...arguments);
         const $parent = $('.js_product');
         const product_tmpl_id = parseInt($parent.find('.product_template_id').val());
         if (product_tmpl_id) {
-            const data = await ajax.rpc('/get_product_variant_data', {
+            const data = await rpc('/get_product_variant_data', {
                 'product_tmpl_id': product_tmpl_id,
             });
             id_tuples = data;
