@@ -23,7 +23,3 @@
     display: none !important;
     background-color: red !important;
 }
-html, body {
-    overflow: auto;
-    height: 100%;
-}
