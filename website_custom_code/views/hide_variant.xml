@@ -45,16 +45,16 @@
             </xpath>
         </template>
 
-        <template id="revan_product" inherit_id="website_sale.product">
-            <!--            <t t-call="website_sale.variants">-->
+<!--        <template id="revan_product" inherit_id="website_sale.product">-->
+<!--            &lt;!&ndash;            <t t-call="website_sale.variants">&ndash;&gt;-->
 
-            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
-                <t t-call="website_sale.variants">
-                    <t t-set="ul_class" t-valuef="flex-column"/>
+<!--            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">-->
+<!--                <t t-call="website_sale.variants">-->
+<!--                    <t t-set="ul_class" t-valuef="flex-column"/>-->
 
-                    <t t-set="parent_combination" t-value="None"/>
-                </t>
-            </xpath>
-        </template>
+<!--                    <t t-set="parent_combination" t-value="None"/>-->
+<!--                </t>-->
+<!--            </xpath>-->
+<!--        </template>-->
     </data>
 </odoo>
