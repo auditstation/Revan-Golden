@@ -1,99 +1,103 @@
 odoo.define('hide_unavailable_variants', function (require) {
     'use strict';
 
-    // Load required modules
-    require(["website_sale.website_sale", "web.ajax", "web.public.widget"], function (WebsiteSale, ajax, publicWidget) {
-        var id_tuples = undefined;
+    // Properly load required modules
+    var ajax = require('web.ajax');
+    var publicWidget = require('web.public.widget');
+    require('website_sale.website_sale'); // Ensure this is correctly required
 
-        publicWidget.registry.WebsiteSale.include({
+    var id_tuples = undefined;
 
-            // Modify the willStart method to load product variant data
-            willStart: async function () {
-                var proms;
-                const _super = this._super.apply(this, arguments);
+    // Extend WebsiteSale functionality
+    publicWidget.registry.WebsiteSale.include({
 
-                var $parent = $('.js_product');
-                var product_tmpl_id = parseInt($parent.find('.product_template_id').val());
-                if (product_tmpl_id) {
-                    proms = ajax.jsonRpc(this._getUri('/get_product_variant_data'), 'call', {
-                        'product_tmpl_id': product_tmpl_id,
-                    }).then((data) => {
-                        id_tuples = data;
-                    });
-                }
-                return Promise.all([this._super(...arguments), proms]);
-            },
+        // Initialize and fetch product variant data
+        willStart: async function () {
+            var proms;
+            const _super = this._super.apply(this, arguments);
 
-            // Modify the onChangeVariant method to hide unavailable variants
-            onChangeVariant: function (ev) {
-                const instance = this;
-                const $parent = $(ev.target).closest('.js_product');
-                const $target = $(ev.target);
+            var $parent = $('.js_product');
+            var product_tmpl_id = parseInt($parent.find('.product_template_id').val());
+            if (product_tmpl_id) {
+                proms = ajax.jsonRpc(this._getUri('/get_product_variant_data'), 'call', {
+                    'product_tmpl_id': product_tmpl_id,
+                }).then((data) => {
+                    id_tuples = data;
+                });
+            }
 
-                // If no parent element or id_tuples is undefined, skip the logic
-                if (!$parent.length || !id_tuples) {
-                    return Promise.resolve();
-                }
+            // Wait for both the super method and the promise to resolve
+            return Promise.all([_super, proms]);
+        },
 
-                // Handle the variant change by hiding the unavailable variants
-                if ($target.is('input[type=radio]') && $target.is(':checked')) {
-                    instance._hideVariants($target, $parent);
-                } else {
-                    $target.find("input:checked")
-                        .each(function (index) {
-                            instance._hideVariants($(this), $parent);
-                        });
-                }
+        // Handle variant changes
+        onChangeVariant: function (ev) {
+            const instance = this;
+            const $parent = $(ev.target).closest('.js_product');
+            const $target = $(ev.target);
 
-                this._super.apply(this, arguments);
-            },
+            // Skip if there's no parent element or no variant data
+            if (!$parent.length || !id_tuples) {
+                return Promise.resolve();
+            }
 
-            // Custom method to hide unavailable variants
-            _hideVariants($target, $parent) {
-                const $variantContainer = $target.closest('ul').closest('li');
-                const currentSelect = $variantContainer.attr('data-attribute_name');
+            // Handle hiding/showing variants based on selection
+            if ($target.is('input[type=radio]') && $target.is(':checked')) {
+                instance._hideVariants($target, $parent);
+            } else {
+                $target.find("input:checked").each(function () {
+                    instance._hideVariants($(this), $parent);
+                });
+            }
 
-                // Skip if the variant is related to 'SIZE'
-                if (currentSelect === 'SIZE') return;
+            // Call the super method as well
+            this._super.apply(this, arguments);
+        },
 
-                // Loop through other variants and hide the ones that are not available
-                $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-                    .each(function (index) {
-                        var $current = $(this);
-                        var firstShowed = null;
-                        var anyChecked = false;
+        // Hide unavailable variants
+        _hideVariants($target, $parent) {
+            const $variantContainer = $target.closest('ul').closest('li');
+            const currentSelect = $variantContainer.attr('data-attribute_name');
 
-                        // Loop through the radio buttons for each variant
-                        $current.find("input[type=radio]")
-                            .each(function (index) {
-                                var input = $(this);
+            // Skip 'SIZE' attribute
+            if (currentSelect === 'SIZE') return;
 
-                                // Find the tuple that matches the selected variant
-                                var found = id_tuples.value_to_show_tuple
-                                    .find(function (el) {
-                                        const tupla = JSON.stringify(el);
-                                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+            // Loop through other variants and hide unavailable ones
+            $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+                .each(function () {
+                    var $current = $(this);
+                    var firstShowed = null;
+                    var anyChecked = false;
 
-                                        return tupla === t1 || tupla === t2;
-                                    });
+                    // Loop through the radio buttons for each variant
+                    $current.find("input[type=radio]").each(function () {
+                        var input = $(this);
 
-                                // If a matching variant is not found, hide it and uncheck
-                                if (!found) {
-                                    input.parent().hide();
-                                    input.prop("checked", false);
-                                } else {
-                                    input.parent().show();
-                                    if (firstShowed == null) firstShowed = input;
+                        // Find the matching variant from the tuples
+                        var found = id_tuples.value_to_show_tuple
+                            .find(function (el) {
+                                const tupla = JSON.stringify(el);
+                                const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
+                                const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
 
-                                    if (!anyChecked) anyChecked = input.is(":checked");
-                                }
+                                return tupla === t1 || tupla === t2;
                             });
 
-                        // Ensure at least one variant is selected if none are checked
-                        if (!anyChecked) firstShowed.prop("checked", true);
+                        // If no match is found, hide the variant and uncheck it
+                        if (!found) {
+                            input.parent().hide();
+                            input.prop("checked", false);
+                        } else {
+                            input.parent().show();
+                            if (firstShowed == null) firstShowed = input;
+
+                            if (!anyChecked) anyChecked = input.is(":checked");
+                        }
                     });
-            }
-        });
+
+                    // Ensure that at least one option is checked
+                    if (!anyChecked) firstShowed.prop("checked", true);
+                });
+        }
     });
 });
