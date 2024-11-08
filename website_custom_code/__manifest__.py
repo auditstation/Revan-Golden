@@ -31,16 +31,14 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            'website_custom_code/static/src/scss/main.css',
-            'website_custom_code/static/src/js/hide.js',
-        ],
-        'website.assets_frontend': [  # This might be needed if using the website module
-            'website_custom_code/static/src/js/hide.js',
+            'website_custom_code/static/src/scss/main.css',  # Your CSS
+            'website_custom_code/static/src/js/hide.js',  # Your JS file
         ],
         'web.assets_backend': [
             'website_custom_code/static/src/js/hide.js',
         ],
     },
+
     # only loaded in demonstration mode
     'installable': True,
     'application': True,

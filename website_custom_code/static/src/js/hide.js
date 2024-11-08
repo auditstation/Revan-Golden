@@ -1,7 +1,8 @@
 /** @odoo-module **/
 
 import { rpc } from '@web/core/network/rpc_service';
-import publicWidget from 'web.public.widget';
+//import publicWidget from 'web.public.widget';
+import { publicWidget } from 'web.public.widget';
 
 let id_tuples = undefined;
 
