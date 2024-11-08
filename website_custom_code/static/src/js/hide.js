@@ -1,14 +1,12 @@
 odoo.define('hide_unavailable_variants', function (require) {
     'use strict';
 
-    const { Component } = require('web.core');
     const ajax = require('web.ajax');
     const publicWidget = require('web.public.widget');
 
     let id_tuples = undefined;
 
     publicWidget.registry.WebsiteSale.include({
-
         willStart: async function () {
             const _super = this._super.apply(this, arguments);
             let proms;
@@ -59,7 +57,6 @@ odoo.define('hide_unavailable_variants', function (require) {
 
                 $current.find("input[type=radio]").each(function () {
                     const input = $(this);
-
                     const found = id_tuples.value_to_show_tuple.find(function (el) {
                         const tupla = JSON.stringify(el);
                         const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
