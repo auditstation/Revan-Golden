@@ -2,8 +2,7 @@
     <data>
         <!-- Custom Variants Template -->
         <template id="revan_variants" inherit_id="website_sale.variants" priority="10000">
-            <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
-                   position="replace">
+            <xpath expr="//ul[contains(@class, 'js_add_cart_variants')]" position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
                     <option t-att-value="ptav.id"
                             t-att-data-value_id="ptav.id"
@@ -20,8 +19,7 @@
             </xpath>
 
             <!-- Custom Radio Button Display -->
-            <xpath expr="//t[@t-foreach='ptal.product_template_value_ids._only_active()' and @t-as='ptav']"
-                   position="replace">
+            <xpath expr="//ul[contains(@class, 'js_variant_change')]" position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
                     <li class="list-inline-item mb-3 js_attribute_value" style="margin: 0;">
                         <label class="col-form-label">
@@ -50,9 +48,9 @@
 
         <!-- Custom Product Template -->
         <template id="revan_product" inherit_id="website_sale.product" priority="10000">
-            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
+            <xpath expr="//div[@class='product_form_sale']" position="replace">
                 <t t-call="website_custom_code.revan_variants">
-                    <t t-set="ul_class" t-valuef="flex-column"/>
+                    <t t-set="ul_class" t-value="flex-column"/>
                     <t t-set="parent_combination" t-value="None"/>
                 </t>
             </xpath>
