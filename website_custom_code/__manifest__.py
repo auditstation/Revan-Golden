@@ -19,7 +19,7 @@
     'version': '1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['website_sale','stock'],
+    'depends': ['website','website_sale','stock'],
 
     # always loaded
     'data': [
