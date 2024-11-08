@@ -16,10 +16,10 @@
     'author': "Mindrich Technologies Pvt. Ltd.",
     'company': 'Mindrich Technologies Pvt. Ltd.',
     'category': 'eCommerce',
-    'version': '1.1',
+    'version': '1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['website', 'website_sale', 'stock', 'web_editor', 'web'],
+    'depends': ['web','website', 'website_sale', 'stock', 'web_editor'],
     # always loaded
     'data': [
         'views/product_view.xml',
@@ -29,7 +29,7 @@
         'views/hide_variant.xml',
     ],
     'assets': {
-        'web.assets': [
+        'web.assets_frontend': [
             'website_custom_code/static/src/scss/main.css',
             'website_custom_code/static/src/js/hide.js',
         ]
