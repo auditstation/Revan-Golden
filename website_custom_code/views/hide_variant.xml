@@ -46,7 +46,7 @@
         </template>
 
 
-        
+
 <!--        <template id="revan_product" inherit_id="website_sale.product">-->
 <!--            &lt;!&ndash;            <t t-call="website_sale.variants">&ndash;&gt;-->
 
