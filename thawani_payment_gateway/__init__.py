@@ -8,5 +8,5 @@ def post_init_hook(env):
     setup_provider(env, 'thawani')
 
 
-def uninstall_hook(env):
-    reset_payment_provider(env, 'thawani')
+# def uninstall_hook(env):
+#     reset_payment_provider(env, 'thawani')
