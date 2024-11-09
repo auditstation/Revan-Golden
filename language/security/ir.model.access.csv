@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_car_rental_car,Car Rental - Read,model_car_rental_car,base.group_user,1,0,0,0
-access_car_rental_car_manager,Car Rental - Manager,model_car_rental_car,base.group_erp_manager,1,1,1,1
-access_car_rental_customer,Customer - Read,model_car_rental_customer,base.group_user,1,0,0,0
-access_car_rental_customer_manager,Customer - Manager,model_car_rental_customer,base.group_erp_manager,1,1,1,1
-access_car_rental_rental,Rental - Read,model_car_rental_rental,base.group_user,1,0,0,0
-access_car_rental_rental_manager,Rental - Manager,model_car_rental_rental,base.group_erp_manager,1,1,1,1
-access_car_rental_fine,Fine - Read,model_car_rental_fine,base.group_user,1,0,0,0
-access_car_rental_fine_manager,Fine - Manager,model_car_rental_fine,base.group_erp_manager,1,1,1,1
