@@ -1,125 +1,117 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="state_ribbon" model="ir.ui.view">
-        <field name="name">state_ribbon</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//form//sheet/div" position="after">
-                <field invisible="1" name="status_order"/>
-                <widget bg_color="bg-danger" invisible="status_order != 'I'" name="web_ribbon" title="Not Collected"/>
-                <widget bg_color="bg-success" invisible="status_order != 'completed'" name="web_ribbon"
-                        title="Delivered"/>
-                <widget bg_color="bg-danger" invisible="status_order != 'F'" name="web_ribbon" title="Undelivered"/>
-                <widget bg_color="bg-info" invisible="status_order != 'pickupbydriver'" name="web_ribbon"
-                        title="pickup by Driver"/>
-                <widget bg_color="bg-info" invisible="status_order != 'intransit'" name="web_ribbon"
-                        title="In Transit"/>
-                <widget bg_color="bg-info" invisible="status_order != 'receivedbybranch'" name="web_ribbon"
-                        title="Received by Station"/>
-                <widget bg_color="bg-danger" invisible="status_order != 'return'" name="web_ribbon" title="Return"/>
-                <widget bg_color="bg-info" invisible="status_order != 'logsheetconfirm'" name="web_ribbon"
-                        title="Order Confirm received in Pickup Station"/>
-                <widget bg_color="bg-info" invisible="status_order != 'FW'" name="web_ribbon"
-                        title="Undelivered Back to Warehouse"/>
-                <widget bg_color="bg-info" invisible="status_order != 'RISS'" name="web_ribbon"
-                        title="Order arrive in sort station"/>
-                <widget bg_color="bg-info" invisible="status_order != 'OFD'" name="web_ribbon" title="OFD"/>
-                <widget bg_color="bg-info" invisible="status_order != 'assigned'" name="web_ribbon"
-                        title="Assigned to driver"/>
-                <widget bg_color="bg-info" invisible="status_order != 'receivedbyoutlet'" name="web_ribbon"
-                        title="received by outlet"/>
-                <widget bg_color="bg-info" invisible="status_order != 'intransittooutlet'" name="web_ribbon"
-                        title="intransit to outlet"/>
-                <widget bg_color="bg-info" invisible="status_order != 'intransittostation'" name="web_ribbon"
-                        title="intransit to station"/>
-            </xpath>
-            <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                <field invisible="status_order == 'not'" name="orderId" readonly="1"/>
-                <field invisible="status_order == 'not'" name="ship_price" readonly="1"/>
-            </xpath>
-            <xpath expr="//page[@name='other_information']" position="after">
-                <page invisible="status_order == 'not' or state not in ['sale']" name="logs"
-                      string="Order log from DalileeTrader">
-                    <field name="log_info" readonly="1" widget="one2many">
-                        <tree editable="top" limit="25" string="Order log">
-                            <field name="log_name"/>
-                            <field name="description"/>
-                            <field name="logdetails"/>
-                            <field name="cpid"/>
-                            <field name="created_at"/>
-                            <field invisible="1" name="sale_id"/>
-                        </tree>
-                    </field>
+        <record model="ir.ui.view" id="state_ribbon">
+            <field name="name">state_ribbon</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+             <xpath expr="//form//sheet/div" position="after">
+
+         
+
+             <field name="status_order" invisible="1"/>
+              <widget name="web_ribbon" title="Not Collected" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'I')]}"/>
+              <widget name="web_ribbon" title="Delivered" bg_color="bg-success" attrs="{'invisible': [('status_order', '!=', 'completed')]}"/>
+              <widget name="web_ribbon" title="Undelivered" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'F')]}"/>
+              <widget name="web_ribbon" title="pickup by Driver" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'pickupbydriver')]}"/>
+              <widget name="web_ribbon" title="In Transit" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransit')]}"/>
+              <widget name="web_ribbon" title="Received by Station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'receivedbybranch')]}"/>
+              <widget name="web_ribbon" title="Return" bg_color="bg-danger" attrs="{'invisible': [('status_order', '!=', 'return')]}"/>
+              <widget name="web_ribbon" title="Order Confirm received in Pickup Station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'logsheetconfirm')]}"/>
+              <widget name="web_ribbon" title="Undelivered Back to Warehouse" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'FW')]}"/>
+              <widget name="web_ribbon" title="Order arrive in sort station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'RISS')]}"/>
+              <widget name="web_ribbon" title="OFD" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'OFD')]}"/>
+              <widget name="web_ribbon" title="Assigned to driver" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'assigned')]}"/>
+              <widget name="web_ribbon" title="received by outlet" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'receivedbyoutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to outlet" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransittooutlet')]}"/>
+              <widget name="web_ribbon" title="intransit to station" bg_color="bg-info" attrs="{'invisible': [('status_order', '!=', 'intransittostation')]}"/>
+             </xpath>
+              <xpath expr="//field[@name='partner_shipping_id']" position="after">
+        <field name="orderId" readonly="1" attrs="{'invisible': [('status_order', '=','not')]}"/>
+        <field name="ship_price"  readonly="1" attrs="{'invisible': [('status_order', '=','not')]}"/>
+
+        </xpath>
+        <xpath expr="//page[@name='other_information']" position="after">
+           <page string="Order log from DalileeTrader" name="logs" attrs="{'invisible': ['|',('status_order', '=','not'),('state', 'not in',['sale'])]}">
+           <field name="log_info" widget="one2many"  readonly="1">
+                                    <tree string="Order log"  editable="top" limit="25">
+                                        <field name="log_name"/>
+                                        <field name="description"/>
+                                        <field name="logdetails"/>
+                                        <field name="cpid"/>
+                                        <field name="created_at"/>
+                                        <field name="sale_id" invisible="1"/>
+                                    </tree>
+                                </field>
+            </page>
+                <page string="Order Pdf from DalileeTrade" name="print_order" attrs="{'invisible': [('status_order', '=','not')]}">
+                <field name="file_ship" widget="pdf_viewer"/>
                 </page>
-                <page invisible="status_order == 'not'" name="print_order" string="Order Pdf from DalileeTrade">
-                    <field name="file_ship" widget="pdf_viewer"/>
-                </page>
+          </xpath>
+          <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="order_print" type="object" class="oe_highlight" attrs="{'invisible': ['|',('status_order', '=','not'),('state', 'not in',['sale'])]}" string="Print Order from DalileeTrade"/>
             </xpath>
-            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
-                <button class="oe_highlight" invisible="status_order == 'not' or state not in ['sale']"
-                        name="order_print" string="Print Order from DalileeTrade" type="object"/>
+           
+           
+          
+            </field>
+           
+    
+        </record>
+        <record model="ir.ui.view" id="state_tree">
+            <field name="name">state_tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+             <xpath expr="//field[@name='invoice_status']" position="after">
+           
+                <field name="status_order" attrs="{'invisible': [('status_order', '=', 'not')]}" widget="label_selection"/>
             </xpath>
-        </field>
-    </record>
-    <record id="state_tree" model="ir.ui.view">
-        <field name="name">state_tree</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='invoice_status']" position="after">
-                <field invisible="status_order == 'not'" name="status_order" widget="label_selection"/>
-            </xpath>
-        </field>
-    </record>
+            </field>
+            </record>
+    
     <record id="res_config_settings_dalilee" model="ir.ui.view">
-        <field name="name">res.config.settings.inherit.dalilee</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
-        <field name="arch" type="xml">
-<!--            <setting id="discount_sale_order_lines"-->
-<!--                     title="Apply manual discounts on sales order lines or display discounts computed from pricelists (option to activate in the pricelist configuration)."-->
-<!--                     help="Grant discounts on sales order lines">-->
-<!--                <field name="group_discount_per_so_line"/>-->
-<!--            </setting>-->
-
-            <xpath expr="//setting[@id='discount_sale_order_lines']" position="after">
-                <div class="col-12 col-lg-12 o_setting_box" id="url-integrate ">
-                    <div class="o_setting_left_pane"/>
-                    <div class="o_setting_right_pane">
-                        <span class="o_form_label">
-                            Url
-                        </span>
-                        <div class="text-muted">
-                            URL Live
-                        </div>
-                        <div class="col-12">
-                            <field name="url_integrate"/>
-                        </div>
-                    </div>
-                    <div class="o_setting_left_pane"/>
-                    <div class="o_setting_right_pane">
-                        <span class="o_form_label">
-                            Email
-                        </span>
-                        <div class="col-12">
-                            <field name="user_name"/>
-                        </div>
-                    </div>
-                    <div class="o_setting_left_pane"/>
-                    <div class="o_setting_right_pane">
-                        <span class="o_form_label">
-                            Password
-                        </span>
-                        <div class="col-12">
-                            <field name="password"/>
-                        </div>
-                    </div>
-                </div>
-
-            </xpath>
-<!--            <xpath expr="//div[@id='discount_sale_order_lines']" position="after">-->
-<!--            </xpath>-->
-        </field>
-    </record>
+       <field name="name">res.config.settings.inherit.dalilee</field>
+       <field name="model">res.config.settings</field>
+     
+       <field name="inherit_id"
+              ref="sale.res_config_settings_view_form"/>
+       <field name="arch" type="xml">
+           <xpath expr="//div[@id='discount_sale_order_lines']"
+                  position="after">
+               <div class="col-12 col-lg-12 o_setting_box" id="url-integrate ">
+                  <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Url</span>
+                               
+                                <div class="text-muted">
+                                    URL Live
+                                </div>
+                                <div class="col-12">
+                                    <field name="url_integrate"/>
+                                </div>
+                            </div>
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Email</span>
+                               
+                               
+                                 <div class="col-12">
+                                    <field name="user_name"/>
+                                </div>
+                            </div>
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Password</span>
+                               
+                                
+                                 <div class="col-12">
+                                    <field name="password"/>
+                                </div>
+                            </div>
+               </div>
+           </xpath>
+       </field>
+   </record>
+        
 </odoo>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template id="cart_inherit" inherit_id="website_sale.cart">
-		<xpath expr="//div[@class='col']" position="before">
+		<xpath expr="//div[@id='wrap']" position="before">
 			<div class="test">
 				<t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)"/>
 				<div t-attf-class="o_pricelist_dropdown dropdown #{_classes}">

@@ -16,7 +16,7 @@
 ###################################################################################
 {
     'name': 'Revan Golden Website',
-    'version': '1.0',
+    'version': '16.0.0.1',
     'category': 'website',
     'summary': '',
     'description': '''Revan Golden Website

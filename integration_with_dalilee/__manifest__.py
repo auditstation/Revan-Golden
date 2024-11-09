@@ -3,7 +3,7 @@
 
 {
     'name': 'Integration with dalillee',
-    'version': '1.0',
+    'version': '16.0',
     'depends': ['base','sale'],
     'data': [
     'security/ir.model.access.csv',

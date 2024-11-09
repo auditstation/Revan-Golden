@@ -5,36 +5,41 @@
         <field name="model">payment.provider</field>
         <field name="inherit_id" ref="payment.payment_provider_form"/>
         <field name="arch" type="xml">
-            <group name="provider_credentials" position="inside">
-                <group invisible="code != 'thawani'">
-                    <field name="thawani_client_reference_id" required="code == 'thawani' and state != 'disabled'"/>
-                    <field name="thawani_secret_key" required="code == 'thawani' and state != 'disabled'"/>
-                    <field name="thawani_publishable_key" required="code == 'thawani' and state != 'disabled'"/>
+            <group name="provider_credentials" position='inside'>
+                <group attrs="{'invisible': [('code', '!=', 'thawani')]}">
+                    <field name="thawani_client_reference_id"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>
+                     <field name="thawani_secret_key"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>       
+                    <field name="thawani_publishable_key"
+                           attrs="{'required': [('code', '=', 'thawani'), ('state', '!=', 'disabled')]}"/>           
                 </group>
             </group>
         </field>
     </record>
-    <record id="res_config_settings_inheit_view_delivery" model="ir.ui.view">
-        <field name="name">res.config.settings.inherit.view</field>
-        <field name="model">res.config.settings</field>
-        <!--        <field name="priority" eval="10"/>-->
-        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//setting[@id='discount_sale_order_lines']" position="after">
+ <record id="res_config_settings_inheit_view_delivery" model="ir.ui.view">
+       <field name="name">res.config.settings.inherit.view</field>
+       <field name="model">res.config.settings</field>
+       <!--        <field name="priority" eval="10"/>-->
+       <field name="inherit_id"
+              ref="sale.res_config_settings_view_form"/>
+       <field name="arch" type="xml">
+           <xpath expr="//div[@id='discount_sale_order_lines']"
+                  position="after">
+               <div class="col-12 col-lg-6 o_setting_box" id="delivery_dome ">
+                   <div class="o_setting_left_pane">
+                       <field name="delivery_done"/>
+                   </div>
+                   <div class="o_setting_right_pane">
+                       <label for="delivery_done" string="Make delivery done"/>
+                       <div class="text-muted mb16">
+                        Make delivery done after payment in thawani to increase the onhand automatically
+                       </div>
+                   </div>
+               </div>
+           </xpath>
+       </field>
+   </record>
+    
 
-                <!--            <xpath expr="//div[@id='discount_sale_order_lines']" position="after">-->
-                <div class="col-12 col-lg-6 o_setting_box" id="delivery_dome ">
-                    <div class="o_setting_left_pane">
-                        <field name="delivery_done"/>
-                    </div>
-                    <div class="o_setting_right_pane">
-                        <label for="delivery_done" string="Make delivery done"/>
-                        <div class="text-muted mb16">
-                            Make delivery done after payment in thawani to increase the onhand automatically
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-        </field>
-    </record>
 </odoo>

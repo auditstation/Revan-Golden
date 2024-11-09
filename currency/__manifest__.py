@@ -24,15 +24,14 @@
     # always loaded
     'data': [
         'views/product_view.xml',
+        'views/website_sale_templates.xml',
         'views/price_list_template.xml',
         'views/res_currency_view.xml',
-        'views/custom_navbar.xml',
-        'views/hide_variant.xml',
     ],
     'assets': {
         'web.assets_frontend': [
-            'website_custom_code/static/src/scss/main.css',
-            'website_custom_code/static/src/js/hide.js',
+            'website_custom_code/static/src/scss/main.scss',
+            '/website_custom_code/static/src/js/hide.js',
         ]
     },
     # only loaded in demonstration mode

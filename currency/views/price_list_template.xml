@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="custom_pricelist_list" inherit_id="website_sale.pricelist_list" name="Pricelists Dropdown">
+        <xpath expr="//div[1]" position="replace">
+            <div t-attf-class="o_pricelist_dropdown dropdown #{_classes if hasPricelistDropdown else 'd-none'}">
+                <t t-set="curr_pl" t-value="website.pricelist_id" />
+
+                <a role="button" href="#" t-attf-class="dropdown-toggle btn btn-{{navClass}} price_list_button" data-bs-toggle="dropdown">
+                    <span t-field="curr_pl.flag_image" class="span_flag_img" t-options='{"widget": "image", "alt-field": "name", "class": "span_flag_img"}'/>
+                    <span>
+                        <t t-esc="curr_pl and curr_pl.name or ' - '" />
+                    </span>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <t t-foreach="website_sale_pricelists" t-as="pl">
+                        <a role="menuitem" t-att-href="'/shop/change_pricelist/%s' % pl.id" class="dropdown-item d-flex">
+                            <span t-field="pl.flag_image" class="span_flag_img" t-options='{"widget": "image", "alt-field": "name", "class": "flag_img"}'/>
+                            <span class="switcher_pricelist" t-att-data-pl_id="pl.id" t-esc="pl.name" />
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
