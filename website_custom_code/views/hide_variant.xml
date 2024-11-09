@@ -4,6 +4,8 @@
             <xpath expr="//ul[@t-attf-class='list-unstyled js_add_cart_variants mb-0 #{ul_class}']//t[contains(@t-foreach, 'ptal.product_template_value_ids._only_active()')]"
                    position="replace">
                 <t t-foreach="ptal.product_template_value_ids._only_active_website()" t-as="ptav">
+
+
                     <option t-att-value="ptav.id"
                             t-att-data-value_id="ptav.id"
                             t-att-data-value_name="ptav.name"
@@ -45,18 +47,16 @@
             </xpath>
         </template>
 
+        <template id="revan_product" inherit_id="website_sale.product">
+            <!--            <t t-call="website_sale.variants">-->
 
+            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">
+                <t t-call="website_custom_code.revan_variants">
+                    <t t-set="ul_class" t-valuef="flex-column"/>
 
-<!--        <template id="revan_product" inherit_id="website_sale.product">-->
-<!--            &lt;!&ndash;            <t t-call="website_sale.variants">&ndash;&gt;-->
-
-<!--            <xpath expr="//t[@t-call='website_sale.variants']" position="replace">-->
-<!--                <t t-call="website_sale.variants">-->
-<!--                    <t t-set="ul_class" t-valuef="flex-column"/>-->
-
-<!--                    <t t-set="parent_combination" t-value="None"/>-->
-<!--                </t>-->
-<!--            </xpath>-->
-<!--        </template>-->
+                    <t t-set="parent_combination" t-value="None"/>
+                </t>
+            </xpath>
+        </template>
     </data>
 </odoo>
