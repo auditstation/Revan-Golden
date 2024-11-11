@@ -46,52 +46,48 @@ odoo.define('hide_unavailable_variants', function (require) {
             this._super.apply(this, arguments);
         },
 
-    _hideVariants($target, $parent) {
-    const $variantContainer = $target.closest('ul').closest('li');
-    const currentSelect = $variantContainer.attr('data-attribute_name');
+        _hideVariants($target, $parent) {
 
-    // Skip specific attributes like SIZE if needed
-    if (currentSelect === 'SIZE') return;
+            const $variantContainer = $target.closest('ul').closest('li');
+            const currentSelect = $variantContainer.attr('data-attribute_name')
 
-    $parent.find(li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio'])
-        .each(function (index) {
-            var $current = $(this);
-            var firstShowed = null;
-            var anyChecked = false;
+            if (currentSelect === 'SIZE') return;
 
-            $current.find("input[type=radio]").each(function (index) {
-                var input = $(this);
+            $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+                .each(function (index) {
+                    var $current = $(this)
+                    var firstShowed = null
+                    var anyChecked = false
 
-                // Check if this variant combination is valid
-                var found = id_tuples.value_to_show_tuple.find(function (el) {
-                    const tupla = JSON.stringify(el);
-                    const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                    const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
-                    return tupla === t1 || tupla === t2;
+                    $current.find("input[type=radio]")
+                        .each(function (index) {
+                            var input = $(this);
+
+                            var found = id_tuples.value_to_show_tuple
+                                .find(function (el) {
+                                    const tupla = JSON.stringify(el);
+                                    const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
+                                    const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+
+                                    return tupla === t1 || tupla === t2
+                                });
+                            if (!found) {
+                                input.parent().hide()
+                                input.prop("checked", false);
+                            } else {
+                                input.parent().show();
+                                if (firstShowed == null)
+                                    firstShowed = input
+
+                                if (!anyChecked)
+                                    anyChecked = input.is(":checked")
+                            }
+                        });
+
+                    if (!anyChecked)
+                        firstShowed.prop("checked", true);
                 });
 
-                // Hide unavailable combinations and uncheck them
-                if (!found) {
-                    input.parent().hide();
-                    input.prop("checked", false);
-                } else {
-                    input.parent().show();
-
-                    // Track the first available option
-                    if (firstShowed == null) firstShowed = input;
-
-                    // Check if there's an already checked input among available ones
-                    if (input.is(":checked")) {
-                        anyChecked = true;
-                    }
-                }
-            });
-
-            // If no input was checked in this group, check the first available one
-            if (!anyChecked && firstShowed) {
-                firstShowed.prop("checked", true);
-            }
-        });
-}
- });
+        }
+    });
 });
