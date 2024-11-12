@@ -43,22 +43,24 @@ publicWidget.registry.WebsiteSale.include({
         }
     },
 
+
+
     async _fetchProductVariantData(product_tmpl_id) {
         console.log("inside _fetchProductVariantData " ,product_tmpl_id)
         return $.ajax({
-            type: "POST",
-            url: "/get_product_variant_data_website",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({product_tmpl_id}),
-            headers: { "X-CSRFToken": odoo.csrf_token },
-        }).then((data) => {
-            return data;
-        }).catch((error) => {
-            console.error("AJAX request failed:", error);
-            return { error: true, message: 'AJAX request failed' };
+                type: "POST",
+                url: "/get_product_variant_data_website",
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded",  // Changed from "application/json"
+                data: { product_tmpl_id: product_tmpl_id },  // Sending as form data instead of JSON
+                headers: { "X-CSRFToken": odoo.csrf_token },
+            }).then((data) => {
+                return data;
+            }).catch((error) => {
+                console.error("AJAX request failed:", error);
+                return { error: true, message: 'AJAX request failed' };
         });
-    },
+
 
     onChangeVariant(ev) {
         const instance = this;
