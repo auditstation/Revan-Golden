@@ -16,7 +16,7 @@
                     <field 
                         name="thawani_api_secret_key"
                         string="Secret API Key"
-                        required="code == 'thawani' and state != 'disabled'"
+                        required="code == 'thawani2' and state != 'disabled'"
                         password="True"
                     />
                     <!-- <label for="thawani_webhook_secret"/>
