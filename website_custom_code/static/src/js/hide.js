@@ -1,6 +1,6 @@
 /** @odoo-module **/
 import ajax from 'web.ajax';
-import publicWidget from 'web.public.widget';
+import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from '@web/core/registry';
 
 let id_tuples = undefined;
