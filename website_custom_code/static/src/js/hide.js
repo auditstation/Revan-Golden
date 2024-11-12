@@ -82,6 +82,8 @@ odoo.define('hide_unavailable_variants', function (require) {
 
                                 if (!anyChecked)
                                     anyChecked = input.is(":checked")
+                                    firstShowed.prop("checked", true);
+
                             }
                         });
 
