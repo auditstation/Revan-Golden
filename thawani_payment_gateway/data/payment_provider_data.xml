@@ -6,6 +6,11 @@
                file="thawani_payment_gateway/static/description/icon.png"/>
         <field name="company_id" ref="base.main_company"/>
         <field name="redirect_form_view_id" ref="redirect_form"/>
+         <field name="payment_method_ids"
+               eval="[Command.set([
+                         ref('payment.payment_method_card'),
+                     ])]"
+        />
     </record>
 
 </odoo>
