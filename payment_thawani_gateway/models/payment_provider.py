@@ -40,7 +40,7 @@ class PaymentProvider(models.Model):
         required_if_provider='thawani2',
         groups='base.group_system'
     )
-    thawani_client_reference_id = fields.Char(string='Thawani Merchant ID', required_if_provider='thawani2')
+    # thawani_client_reference_id = fields.Char(string='Thawani Merchant ID', required_if_provider='thawani2')
 
     # === BUSINESS METHODS ===#
     def _get_supported_currencies(self):
