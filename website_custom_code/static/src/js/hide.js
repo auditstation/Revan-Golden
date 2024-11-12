@@ -2,7 +2,6 @@
 //import ajax from 'web.ajax';
 
 
-var ajax = require('web.ajax');
 
 
 import publicWidget from "@web/legacy/js/public/public_widget";
@@ -21,7 +20,7 @@ publicWidget.registry.WebsiteSale.include({
         if (product_tmpl_id) {
             proms = $.ajax({
                 type: 'POST',
-                url: '/get_product_variant_data',
+                url: '/get_product_variant_data_website',
                 dataType: 'json',
                 data: JSON.stringify({ product_tmpl_id: product_tmpl_id }),
                 contentType: 'application/json',
