@@ -7,7 +7,7 @@ from werkzeug.urls import url_join
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_thawani.const import SUPPORTED_CURRENCIES, PROVIDER_ADDRESSES, DEFAULT_PAYMENT_METHODS
+from odoo.addons.payment_thawani_gateway.const import SUPPORTED_CURRENCIES, PROVIDER_ADDRESSES, DEFAULT_PAYMENT_METHODS
 
 
 _logger = logging.getLogger(__name__)
