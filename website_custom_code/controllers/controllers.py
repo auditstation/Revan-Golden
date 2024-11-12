@@ -24,17 +24,17 @@ class HideVariant(http.Controller):
                 'message': 'Product Template ID is missing'
             }
         try:
-            # Fetch the product template
-            product = request.env["product.template"].browse(int(product_tmpl_id))
+            # Convert the ID to an integer and fetch the product template
+            product_tmpl_id = int(product_tmpl_id)
+            product = request.env["product.template"].browse(product_tmpl_id)
 
-            # Check if the product exists
             if not product.exists():
                 return {
                     'error': True,
                     'message': 'Product not found'
                 }
 
-            # Fetch the variant data
+            # Fetch the variant count or other data
             value_to_show_tuple = product.get_variant_count()
 
             # Return the expected structure
