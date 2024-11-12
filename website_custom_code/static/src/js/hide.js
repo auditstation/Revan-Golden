@@ -4,8 +4,8 @@
 
 
 
-import ajax from '@web/core/ajax';
 import publicWidget from "@web/legacy/js/public/public_widget";
+import { registry } from '@web/core/registry';
 
 let id_tuples = undefined;
 
@@ -18,10 +18,18 @@ publicWidget.registry.WebsiteSale.include({
         const $parent = $('.js_product');
         const product_tmpl_id = parseInt($parent.find('.product_template_id').val());
         if (product_tmpl_id) {
-            proms = ajax.jsonRpc('/get_product_variant_data', 'call', {
-                'product_tmpl_id': product_tmpl_id,
-            }).then((data) => {
-                id_tuples = data;
+            proms = $.ajax({
+                type: 'POST',
+                url: '/get_product_variant_data',
+                dataType: 'json',
+                data: JSON.stringify({ product_tmpl_id: product_tmpl_id }),
+                contentType: 'application/json',
+                success: function (data) {
+                    id_tuples = data;
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to fetch product variant data:', error);
+                }
             });
         }
         await Promise.all([proms]);
