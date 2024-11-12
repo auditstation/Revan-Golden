@@ -27,27 +27,27 @@ class HideVariant(http.Controller):
                 'error': True,
                 'message': 'Product Template ID is missing'
             }
-        try:
-            # Convert the ID to an integer and fetch the product template
-            product_tmpl_id = int(product_tmpl_id)
-            product = request.env["product.template"].browse(product_tmpl_id)
-
-            if not product.exists():
-                return {
-                    'error': True,
-                    'message': 'Product not found'
-                }
-
-            # Fetch the variant count or other data
-            value_to_show_tuple = product.get_variant_count()
-
-            # Return the expected structure
-            return {
-                'error': False,
-                'value_to_show_tuple': value_to_show_tuple
-            }
-        except Exception as e:
-            return {
-                'error': True,
-                'message': f'Odoo Server Error: {str(e)}'
-            }
+        # try:
+        #     # Convert the ID to an integer and fetch the product template
+        #     product_tmpl_id = int(product_tmpl_id)
+        #     product = request.env["product.template"].browse(product_tmpl_id)
+        #
+        #     if not product.exists():
+        #         return {
+        #             'error': True,
+        #             'message': 'Product not found'
+        #         }
+        #
+        #     # Fetch the variant count or other data
+        #     value_to_show_tuple = product.get_variant_count()
+        #
+        #     # Return the expected structure
+        #     return {
+        #         'error': False,
+        #         'value_to_show_tuple': value_to_show_tuple
+        #     }
+        # except Exception as e:
+        #     return {
+        #         'error': True,
+        #         'message': f'Odoo Server Error: {str(e)}'
+        #     }
