@@ -5,8 +5,8 @@ from werkzeug.urls import url_join
 from odoo import _, fields, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_thawani.controllers.main import ThawaniPayController
-from odoo.addons.payment_thawani.utils import  prepare_product_name
+from odoo.addons.payment_thawani_gateway.controllers.main import ThawaniPayController
+from odoo.addons.payment_thawani_gateway.utils import  prepare_product_name
 
 _logger = logging.getLogger(__name__)
 
