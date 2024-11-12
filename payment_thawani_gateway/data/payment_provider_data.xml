@@ -6,14 +6,14 @@
         <field name="code">thawani2</field>
         <field name="image_128"
                type="base64"
-               file="payment_thawani/static/description/icon.png"/>
+               file="payment_thawani_gateway/static/description/icon.png"/>
         <field name="redirect_form_view_id" ref="redirect_form"/>
         <field name="payment_method_ids"
                eval="[Command.set([
                          ref('payment.payment_method_card'),
                      ])]"
         />
-        <field name="module_id" ref="base.module_payment_thawani"></field>
+        <field name="module_id" ref="base.module_payment_thawani_gateway"></field>
     </record>
 
 </odoo>
