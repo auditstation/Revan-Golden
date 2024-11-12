@@ -2,7 +2,7 @@ odoo.define('hide_unavailable_variants', function (require) {
     'use strict';
     require("website_sale.website_sale")
     var ajax = require('web.ajax');
-    var publicWidget = require('web.public.widget');
+    import publicWidget from "@web/legacy/js/public/public_widget";
     var id_tuples = undefined
 
     publicWidget.registry.WebsiteSale.include({
