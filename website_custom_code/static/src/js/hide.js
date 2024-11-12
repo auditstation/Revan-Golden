@@ -17,14 +17,20 @@ publicWidget.registry.WebsiteSale.include({
 
         if (product_tmpl_id) {
             try {
-                // Fetch product variant data using $.ajax
+                // Fetch product variant data using AJAX
                 const response = await this._fetchProductVariantData(product_tmpl_id);
 
-                // Log the response to check its structure
+                // Log the response for debugging
                 console.log("Response from server:", response);
 
+                // Check for errors in the response
+                if (response.error) {
+                    console.error("Error from server:", response.message);
+                    return;
+                }
+
                 // Check if the response contains the expected data
-                if (response && response.value_to_show_tuple) {
+                if (response.value_to_show_tuple) {
                     id_tuples = response;
                 } else {
                     console.error("Invalid data structure returned:", response);
@@ -36,21 +42,18 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     async _fetchProductVariantData(product_tmpl_id) {
-        // Use AJAX request to get product variant data
         return $.ajax({
             type: "POST",
             url: "/get_product_variant_data_website",
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify({ product_tmpl_id }),
-            headers: { "X-CSRFToken": odoo.csrf_token }, // Ensure CSRF protection
+            headers: { "X-CSRFToken": odoo.csrf_token },
         }).then((data) => {
-            // Log the raw data for debugging
-            console.log("Raw data received:", data);
             return data;
         }).catch((error) => {
             console.error("AJAX request failed:", error);
-            return null;
+            return { error: true, message: 'AJAX request failed' };
         });
     },
 
@@ -75,55 +78,7 @@ publicWidget.registry.WebsiteSale.include({
         }
 
         return this._super.apply(this, arguments);
-    },
-
-    _hideVariants($target, $parent) {
-        const $variantContainer = $target.closest("ul").closest("li");
-        const currentSelect = $variantContainer.attr("data-attribute_name");
-
-        // Skip hiding if the attribute is 'SIZE'
-        if (currentSelect === "SIZE") return;
-
-        if (!id_tuples || !id_tuples.value_to_show_tuple) {
-            console.error("id_tuples or value_to_show_tuple is undefined");
-            return;
-        }
-
-        $parent
-            .find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-            .each(function () {
-                const $current = $(this);
-                let firstShowed = null;
-                let anyChecked = false;
-
-                $current.find("input[type=radio]").each(function () {
-                    const input = $(this);
-                    const found = id_tuples.value_to_show_tuple.find((el) => {
-                        const tupla = JSON.stringify(el);
-                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
-                        return tupla === t1 || tupla === t2;
-                    });
-
-                    if (!found) {
-                        input.parent().hide();
-                        input.prop("checked", false);
-                    } else {
-                        input.parent().show();
-                        if (firstShowed == null) {
-                            firstShowed = input;
-                        }
-                        if (!anyChecked) {
-                            anyChecked = input.is(":checked");
-                        }
-                    }
-                });
-
-                if (!anyChecked && firstShowed) {
-                    firstShowed.prop("checked", true);
-                }
-            });
-    },
+    }
 });
 
 
