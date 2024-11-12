@@ -2,6 +2,7 @@
 //import ajax from 'web.ajax';
 
 
+var ajax = require('web.ajax');
 
 
 import publicWidget from "@web/legacy/js/public/public_widget";
