@@ -13,7 +13,9 @@ publicWidget.registry.WebsiteSale.include({
         await this._super.apply(this, arguments);
 
         const $parent = $(".js_product");
-        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
+//        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
+        var product_tmpl_id = $parent.find(".product_template_id").val();
+        console.log("product_tmpl_id from server:", product_tmpl_id);
 
         if (product_tmpl_id) {
             try {
