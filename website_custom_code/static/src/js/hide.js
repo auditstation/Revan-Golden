@@ -3,51 +3,60 @@
 
 
 
-
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { registry } from '@web/core/registry';
+import { registry } from "@web/core/registry";
 
 let id_tuples = undefined;
 
 publicWidget.registry.WebsiteSale.include({
-
     async willStart() {
         await this._super.apply(this, arguments);
 
-        let proms;
-        const $parent = $('.js_product');
-        const product_tmpl_id = parseInt($parent.find('.product_template_id').val());
+        const $parent = $(".js_product");
+        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
+
         if (product_tmpl_id) {
-            proms = $.ajax({
-                type: 'POST',
-                url: '/get_product_variant_data_website',
-                dataType: 'json',
-                data: JSON.stringify({ product_tmpl_id: product_tmpl_id }),
-                contentType: 'application/json',
-                success: function (data) {
-                    id_tuples = data;
-                },
-                error: function (xhr, status, error) {
-                    console.error('Failed to fetch product variant data:', error);
+            try {
+                // Fetch product variant data using $.ajax
+                const response = await this._fetchProductVariantData(product_tmpl_id);
+                if (response && response.value_to_show_tuple) {
+                    id_tuples = response;
+                } else {
+                    console.error("Invalid data structure returned:", response);
                 }
-            });
+            } catch (error) {
+                console.error("Failed to fetch product variant data:", error);
+            }
         }
-        await Promise.all([proms]);
+    },
+
+    async _fetchProductVariantData(product_tmpl_id) {
+        // Use AJAX request to get product variant data
+        return $.ajax({
+            type: "POST",
+            url: "/get_product_variant_data_website",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({ product_tmpl_id }),
+            headers: { "X-CSRFToken": odoo.csrf_token }, // Ensure CSRF protection
+        });
     },
 
     onChangeVariant(ev) {
         const instance = this;
-        const $parent = $(ev.target).closest('.js_product');
+        const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
 
         if (!$parent.length || !id_tuples) {
+            console.warn("No product context or id_tuples is undefined");
             return Promise.resolve();
         }
 
-        if ($target.is('input[type=radio]') && $target.is(':checked')) {
+        if ($target.is("input[type=radio]") && $target.is(":checked")) {
             instance._hideVariants($target, $parent);
         } else {
-            $target.find("input:checked")
+            $target
+                .find("input:checked")
                 .each(function () {
                     instance._hideVariants($(this), $parent);
                 });
@@ -57,51 +66,55 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     _hideVariants($target, $parent) {
-        const $variantContainer = $target.closest('ul').closest('li');
-        const currentSelect = $variantContainer.attr('data-attribute_name');
+        const $variantContainer = $target.closest("ul").closest("li");
+        const currentSelect = $variantContainer.attr("data-attribute_name");
 
-        if (currentSelect === 'SIZE') return;
+        // Skip hiding if the attribute is 'SIZE'
+        if (currentSelect === "SIZE") return;
 
-        $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+        $parent
+            .find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
             .each(function () {
                 const $current = $(this);
                 let firstShowed = null;
                 let anyChecked = false;
 
-                $current.find("input[type=radio]")
-                    .each(function () {
-                        const input = $(this);
-                        const found = id_tuples.value_to_show_tuple
-                            .find(function (el) {
-                                const tupla = JSON.stringify(el);
-                                const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                                const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+                // Ensure id_tuples and value_to_show_tuple are defined
+                if (!id_tuples || !id_tuples.value_to_show_tuple) {
+                    console.error("id_tuples or value_to_show_tuple is undefined");
+                    return;
+                }
 
-                                return tupla === t1 || tupla === t2;
-                            });
-                        if (!found) {
-                            input.parent().hide();
-                            input.prop("checked", false);
-                        } else {
-                            input.parent().show();
-                            if (firstShowed == null) {
-                                firstShowed = input;
-                            }
-                            if (!anyChecked) {
-                                anyChecked = input.is(":checked");
-                            }
-                        }
+                $current.find("input[type=radio]").each(function () {
+                    const input = $(this);
+                    const found = id_tuples.value_to_show_tuple.find((el) => {
+                        const tupla = JSON.stringify(el);
+                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
+                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+                        return tupla === t1 || tupla === t2;
                     });
 
+                    if (!found) {
+                        input.parent().hide();
+                        input.prop("checked", false);
+                    } else {
+                        input.parent().show();
+                        if (firstShowed == null) {
+                            firstShowed = input;
+                        }
+                        if (!anyChecked) {
+                            anyChecked = input.is(":checked");
+                        }
+                    }
+                });
+
+                // If no option is checked, check the first available option
                 if (!anyChecked && firstShowed) {
                     firstShowed.prop("checked", true);
                 }
             });
     },
 });
-
-
-
 
 
 
