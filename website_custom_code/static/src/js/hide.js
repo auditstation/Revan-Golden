@@ -1,6 +1,8 @@
 /** @odoo-module **/
 //import ajax from 'web.ajax';
 
+
+
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from "@web/core/registry";
 
@@ -11,6 +13,7 @@ publicWidget.registry.WebsiteSale.include({
         await this._super.apply(this, arguments);
 
         const $parent = $(".js_product");
+//        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
         var product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
 
@@ -40,22 +43,23 @@ publicWidget.registry.WebsiteSale.include({
         }
     },
 
+
+
     async _fetchProductVariantData(product_tmpl_id) {
-        console.log("inside _fetchProductVariantData " ,product_tmpl_id);
+        console.log("inside _fetchProductVariantData " ,product_tmpl_id)
         return $.ajax({
-            type: "POST",
+            method: "PUT",
             url: "/get_product_variant_data_website",
             dataType: "json",
-            contentType: "application/x-www-form-urlencoded",  // Changed from "application/json"
-            data: { product_tmpl_id: product_tmpl_id },  // Sending as form data instead of JSON
-            headers: { "X-CSRFToken": odoo.csrf_token },
+            contentType: "application/json",
+            data:JSON.stringify(product_tmpl_id),
         }).then((data) => {
             return data;
         }).catch((error) => {
             console.error("AJAX request failed:", error);
             return { error: true, message: 'AJAX request failed' };
         });
-    }, // <-- This closing brace was missing
+    },
 
     onChangeVariant(ev) {
         const instance = this;
@@ -80,6 +84,7 @@ publicWidget.registry.WebsiteSale.include({
         return this._super.apply(this, arguments);
     }
 });
+
 
 
 //import publicWidget from "@web/legacy/js/public/public_widget";
