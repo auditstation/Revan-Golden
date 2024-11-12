@@ -47,6 +47,7 @@ publicWidget.registry.WebsiteSale.include({
 
     async _fetchProductVariantData(product_tmpl_id) {
         console.log("inside _fetchProductVariantData " ,product_tmpl_id)
+        console.log("inside JSON.stringify(product_tmpl_id) >> " ,JSON.stringify(product_tmpl_id))
         return $.ajax({
             type: 'POST',
             url: "/get_product_variant_data_website",
