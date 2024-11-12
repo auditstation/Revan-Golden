@@ -19,6 +19,11 @@ publicWidget.registry.WebsiteSale.include({
             try {
                 // Fetch product variant data using $.ajax
                 const response = await this._fetchProductVariantData(product_tmpl_id);
+
+                // Log the response to check its structure
+                console.log("Response from server:", response);
+
+                // Check if the response contains the expected data
                 if (response && response.value_to_show_tuple) {
                     id_tuples = response;
                 } else {
@@ -39,6 +44,13 @@ publicWidget.registry.WebsiteSale.include({
             contentType: "application/json",
             data: JSON.stringify({ product_tmpl_id }),
             headers: { "X-CSRFToken": odoo.csrf_token }, // Ensure CSRF protection
+        }).then((data) => {
+            // Log the raw data for debugging
+            console.log("Raw data received:", data);
+            return data;
+        }).catch((error) => {
+            console.error("AJAX request failed:", error);
+            return null;
         });
     },
 
@@ -72,18 +84,17 @@ publicWidget.registry.WebsiteSale.include({
         // Skip hiding if the attribute is 'SIZE'
         if (currentSelect === "SIZE") return;
 
+        if (!id_tuples || !id_tuples.value_to_show_tuple) {
+            console.error("id_tuples or value_to_show_tuple is undefined");
+            return;
+        }
+
         $parent
             .find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
             .each(function () {
                 const $current = $(this);
                 let firstShowed = null;
                 let anyChecked = false;
-
-                // Ensure id_tuples and value_to_show_tuple are defined
-                if (!id_tuples || !id_tuples.value_to_show_tuple) {
-                    console.error("id_tuples or value_to_show_tuple is undefined");
-                    return;
-                }
 
                 $current.find("input[type=radio]").each(function () {
                     const input = $(this);
@@ -108,7 +119,6 @@ publicWidget.registry.WebsiteSale.include({
                     }
                 });
 
-                // If no option is checked, check the first available option
                 if (!anyChecked && firstShowed) {
                     firstShowed.prop("checked", true);
                 }
