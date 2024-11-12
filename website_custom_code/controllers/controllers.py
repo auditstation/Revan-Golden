@@ -15,25 +15,18 @@ from odoo import http
 from odoo.http import request
 
 
-class WebsiteSale(http.Controller):
+class HideVariant(http.Controller):
+    @http.route("/get_product_variant_data_website", type="json", website=True, auth="public", methods=["POST"])
+    def get_product_variant_data(self, product_tmpl_id):
 
-    @http.route('/get_product_variant_data_website', type='json', auth="public", methods=['POST'], csrf=False)
-    def get_product_variant_data(self, product_tmpl_id=None):
+        product_tmpl_id = request.env["product.template"].search([("id", "=", int(product_tmpl_id))])
+        if product_tmpl_id:
+            return product_tmpl_id.get_possible_combinations_available()
         if not product_tmpl_id:
-            return {'error': True, 'message': 'Product Template ID is missing'}
-
-        # Get the product template based on the ID
-        product_template = request.env['product.template'].sudo().browse(product_tmpl_id)
-
-        if not product_template:
-            return {'error': True, 'message': 'Product Template not found'}
-
-        # Assuming you want to get variant data here, for example
-        variants = product_template.product_variant_ids
-        variant_data = [{"id": variant.id, "name": variant.name} for variant in variants]
-
-        return {'value_to_show_tuple': variant_data}
-
+            return {
+                'error': True,
+                'message': 'Product Template ID is missing'
+            }
         # try:
         #     # Convert the ID to an integer and fetch the product template
         #     product_tmpl_id = int(product_tmpl_id)
