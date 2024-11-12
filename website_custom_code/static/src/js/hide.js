@@ -8,7 +8,6 @@ odoo.define('hide_unavailable_variants', function (require) {
     publicWidget.registry.WebsiteSale.include({
 
         willStart: async function () {
-            console.log("hiiiiiiiiiiiiiii")
             var proms;
             const _super = this._super.apply(this, arguments);
 
@@ -82,14 +81,11 @@ odoo.define('hide_unavailable_variants', function (require) {
 
                                 if (!anyChecked)
                                     anyChecked = input.is(":checked")
-                                    firstShowed.prop("checked", true);
-
                             }
                         });
 
                     if (!anyChecked)
                         firstShowed.prop("checked", true);
-
                 });
 
         }

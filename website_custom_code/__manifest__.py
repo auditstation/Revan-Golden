@@ -32,7 +32,7 @@
     'assets': {
         'web.assets_frontend': [
             'website_custom_code/static/src/scss/main.css',
-            # 'website_custom_code/static/src/js/hide.js',
+            'website_custom_code/static/src/js/hide.js',
         ],
         # 'web.assets_backend': [
         #     'website_custom_code/static/src/js/hide.js',
