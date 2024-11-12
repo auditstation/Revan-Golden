@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import ajax from 'web.ajax';
+//import ajax from 'web.ajax';
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from '@web/core/registry';
 
@@ -14,7 +14,9 @@ publicWidget.registry.WebsiteSale.include({
         const $parent = $('.js_product');
         const product_tmpl_id = parseInt($parent.find('.product_template_id').val());
         if (product_tmpl_id) {
-            proms = ajax.jsonRpc('/get_product_variant_data', 'call', {
+               $.ajax({
+                    type: "POST",
+                    dataType: 'json', url:'/get_product_variant_data', 'call', {
                 'product_tmpl_id': product_tmpl_id,
             }).then((data) => {
                 id_tuples = data;
