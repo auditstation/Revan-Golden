@@ -13,24 +13,41 @@
 #             return product_tmpl_id.get_possible_combinations_available()
 from odoo import http
 from odoo.http import request
+import json
 
 
 class HideVariant(http.Controller):
+    @http.route('/get_product_variant_data_website', type='http', auth='public', methods=['POST'], csrf=False)
+    def get_product_variant_data(self):
+        # Log the raw body for debugging
+        raw_body = http.request.httprequest.data
+        print("Raw body received:", raw_body)
+
+        try:
+            data = json.loads(raw_body)
+        except json.JSONDecodeError:
+            return {'error': True, 'message': 'Invalid JSON'}
+
+        product_tmpl_id = data.get('product_tmpl_id')
+
+        if not product_tmpl_id:
+            return {'error': True, 'message': 'Missing product_tmpl_id'}
+
+        # Your logic to fetch the product variant data
+        # ...
+#
+# class HideVariant(http.Controller):
 #     @http.route("/get_product_variant_data_website", type="json", website=True, auth="public", methods=["POST"])
 #     def get_product_variant_data(self, product_tmpl_id):
-    @http.route('/get_product_variant_data_website', type='json', auth='public', methods=['POST'], csrf=False)
-    def get_product_variant_data(self):
-    # Access the JSON data sent in the request
-        product_tmpl_id = http.request.jsonrequest.get('product_tmpl_id')
-
-        product_tmpl_id = request.env["product.template"].search([("id", "=", int(product_tmpl_id))])
-        if product_tmpl_id:
-            return product_tmpl_id.get_possible_combinations_available()
-        if not product_tmpl_id:
-            return {
-                'error': True,
-                'message': 'Product Template ID is missingsss'
-            }
+#
+#         product_tmpl_id = request.env["product.template"].search([("id", "=", int(product_tmpl_id))])
+#         if product_tmpl_id:
+#             return product_tmpl_id.get_possible_combinations_available()
+#         if not product_tmpl_id:
+#             return {
+#                 'error': True,
+#                 'message': 'Product Template ID is missing'
+#             }
         # try:
         #     # Convert the ID to an integer and fetch the product template
         #     product_tmpl_id = int(product_tmpl_id)
