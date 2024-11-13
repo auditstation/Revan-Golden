@@ -24,7 +24,7 @@ class HideVariant(http.Controller):
             return {
                 'success': True,
                 'message': 'Product found successfullysssssssssss',
-                'data': product_tmpl.get_possible_combinations_available()
+                'data': product_tmpl_id.get_possible_combinations_available()
             }
             # return product_tmpl_id.get_possible_combinations_available()
         if not product_tmpl_id:

@@ -54,7 +54,6 @@ publicWidget.registry.WebsiteSale.include({
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({'jsonrpc': "2.0", 'method': "call", "params": {'product_tmpl_id': product_tmpl_id}}),
 
-            headers: { "X-CSRFToken": odoo.csrf_token },
         }).then((data) => {
             return data;
         }).catch((error) => {
