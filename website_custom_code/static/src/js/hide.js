@@ -95,48 +95,49 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     _hideVariants($target, $parent) {
+    if (!id_tuples || !Array.isArray(id_tuples)) {
+        console.warn("id_tuples is undefined or not an array");
+        return;
+    }
 
-            const $variantContainer = $target.closest('ul').closest('li');
-            const currentSelect = $variantContainer.attr('data-attribute_name')
+    const $variantContainer = $target.closest('ul').closest('li');
+    const currentSelect = $variantContainer.attr('data-attribute_name');
 
-            if (currentSelect === 'SIZE') return;
+    if (currentSelect === 'SIZE') return;
 
-            $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-                .each(function (index) {
-                    var $current = $(this)
-                    var firstShowed = null
-                    var anyChecked = false
+    $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+        .each(function () {
+            const $current = $(this);
+            let firstShowed = null;
+            let anyChecked = false;
 
-                    $current.find("input[type=radio]")
-                        .each(function (index) {
-                            var input = $(this);
+            $current.find("input[type=radio]")
+                .each(function () {
+                    const input = $(this);
 
-                            var found = id_tuples.value_to_show_tuple
-                                .find(function (el) {
-                                    const tupla = JSON.stringify(el);
-                                    const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                                    const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+                    // Check if id_tuples is properly defined
+                    const found = id_tuples.find(el => {
+                        const tupla = JSON.stringify(el);
+                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
+                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+                        return tupla === t1 || tupla === t2;
+                    });
 
-                                    return tupla === t1 || tupla === t2
-                                });
-                            if (!found) {
-                                input.parent().hide()
-                                input.prop("checked", false);
-                            } else {
-                                input.parent().show();
-                                if (firstShowed == null)
-                                    firstShowed = input
-
-                                if (!anyChecked)
-                                    anyChecked = input.is(":checked")
-                            }
-                        });
-
-                    if (!anyChecked)
-                        firstShowed.prop("checked", true);
+                    if (!found) {
+                        input.parent().hide();
+                        input.prop("checked", false);
+                    } else {
+                        input.parent().show();
+                        if (firstShowed == null) firstShowed = input;
+                        if (!anyChecked) anyChecked = input.is(":checked");
+                    }
                 });
 
-        }
+            if (!anyChecked && firstShowed) {
+                firstShowed.prop("checked", true);
+            }
+        });
+}
 
 });
 
