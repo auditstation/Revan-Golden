@@ -92,7 +92,7 @@ publicWidget.registry.WebsiteSale.include({
         }
 
         return this._super.apply(this, arguments);
-    }
+    },
 
     _hideVariants($target, $parent) {
 
