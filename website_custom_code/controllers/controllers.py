@@ -32,6 +32,12 @@ class HideVariant(http.Controller):
                 'error': True,
                 'message': 'Product Template ID is missing'
             }
+
+
+
+
+
+
         # try:
         #     # Convert the ID to an integer and fetch the product template
         #     product_tmpl_id = int(product_tmpl_id)

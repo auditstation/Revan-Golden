@@ -36,10 +36,15 @@ class ProductTemplate(models.Model):
                 if variant.qty_available > 0:
                     available = list(map(lambda item: item.id, cmb))
                     valid_combination_list.append(available)
-
             return {
+                'success': True,
+                'message':f'print value_to_show_tuple {valid_combination_list}',
                 "value_to_show_tuple": valid_combination_list
             }
+
+            # return {
+            #     "value_to_show_tuple": valid_combination_list
+            # }
 
     def get_variant_count(self):
         for rec in self:
