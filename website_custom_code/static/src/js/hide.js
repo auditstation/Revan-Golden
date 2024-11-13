@@ -31,13 +31,15 @@ publicWidget.registry.WebsiteSale.include({
                     return;
                 }
 
-                // Check if the response contains the expected data
-                if (response) {
-                    id_tuples = response.value_to_show_tuple;
-                    console.log("response>>>",response)
-                    console.log("id_tuplessssss>>>",id_tuples)
-
-                } else {
+                                // Check if the response contains the expected data
+                if (response && response.result && response.result.data) {
+                    const id_tuples = response.result.data.value_to_show_tuple;
+                    if (id_tuples) {
+                        console.log("Value to show tuple:", id_tuples);
+                        // Do something with id_tuples
+                    } else {
+                        console.warn("value_to_show_tuple is not found in the response");
+                    } else {
                     console.error("Invalid data structure returned:", response);
                 }
             } catch (error) {
