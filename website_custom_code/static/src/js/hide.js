@@ -66,6 +66,9 @@ publicWidget.registry.WebsiteSale.include({
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
+        console.log("$parent>>>",$parent)
+        console.log("$parent.length>>>",$parent.length)
+        console.log("id_tuples>>>",id_tuples)
 
         if (!$parent.length || !id_tuples) {
             console.warn("No product context or id_tuples is undefined");
