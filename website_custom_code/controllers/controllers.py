@@ -21,7 +21,12 @@ class HideVariant(http.Controller):
 
         product_tmpl_id = request.env["product.template"].search([("id", "=", int(product_tmpl_id))])
         if product_tmpl_id:
-            return product_tmpl_id.get_possible_combinations_available()
+            return {
+                'success': True,
+                'message': 'Product found successfullysssssssssss',
+                'data': product_tmpl.get_possible_combinations_available()
+            }
+            # return product_tmpl_id.get_possible_combinations_available()
         if not product_tmpl_id:
             return {
                 'error': True,
