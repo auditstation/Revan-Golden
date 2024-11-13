@@ -1,29 +1,37 @@
 /** @odoo-module **/
 //import ajax from 'web.ajax';
 
+
+
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from "@web/core/registry";
 
-let id_tuples = null; // Initialize to null for clarity
+let id_tuples = undefined;
 
 publicWidget.registry.WebsiteSale.include({
     async willStart() {
         await this._super.apply(this, arguments);
 
         const $parent = $(".js_product");
-        const product_tmpl_id = $parent.find(".product_template_id").val();
+//        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
+        var product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
 
         if (product_tmpl_id) {
             try {
+                // Fetch product variant data using AJAX
                 const response = await this._fetchProductVariantData(product_tmpl_id);
+
+                // Log the response for debugging
                 console.log("Response from server:", response);
 
+                // Check for errors in the response
                 if (response.error) {
                     console.error("Error from server:", response.message);
                     return;
                 }
 
+                // Check if the response contains the expected data
                 if (response.value_to_show_tuple) {
                     id_tuples = response;
                 } else {
@@ -36,24 +44,31 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     async _fetchProductVariantData(product_tmpl_id) {
-        console.log("Inside _fetchProductVariantData", product_tmpl_id);
+        console.log(" inside _fetchProductVariantData" ,product_tmpl_id)
 
-    return $.ajax({
-        type: "POST",
-        url: "/get_product_variant_data_website",
-        dataType: "json",
-        contentType: "application/json",
-        data: JSON.stringify({ product_tmpl_id }),
-        headers: { "X-CSRFToken": odoo.csrf_token },
-    });
-         },
+
+        return $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: '/get_product_variant_data_website',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({'jsonrpc': "2.0", 'method': "call", "params": {'product_tmpl_id': product_tmpl_id}}),
+
+            headers: { "X-CSRFToken": odoo.csrf_token },
+        }).then((data) => {
+            return data;
+        }).catch((error) => {
+            console.error("AJAX request failed:", error);
+            return { error: true, message: 'AJAX request failed' };
+        });
+    },
 
     onChangeVariant(ev) {
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
 
-        if (!$parent.length || id_tuples === null) {
+        if (!$parent.length || !id_tuples) {
             console.warn("No product context or id_tuples is undefined");
             return Promise.resolve();
         }
@@ -61,14 +76,17 @@ publicWidget.registry.WebsiteSale.include({
         if ($target.is("input[type=radio]") && $target.is(":checked")) {
             instance._hideVariants($target, $parent);
         } else {
-            $target.find("input:checked").each(function () {
-                instance._hideVariants($(this), $parent);
-            });
+            $target
+                .find("input:checked")
+                .each(function () {
+                    instance._hideVariants($(this), $parent);
+                });
         }
 
         return this._super.apply(this, arguments);
     }
 });
+
 
 
 //import publicWidget from "@web/legacy/js/public/public_widget";
