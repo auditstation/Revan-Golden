@@ -32,8 +32,8 @@ publicWidget.registry.WebsiteSale.include({
                 }
 
                 // Check if the response contains the expected data
-                if (response.value_to_show_tuple) {
-                    id_tuples = response;
+                if (response) {
+                    id_tuples = response.value_to_show_tuple;
                 } else {
                     console.error("Invalid data structure returned:", response);
                 }
