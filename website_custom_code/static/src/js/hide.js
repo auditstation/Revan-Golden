@@ -34,6 +34,8 @@ publicWidget.registry.WebsiteSale.include({
                 // Check if the response contains the expected data
                 if (response) {
                     id_tuples = response.value_to_show_tuple;
+                    console.log("id_tuplessssss>>>",id_tuples)
+
                 } else {
                     console.error("Invalid data structure returned:", response);
                 }
