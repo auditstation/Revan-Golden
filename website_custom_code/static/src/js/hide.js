@@ -1,8 +1,5 @@
 /** @odoo-module **/
 //import ajax from 'web.ajax';
-
-
-
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from "@web/core/registry";
 
@@ -13,8 +10,7 @@ publicWidget.registry.WebsiteSale.include({
         await this._super.apply(this, arguments);
 
         const $parent = $(".js_product");
-//        const product_tmpl_id = parseInt($parent.find(".product_template_id").val());
-        var product_tmpl_id = $parent.find(".product_template_id").val();
+        const product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
 
         if (product_tmpl_id) {
@@ -33,11 +29,12 @@ publicWidget.registry.WebsiteSale.include({
 
                 // Check if the response contains the expected data
                 if (response) {
-
                     id_tuples = response.result.data.value_to_show_tuple;
-                    console.log("response>>>",response)
-                    console.log("id_tuplessssss>>>",id_tuples)
+                    console.log("response>>>", response);
+                    console.log("id_tuples>>>", id_tuples);
 
+                    // Auto-select the first available variant
+                    this._autoSelectFirstVariant($parent);
                 } else {
                     console.error("Invalid data structure returned:", response);
                 }
@@ -48,33 +45,25 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     async _fetchProductVariantData(product_tmpl_id) {
-        console.log(" inside _fetchProductVariantData" ,product_tmpl_id)
-
+        console.log("inside _fetchProductVariantData", product_tmpl_id);
 
         return $.ajax({
             type: "POST",
-            dataType: 'json',
-            url: '/get_product_variant_data_website',
+            dataType: "json",
+            url: "/get_product_variant_data_website",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'jsonrpc': "2.0", 'method': "call", "params": {'product_tmpl_id': product_tmpl_id}}),
-
-        })
-//        .then((data) => {
-//            console.log("DATA>",data)
-//            return data;
-//        }).catch((error) => {
-//            console.error("AJAX request failed:", error);
-//            return { error: true, message: 'AJAX request failed' };
-//        });
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "call",
+                params: { product_tmpl_id: product_tmpl_id },
+            }),
+        });
     },
 
     onChangeVariant(ev) {
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
-        console.log("$parent>>>",$parent)
-        console.log("$parent.length>>>",$parent.length)
-        console.log("id_tuples>>>",id_tuples)
 
         if (!$parent.length || !id_tuples) {
             console.warn("No product context or id_tuples is undefined");
@@ -84,42 +73,45 @@ publicWidget.registry.WebsiteSale.include({
         if ($target.is("input[type=radio]") && $target.is(":checked")) {
             instance._hideVariants($target, $parent);
         } else {
-            $target
-                .find("input:checked")
-                .each(function () {
-                    instance._hideVariants($(this), $parent);
-                });
+            $target.find("input:checked").each(function () {
+                instance._hideVariants($(this), $parent);
+            });
         }
 
         return this._super.apply(this, arguments);
     },
 
     _hideVariants($target, $parent) {
-    if (!id_tuples || !Array.isArray(id_tuples)) {
-        console.warn("id_tuples is undefined or not an array");
-        return;
-    }
+        if (!id_tuples || !Array.isArray(id_tuples)) {
+            console.warn("id_tuples is undefined or not an array");
+            return;
+        }
 
-    const $variantContainer = $target.closest('ul').closest('li');
-    const currentSelect = $variantContainer.attr('data-attribute_name');
+        const $variantContainer = $target.closest("ul").closest("li");
+        const currentSelect = $variantContainer.attr("data-attribute_name");
 
-    if (currentSelect === 'SIZE') return;
+        if (currentSelect === "SIZE") return;
 
-    $parent.find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
-        .each(function () {
-            const $current = $(this);
-            let firstShowed = null;
-            let anyChecked = false;
+        $parent
+            .find(`li[data-attribute_name!='${currentSelect}'][data-attribute_display_type='radio']`)
+            .each(function () {
+                const $current = $(this);
+                let firstShowed = null;
+                let anyChecked = false;
 
-            $current.find("input[type=radio]")
-                .each(function () {
+                $current.find("input[type=radio]").each(function () {
                     const input = $(this);
 
-                    // Check if id_tuples is properly defined
-                    const found = id_tuples.find(el => {
+                    const found = id_tuples.find((el) => {
                         const tupla = JSON.stringify(el);
-                        const t1 = JSON.stringify([parseInt($target.val()), parseInt(input.val())]);
-                        const t2 = JSON.stringify([parseInt(input.val()), parseInt($target.val())]);
+                        const t1 = JSON.stringify([
+                            parseInt($target.val()),
+                            parseInt(input.val()),
+                        ]);
+                        const t2 = JSON.stringify([
+                            parseInt(input.val()),
+                            parseInt($target.val()),
+                        ]);
                         return tupla === t1 || tupla === t2;
                     });
 
@@ -133,13 +125,27 @@ publicWidget.registry.WebsiteSale.include({
                     }
                 });
 
-            if (!anyChecked && firstShowed) {
-                firstShowed.prop("checked", true);
+                if (!anyChecked && firstShowed) {
+                    firstShowed.prop("checked", true);
+                }
+            });
+    },
+
+    _autoSelectFirstVariant($parent) {
+        // Find the first visible input for each attribute and select it
+        $parent.find("li[data-attribute_display_type='radio']").each(function () {
+            const $attribute = $(this);
+            const $inputs = $attribute.find("input[type=radio]:visible");
+
+            // Check if there are visible inputs and select the first one
+            if ($inputs.length) {
+                const $firstInput = $inputs.first();
+                $firstInput.prop("checked", true).trigger("change");
             }
         });
-}
-
+    },
 });
+
 
 
 
