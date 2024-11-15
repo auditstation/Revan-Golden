@@ -13,20 +13,21 @@ publicWidget.registry.WebsiteSale.include({
         const product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
 
-            if (window.location.pathname.includes('/shop/payment')) {
+      if (window.location.pathname.includes('/shop/payment')) {
             // Check if the page has already been reloaded
             if (!sessionStorage.getItem("shop_payment_reloaded")) {
+                // Auto-select the first available shipping method
+                this._autoSelectFirstShippingMethod();
+
                 // Set a flag in sessionStorage to avoid infinite reloads
                 sessionStorage.setItem("shop_payment_reloaded", "true");
 
-                // Reload the page
-                location.reload();
-                return; // Ensure the rest of the code doesn't execute on first load
-            } else {
-                // Auto-select the first available shipping method
-                this._autoSelectFirstShippingMethod();
-            }            }
-
+                // Reload the page after a short delay to ensure changes take effect
+                setTimeout(() => {
+                    location.reload();
+                }, 300); // 300ms delay to ensure the selection is registered
+            }
+        }
 
         if (product_tmpl_id) {
             try {
