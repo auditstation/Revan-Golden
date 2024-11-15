@@ -13,7 +13,18 @@ publicWidget.registry.WebsiteSale.include({
         const product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
 
-        this._refreshShippingMethods();
+        if (!sessionStorage.getItem("shipping_method_reloaded")) {
+            // Set a flag in sessionStorage to indicate the page has been reloaded
+            sessionStorage.setItem("shipping_method_reloaded", "true");
+               console.log(" inside ((((!sessionStorage.getItem(shipping_method_reloaded)")
+            // Reload the page
+            location.reload();
+        } else {
+            location.reload();
+             console.log("ELSEEEEEEEEEEEE")
+            // Auto-select the first available shipping method
+            this._autoSelectFirstShippingMethod();
+        }
 
 
         if (product_tmpl_id) {
@@ -147,16 +158,8 @@ publicWidget.registry.WebsiteSale.include({
             }
         });
     },
-    async _refreshShippingMethods() {
-        // Use Odoo's RPC call to update the delivery carrier section
-        try {
-            await this._onCarrierClick();
-            this._autoSelectFirstShippingMethod();
-        } catch (error) {
-            console.error("Error updating shipping methods:", error);
-        }
-    },
-    async _autoSelectFirstShippingMethod() {
+
+     _autoSelectFirstShippingMethod() {
         // Find the shipping methods within the delivery section
         const $shippingMethods = $("#delivery_method .o_delivery_carrier_select input[type='radio']");
 
@@ -173,6 +176,7 @@ publicWidget.registry.WebsiteSale.include({
             console.warn("No shipping methods available to auto-select.");
         }
     }
+
     });
 
 
