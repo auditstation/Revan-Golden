@@ -12,6 +12,7 @@ publicWidget.registry.WebsiteSale.include({
         const $parent = $(".js_product");
         const product_tmpl_id = $parent.find(".product_template_id").val();
         console.log("product_tmpl_id from server:", product_tmpl_id);
+        this._autoSelectFirstShippingMethod();
 
         if (product_tmpl_id) {
             try {
@@ -144,6 +145,24 @@ publicWidget.registry.WebsiteSale.include({
             }
         });
     },
+
+        _autoSelectFirstShippingMethod() {
+        // Find the delivery methods section
+        const $shippingMethods = $(".o_delivery_carrier input[type='radio']");
+
+        if ($shippingMethods.length > 0) {
+            // Select the first available shipping method
+            const $firstShippingMethod = $shippingMethods.first();
+
+            // Check if it's already selected, if not, select it and trigger change
+            if (!$firstShippingMethod.is(":checked")) {
+                $firstShippingMethod.prop("checked", true).trigger("change");
+                console.log("First shipping method auto-selected");
+            }
+        } else {
+            console.warn("No shipping methods available to auto-select.");
+        }
+    }
 });
 
 
