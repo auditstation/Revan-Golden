@@ -220,37 +220,37 @@ class WebsitePortalsInherit(WebsiteSale):
         render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
     
-    # @http.route(['/shop/confirm_order'], type='http', auth="public", website=True, sitemap=False)
-    # def confirm_order(self, **post):
-    #     order = request.website.sale_get_order()
-    #     if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
-    #
-    #        order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
-    #        order.sudo().action_update_prices()
-    #        for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-    #             if rec.order_id.pricelist_id.currency_id.name!='OMR':
-    #                 _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
-    #                 prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
-    #
-    #                 rec.product_template_id = prd
-    #                 res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
-    #                 care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
-    #                 rec.order_id.set_delivery_line(care,res['price'])
-    #             else:
-    #                 rec.unlink()
-    #     redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
-    #     if redirection:
-    #         return redirection
-    #
-    #     order.order_line._compute_tax_id()
-    #     request.session['sale_last_order_id'] = order.id
-    #     request.website.sale_get_order(update_pricelist=True)
-    #     extra_step = request.website.viewref('website_sale.extra_info')
-    #     if extra_step.active:
-    #         return request.redirect("/shop/extra_info")
-    #
-    #     return request.redirect("/shop/payment")
-    #
+    @http.route(['/shop/confirm_order'], type='http', auth="public", website=True, sitemap=False)
+    def confirm_order(self, **post):
+        order = request.website.sale_get_order()
+        if order.partner_shipping_id.country_id.currency_id.id != order.pricelist_id.currency_id.id:
+
+           order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
+           order.sudo().action_update_prices()
+           for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
+                if rec.order_id.pricelist_id.currency_id.name!='OMR':
+                    _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
+                    prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
+
+                    rec.product_template_id = prd
+                    res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
+                    care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
+                    rec.order_id.set_delivery_line(care,res['price'])
+                else:
+                    rec.unlink()
+        redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
+        if redirection:
+            return redirection
+
+        order.order_line._compute_tax_id()
+        request.session['sale_last_order_id'] = order.id
+        request.website.sale_get_order(update_pricelist=True)
+        extra_step = request.website.viewref('website_sale.extra_info')
+        if extra_step.active:
+            return request.redirect("/shop/extra_info")
+
+        return request.redirect("/shop/payment")
+
     # @http.route('/shop/payment', type='http', auth='public', website=True, sitemap=False)
     # def shop_payment(self, **post):
     #     order = request.website.sale_get_order()
