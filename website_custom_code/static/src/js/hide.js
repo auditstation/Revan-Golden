@@ -146,24 +146,27 @@ publicWidget.registry.WebsiteSale.include({
         });
     },
 
-        _autoSelectFirstShippingMethod() {
-        // Find the delivery methods section
-        const $shippingMethods = $(".o_delivery_carrier input[type='radio']");
+    _autoSelectFirstShippingMethod() {
+        // Find the shipping methods within the delivery section
+        const $shippingMethods = $("#delivery_method .o_delivery_carrier_select input[type='radio']");
 
         if ($shippingMethods.length > 0) {
+            console.log("inside shippingMethods.length ")
             // Select the first available shipping method
             const $firstShippingMethod = $shippingMethods.first();
 
-            // Check if it's already selected, if not, select it and trigger change
+            // Check if it's already selected; if not, select it and trigger change
             if (!$firstShippingMethod.is(":checked")) {
                 $firstShippingMethod.prop("checked", true).trigger("change");
-                console.log("First shipping method auto-selected");
+                console.log("First shipping method auto-selected:", $firstShippingMethod.attr("id"));
             }
         } else {
             console.warn("No shipping methods available to auto-select.");
         }
     }
-});
+
+
+    });
 
 
 
