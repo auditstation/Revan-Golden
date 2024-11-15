@@ -258,17 +258,39 @@ class WebsitePortalsInherit(WebsiteSale):
       
            order.pricelist_id = request.env['product.pricelist'].sudo().search([('currency_id','=',order.partner_shipping_id.country_id.currency_id.id)]).id
            order.sudo().action_update_prices()
-           for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
-                if rec.order_id.pricelist_id.currency_id.name!='OMR':
-                    _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
-                    prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
-                    
-                    rec.product_template_id = prd
-                    res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
-                    care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
-                    rec.order_id.set_delivery_line(care,res['price'])
-                else:
-                    rec.unlink()
+           # for rec in order.order_line.filtered(lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
+           #      if rec.order_id.pricelist_id.currency_id.name!='OMR':
+           #          _logger.info(f'aaaaaaaaaaaaaaaaaaaaaaa{rec.product_template_id.name}')
+           #          prd= request.env['delivery.carrier'].sudo().search([('country_ids','in',[order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
+           #
+           #          rec.product_template_id = prd
+           #          res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
+           #          care= request.env['delivery.carrier'].sudo().search([('product_id','=',rec.product_template_id.product_variant_id.id)])
+           #          rec.order_id.set_delivery_line(care,res['price'])
+           #      else:
+           #          rec.unlink()
+           for rec in order.order_line.filtered(
+                   lambda act: act.product_template_id.product_variant_id.detailed_type == 'service'):
+               if rec.order_id.pricelist_id.currency_id.name != 'OMR':
+                   _logger.info(f"Processing product: {rec.product_template_id.name}")
+                   prd = request.env['delivery.carrier'].sudo().search(
+                       [('country_ids', 'in', [order.partner_shipping_id.country_id.id])]).product_id.product_tmpl_id.id
+
+                   if prd:
+                       rec.product_template_id = prd
+                       res = rec.order_id.carrier_id.rate_shipment(rec.order_id)
+                       care = request.env['delivery.carrier'].sudo().search(
+                           [('product_id', '=', rec.product_template_id.product_variant_id.id)], limit=1)
+
+                       if care:
+                           rec.order_id.set_delivery_line(care, res['price'])
+                       else:
+                           _logger.warning("No valid delivery carrier found for product: %s",
+                                           rec.product_template_id.name)
+                   else:
+                       _logger.warning("No product found for country-specific carrier.")
+               else:
+                   rec.unlink()
         redirection = self.checkout_redirection(order) or self.checkout_check_address(order)
         if redirection:
             return redirection

@@ -17,8 +17,6 @@ publicWidget.registry.WebsiteSale.include({
 //            // Set a flag in sessionStorage to indicate the page has been reloaded
 //            sessionStorage.setItem("shipping_method_reloaded", "true");
 //            console.log(" inside ((((!sessionStorage.getItem(shipping_method_reloaded)")
-//            location.reload();
-//
 //            // Reload the page
 ////            location.reload();
 //        } else {
@@ -27,22 +25,6 @@ publicWidget.registry.WebsiteSale.include({
 //            // Auto-select the first available shipping method
 //            this._autoSelectFirstShippingMethod();
 //        }
-           if (window.location.pathname.includes('/shop/payment')) {
-            // Ensure this script runs only once
-            if (!sessionStorage.getItem("shop_payment_reloaded")) {
-                sessionStorage.setItem("shop_payment_reloaded", "true");
-
-                // Wait for shipping methods to be fully loaded
-                this._waitForShippingMethods(() => {
-                    this._autoSelectFirstShippingMethod();
-
-                    // Reload the page after a short delay to register the selection
-                    setTimeout(() => {
-                        location.reload();
-                    }, 300); // Adjust delay if needed
-                });
-            }
-        }
 
 
         if (product_tmpl_id) {
@@ -194,40 +176,6 @@ publicWidget.registry.WebsiteSale.include({
 //            console.warn("No shipping methods available to auto-select.");
 //        }
 //    }
-
-    _waitForShippingMethods(callback) {
-        const shippingContainer = document.getElementById("delivery_method");
-
-        if (shippingContainer) {
-            // Use MutationObserver to detect changes in the shipping methods list
-            const observer = new MutationObserver(() => {
-                const hasShippingMethods = shippingContainer.querySelector(".o_delivery_carrier_select input[type='radio']");
-
-                if (hasShippingMethods) {
-                    observer.disconnect(); // Stop observing once we find shipping methods
-                    callback(); // Execute the callback function
-                }
-            });
-
-            observer.observe(shippingContainer, { childList: true, subtree: true });
-        }
-    },
-
-    _autoSelectFirstShippingMethod() {
-        const $shippingMethods = $("#delivery_method .o_delivery_carrier_select input[type='radio']");
-
-        if ($shippingMethods.length > 0) {
-            const $firstShippingMethod = $shippingMethods.first();
-
-            if (!$firstShippingMethod.is(":checked")) {
-                $firstShippingMethod.prop("checked", true).trigger("change");
-                console.log("First shipping method auto-selected:", $firstShippingMethod.attr("id"));
-            }
-        } else {
-            console.warn("No shipping methods available to auto-select.");
-        }
-    }
-
 
     });
 
