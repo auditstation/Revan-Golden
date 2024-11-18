@@ -47,8 +47,6 @@
             </xpath>
         </template>
 
-
-        
         <template id="revan_product" inherit_id="website_sale.product">
             <!--            <t t-call="website_sale.variants">-->
 
@@ -60,6 +58,5 @@
                 </t>
             </xpath>
         </template>
-
     </data>
 </odoo>

@@ -83,7 +83,6 @@
 <!--                <field name="group_discount_per_so_line"/>-->
 <!--            </setting>-->
 
-            
             <xpath expr="//setting[@id='discount_sale_order_lines']" position="after">
                 <div class="col-12 col-lg-12 o_setting_box" id="url-integrate ">
                     <div class="o_setting_left_pane"/>
