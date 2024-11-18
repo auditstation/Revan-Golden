@@ -97,7 +97,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-xl-auto order-xl-2 d-none d-xl-block">
-                            <t t-call="website_sale.cart_summary">
+                            <t t-call="website_sale.cart_lines">
                                 <t t-set="hide_promotions">True</t>
                                 <t t-set="redirect" t-valuef="/shop/address"/>
                             </t>

@@ -3,7 +3,7 @@
     'name': 'THawani Payment Gateway',
     'category': 'Accounting/Payment Acquirers',
     'sequence': 50,
-    'version': '16.0.1.0.0',
+    'version': '1.0',
     'description': """Thawani Payment Gateway""",
     'Summary': """Payment Provider : Thawani """,
     'author': "Hassan ",

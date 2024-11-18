@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="0">
+
+    <record id="payment2_provider2_thawani" model="payment.provider">
+        <field name="name">Thawani2</field>
+        <field name="code">thawani2</field>
+        <field name="image_128"
+               type="base64"
+               file="payment_thawani_gateway/static/description/icon.png"/>
+        <field name="redirect_form_view_id" ref="redirect_form"/>
+        <field name="payment_method_ids"
+               eval="[Command.set([
+                         ref('payment.payment_method_card'),
+                     ])]"
+        />
+        <field name="module_id" ref="base.module_payment_thawani_gateway"></field>
+    </record>
+
+</odoo>

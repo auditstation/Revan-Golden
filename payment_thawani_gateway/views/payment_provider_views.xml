@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<odoo>
+
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">Thawani Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position='inside'>
+                <group name="thawani_credentials" invisible="code != 'thawani'">
+                    <field
+                        name="thawani_publishable_key"
+                        string="Publishable Key"
+                        required="code == 'thawani' and state != 'disabled'"
+                    />
+                    <field 
+                        name="thawani_api_secret_key"
+                        string="Secret API Key"
+                        required="code == 'thawani2' and state != 'disabled'"
+                        password="True"
+                    />
+                    <!-- <label for="thawani_webhook_secret"/>
+                    <div class="o_row" col="2">
+                        <field name="thawani_webhook_secret" password="True"/>
+                        <button string="Generate your webhook"
+                                type="object"
+                                name="action_thawani_create_webhook"
+                                class="btn-primary"
+                                invisible="thawani_webhook_secret or not thawani_secret_key"/>
+                    </div> -->
+                </group>
+            </group>
+        </field>
+    </record>
+    <record id="res_config_settings_inheit_view_delivery" model="ir.ui.view">
+        <field name="name">res.config.settings.inherit.view</field>
+        <field name="model">res.config.settings</field>
+        <!--        <field name="priority" eval="10"/>-->
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='discount_sale_order_lines']" position="after">
+
+                <!--            <xpath expr="//div[@id='discount_sale_order_lines']" position="after">-->
+                <div class="col-12 col-lg-6 o_setting_box" id="delivery_dome ">
+                    <div class="o_setting_left_pane">
+                        <field name="delivery_done"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="delivery_done" string="Make delivery done"/>
+                        <div class="text-muted mb16">
+                            Make delivery done after payment in thawani to increase the onhand automatically
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

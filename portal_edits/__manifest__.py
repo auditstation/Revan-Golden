@@ -2,7 +2,7 @@
 {
     'name': "Edit Portal details",
     'sequence': 10,
-    'version': '16.0.0',
+    'version': '1.0',
     'depends': [
         'base','portal','account','sale','website_sale'
     ],
