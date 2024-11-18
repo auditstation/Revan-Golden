@@ -27,7 +27,7 @@
         'views/price_list_template.xml',
         'views/res_currency_view.xml',
         'views/custom_navbar.xml',
-        # 'views/hide_variant.xml',
+        'views/hide_variant.xml',
     ],
     'assets': {
         'web.assets_frontend': [
