@@ -10,12 +10,6 @@ class ResCountryState(models.Model):
 
 
 
-
-
-
-from odoo import http
-from odoo.http import request
-
 class CustomHomeController(http.Controller):
 
     @http.route('/my/home', type='http', auth='user', website=True)
