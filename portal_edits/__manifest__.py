@@ -8,7 +8,7 @@
     ],
 
     'data': [
-        'views/edit_fields_portal.xml',
+        #'views/edit_fields_portal.xml',
 
 
     ],
