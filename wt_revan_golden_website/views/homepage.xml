@@ -24,13 +24,13 @@
 				</div>
 			</div>
 		  
-			<div class="lenguage_test">
-				<t class="lenguaje_color_test" id="language_selector_call" t-call="portal.language_selector">
-					<t t-set="flags" t-value="True"/>
-					<t t-set="_div_classes" t-value="(_div_classes or '') + ' dropup'"/>
-						
-				</t>
-			</div>
+<!--			<div class="lenguage_test">-->
+<!--				<t class="lenguaje_color_test" id="language_selector_call" t-call="portal.language_selector">-->
+<!--					<t t-set="flags" t-value="True"/>-->
+<!--					<t t-set="_div_classes" t-value="(_div_classes or '') + ' dropup'"/>-->
+<!--						-->
+<!--				</t>-->
+<!--			</div>-->
 		</xpath>
 		<xpath expr="//div[@id='wrap']" position="inside">
 			<section class="s_image_gallery o_colored_level o_slideshow pt40" data-vcss="001" data-columns="3" style="overflow: hidden; background-image: none; height: 743px;" data-snippet="s_image_gallery" data-name="Image Gallery">
