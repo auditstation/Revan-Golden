@@ -22,4 +22,4 @@ class CustomHomeController(http.Controller):
         #     'user_name': user.name,
         #     'custom_message': "Welcome to the custom home page!",
         # }
-        return request.render('wt_revan_golden_website.portal_my_home')
+        return request.render('portal.portal_my_home')
