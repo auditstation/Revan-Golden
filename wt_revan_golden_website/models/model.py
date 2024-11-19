@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields
+from odoo import http
+from odoo.http import request
 
 class ResCountryState(models.Model):
     _inherit = "res.country.state"
