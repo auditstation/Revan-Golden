@@ -13,12 +13,22 @@ class ResCountryState(models.Model):
 
 class CustomHomeController(http.Controller):
 
-    @http.route('/my/home', type='http', auth='user', website=True)
-    def custom_home(self, **kwargs):
-        # Add your custom logic here
-        user = request.env.user
+    # @http.route('/my/home', type='http', auth='user', website=True)
+    # def custom_home(self, **kwargs):
+    #     # Add your custom logic here
+    #     user = request.env.user
+    #     values = {
+    #         'user_name': user.name,
+    #         'custom_message': "Welcome to the custom home page!",
+    #     }
+    #     return request.render('wt_revan_golden_website.template_my_home', values)
+    @route(['/my', '/my/home'], type='http', auth="user", website=True)
+    def home(self, **kw):
         values = {
             'user_name': user.name,
             'custom_message': "Welcome to the custom home page!",
         }
         return request.render('wt_revan_golden_website.template_my_home', values)
+
+        # values = self._prepare_portal_layout_values()
+        # return request.render("portal.portal_my_home", values)
