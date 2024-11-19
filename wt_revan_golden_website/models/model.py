@@ -3,7 +3,6 @@
 from odoo import models, fields
 from odoo import http
 from odoo.http import request
-
 class ResCountryState(models.Model):
     _inherit = "res.country.state"
 
@@ -18,8 +17,8 @@ class CustomHomeController(http.Controller):
     def custom_home(self, **kwargs):
         # Add your custom logic here
         user = request.env.user
-        # values = {
-        #     'user_name': user.name,
-        #     'custom_message': "Welcome to the custom home page!",
-        # }
-        return request.render('portal.portal_my_home')
+        values = {
+            'user_name': user.name,
+            'custom_message': "Welcome to the custom home page!",
+        }
+        return request.render('wt_revan_golden_website.template_my_home', values)

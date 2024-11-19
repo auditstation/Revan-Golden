@@ -297,5 +297,12 @@
             </a>
         </xpath>
     </template>
-
+	<template id="template_my_home" name="Custom My Home">
+			<t t-call="website.layout">
+				<div class="container">
+					<h1>Hello, <t t-esc="user_name"/>!</h1>
+					<p><t t-esc="custom_message"/></p>
+				</div>
+			</t>
+		</template>
 </odoo>
