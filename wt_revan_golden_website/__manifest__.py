@@ -24,13 +24,13 @@
     'author': 'Warlock Technologies Pvt Ltd.',
     'website': 'http://warlocktechnologies.com',
     'support': 'mailto:support@warlocktechnologies.com',
-    'depends': ['website','base','website_sale'],
+    'depends': ['website','base','website_sale','website_custom_code','website_sale_wishlist'],
     'data': [
         "views/homepage.xml",
-        # "views/portal_my_home.xml",
-        # "views/contactus.xml",
-        # "views/website_product.xml",
-        # "views/website_sale.xml",
+        "views/portal_my_home.xml",
+        "views/contactus.xml",
+        "views/website_product.xml",
+        "views/website_sale.xml",
     ],
     'assets': {
     },
