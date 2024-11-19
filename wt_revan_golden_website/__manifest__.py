@@ -24,7 +24,7 @@
     'author': 'Warlock Technologies Pvt Ltd.',
     'website': 'http://warlocktechnologies.com',
     'support': 'mailto:support@warlocktechnologies.com',
-    'depends': ['website','base','website_sale','website_custom_code','website_sale_wishlist'],
+    'depends': ['website','base','website_sale','portal','website_custom_code','website_sale_wishlist'],
     'data': [
         "views/homepage.xml",
         # "views/portal_my_home.xml",
