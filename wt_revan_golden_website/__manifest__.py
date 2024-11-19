@@ -28,8 +28,8 @@
     'data': [
         "views/homepage.xml",
         # "views/portal_my_home.xml",
-        "views/contactus.xml",
-        "views/website_product.xml",
+        # "views/contactus.xml",
+        # "views/website_product.xml",
         # "views/website_sale.xml",
     ],
     'assets': {
