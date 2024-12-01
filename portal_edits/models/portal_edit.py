@@ -435,6 +435,7 @@ class InheritLogin(AuthSignupHome):
         user.tel_pass = passw
         user.partner_id.mobile =  kw.get("login")
         user.partner_id.phone = kw.get("login")
+        user.email = ''
         return response
 
 
