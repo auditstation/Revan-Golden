@@ -433,9 +433,10 @@ class InheritLogin(AuthSignupHome):
         response = super().web_auth_signup(*args, **kw)
         user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
         user.tel_pass = passw
-        user.partner_id.mobile =  kw.get("login")
+        phone=kw.get("login")
+        user.partner_id.mobile =  phone
         user.partner_id.phone = kw.get("login")
-        user.email = ''
+        user.partner_id.email = ''
         return response
 
 
