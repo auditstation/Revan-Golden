@@ -116,7 +116,7 @@ class WebsitePortalsInherit(WebsiteSale):
             if data.get('phone')[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code: 
                 error["phone"] = 'error'
                 error_message.append(_('Invalid number! Please enter a valid number with country code'))
-            elif (data.get('phone')[0:4] == '+'+ prefix_code and len((data.get('phone')[4:]))!=phone_limit) and (partner_id.phone[0:5] == '00'+ prefix_code and  and len((data.get('phone')[5:]))!=phone_limit): 
+            elif (data.get('phone')[0:4] == '+'+ prefix_code and len((data.get('phone')[4:]))!=phone_limit) and (partner_id.phone[0:5] == '00'+ prefix_code and len((data.get('phone')[5:]))!=phone_limit): 
                 error["phone"] = 'error'
                 error_message.append(_('Invalid number! Please enter a valid number with limit %s and country code',str(phone_limit)))
             
