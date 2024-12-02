@@ -118,7 +118,7 @@ class WebsitePortalsInherit(WebsiteSale):
             if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
                 
                 error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code'))
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
            
                
             elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
