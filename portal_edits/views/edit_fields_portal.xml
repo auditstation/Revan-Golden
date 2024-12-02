@@ -308,12 +308,13 @@
             </field>
 
     </record>
+    
     <record id="view_country_form_inherit_limit" model="ir.ui.view">
             <field name="name">res.country.inherit.form.limit</field>
             <field name="model">res.country</field>
             <field name="inherit_id" ref="base.view_country_form"/>
             <field name="arch" type="xml">
-            <xpath expr="//field[@name='phone_code']" position="after">
+            <xpath expr="//group[@name='phone_vat_settings']" position="after">
                     <field name="phone_limit"/>
 
                 </xpath>
