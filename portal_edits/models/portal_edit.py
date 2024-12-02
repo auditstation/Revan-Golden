@@ -110,15 +110,15 @@ class WebsitePortalsInherit(WebsiteSale):
         error_message = []
 
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
-        # if data.get('phone') and data.get('country_id'):
-        #     prefix_code=str(request.env['res.country'].browse(data.get('country_id')).phone_code)
-        #     phone_limit=request.env['res.country'].browse(data.get('country_id')).phone_limit 
-        #     if data.get('phone')[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code: 
-        #         error["phone"] = 'error'
-        #         error_message.append(_('Invalid number! Please enter a valid number with country code'))
-        #     elif (data.get('phone')[0:4] == '+'+ prefix_code and len((data.get('phone')[4:]))!=phone_limit) and (partner_id.phone[0:5] == '00'+ prefix_code and  and len((data.get('phone')[5:]))!=phone_limit): 
-        #         error["phone"] = 'error'
-        #         error_message.append(_('Invalid number! Please enter a valid number with limit %s',str(phone_limit)))
+        if data.get('phone') and data.get('country_id'):
+            prefix_code=str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code)
+            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
+            if data.get('phone')[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code: 
+                error["phone"] = 'error'
+                error_message.append(_('Invalid number! Please enter a valid number with country code'))
+            elif (data.get('phone')[0:4] == '+'+ prefix_code and len((data.get('phone')[4:]))!=phone_limit) and (partner_id.phone[0:5] == '00'+ prefix_code and  and len((data.get('phone')[5:]))!=phone_limit): 
+                error["phone"] = 'error'
+                error_message.append(_('Invalid number! Please enter a valid number with limit %s and country code',str(phone_limit)))
             
         return error, error_message
 
