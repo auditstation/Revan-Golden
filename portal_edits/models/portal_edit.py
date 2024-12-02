@@ -181,8 +181,9 @@ class WebsitePortalsInherit(WebsiteSale):
                 partner_id = self._checkout_form_save(mode, post, kw)
                 if 'country_id' in kw:
                     prefix_code=str(request.env['res.country'].browse(int(kw['country_id'])).phone_code)
-                    if partner_id.phone[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code:
-                        partner_id.phone =  '+'+prefix_code + partner_id.phone
+                    partner_object = request.env['res.partner'].browse(partner_id))
+                    if partner_object.phone[0:4]!= '+'+ prefix_code and partner_object.phone[0:5]!= '00'+ prefix_code:
+                        partner_object.phone =  '+'+prefix_code + partner_object.phone
                 # We need to validate _checkout_form_save return, because when partner_id not in shippings
                 # it returns Forbidden() instead the partner_id
                 if isinstance(partner_id, Forbidden):
