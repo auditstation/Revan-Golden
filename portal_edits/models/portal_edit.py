@@ -350,7 +350,6 @@ class CountryInherit(models.Model):
     active = fields.Boolean('Active', default=True)
     limit_phone = fields.Float('Limit Phone')
 
-
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
     didication_letter = fields.Text('Didication letter')
