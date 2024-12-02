@@ -110,9 +110,16 @@ class WebsitePortalsInherit(WebsiteSale):
         error_message = []
 
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
-        if data.get('phone') and len(data.get('phone')) < 8:
-            error["phone"] = 'error'
-            error_message.append(_('Invalid number! Please enter a valid number'))
+        # if data.get('phone') and data.get('country_id'):
+        #     prefix_code=str(request.env['res.country'].browse(data.get('country_id')).phone_code)
+        #     phone_limit=request.env['res.country'].browse(data.get('country_id')).phone_limit 
+        #     if data.get('phone')[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code: 
+        #         error["phone"] = 'error'
+        #         error_message.append(_('Invalid number! Please enter a valid number with country code'))
+        #     elif (data.get('phone')[0:4] == '+'+ prefix_code and len((data.get('phone')[4:]))!=phone_limit) and (partner_id.phone[0:5] == '00'+ prefix_code and  and len((data.get('phone')[5:]))!=phone_limit): 
+        #         error["phone"] = 'error'
+        #         error_message.append(_('Invalid number! Please enter a valid number with limit %s',str(phone_limit)))
+            
         return error, error_message
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
@@ -172,6 +179,10 @@ class WebsitePortalsInherit(WebsiteSale):
                 values = kw
             else:
                 partner_id = self._checkout_form_save(mode, post, kw)
+                if 'country_id' in kw:
+                    prefix_code=str(request.env['res.country'].browse(kw['country_id']).phone_code)
+                    if partner_id.phone[0:4]!= '+'+ prefix_code and partner_id.phone[0:5]!= '00'+ prefix_code:
+                        partner_id.phone =  '+'+request.env['res.country'].browse(kw['country_id']).phone_code + partner_id.phone
                 # We need to validate _checkout_form_save return, because when partner_id not in shippings
                 # it returns Forbidden() instead the partner_id
                 if isinstance(partner_id, Forbidden):
@@ -337,6 +348,7 @@ class WebsitePortalsInherit(WebsiteSale):
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
+    limit_phone = fields.Float('Limit Phone')
 
 
 class PartnerInherit(models.Model):

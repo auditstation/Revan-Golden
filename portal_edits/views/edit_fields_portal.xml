@@ -308,6 +308,18 @@
             </field>
 
     </record>
+    <record id="view_country_form_inherit" model="ir.ui.view">
+            <field name="name">res.country.inherit.form</field>
+            <field name="model">res.country</field>
+            <field name="inherit_id" ref="base.view_country_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone_code']" position="after">
+                    <field name="phone_limit"/>
+
+                </xpath>
+            </field>
+    </record>
+    
     <record id="model_change" model="ir.actions.server">
             <field name="name">Change pass</field>
             <field name="model_id" ref="base.model_res_users"/>
