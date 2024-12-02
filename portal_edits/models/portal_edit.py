@@ -62,9 +62,24 @@ class PortalInherit(CustomerPortal):
         error = dict()
         error_message = []
         error, error_message = super().details_form_validate(data)
-        if data.get('phone') and len(data.get('phone')) < 8:
-            error["phone"] = 'error'
-            error_message.append(_('Invalid number! Please enter a valid number'))
+        if data.get('phone') and data.get('country_id'):
+            prefix_code="".join(str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code).split())
+            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
+            data_phone = "".join(data.get('phone').split())
+           
+            if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
+                
+                error["phone"] = 'error'
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+           
+               
+            elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
+               
+                error["phone"] = 'error'
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+            elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
+                error["phone"] = 'error'
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
         return error, error_message
 
 
@@ -122,7 +137,7 @@ class WebsitePortalsInherit(WebsiteSale):
            
                
             elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
-                _logger.info(f'vvvvvvvvvvvvvvvv{data_phone[1:4] ,prefix_code,data_phone[4:],phone_limit}')
+               
                 error["phone"] = 'error'
                 error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
             elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
