@@ -120,7 +120,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 error_message.append(_('Invalid number! Please enter a valid number with country code'))
            
                
-            elif  data.get('phone')[1:4] == prefix_code and  and data.get('phone')[4:]!=phone_limit:
+            elif  data.get('phone')[1:4] == prefix_code and data.get('phone')[4:]!=phone_limit:
                 error["phone"] = 'error'
                 error_message.append(_('Invalid number! Please enter a valid number with limit %s and country code',str(phone_limit)))
             elif (data.get('phone')[2:5] == prefix_code and len((data.get('phone')[5:]))!=phone_limit): 
