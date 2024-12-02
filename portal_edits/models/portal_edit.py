@@ -113,7 +113,7 @@ class WebsitePortalsInherit(WebsiteSale):
         if data.get('phone') and data.get('country_id'):
             prefix_code=str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code)
             phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
-            _logger.info(f"ssssssssssssssss{data.get('phone')[0:4],len((data.get('phone')[4:]))}")
+            _logger.info(f"ssssssssssssssss{data.get('phone')[0:4],len((data.get('phone')[4:])),phone_limit}")
             if data.get('phone')[0:4]!= '+'+ prefix_code and data.get('phone')[0:5]!= '00'+ prefix_code: 
                 
                 error["phone"] = 'error'
