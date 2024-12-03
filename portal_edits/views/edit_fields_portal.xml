@@ -259,6 +259,21 @@
             </div>
         </t>
     </template>
+     <template id="portal_my_details_inherit" inherit_id="website_sale.address">
+        <xpath expr="//input[@name='phone']" position="replace">
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <div class="input-group">
+                    <select class="form-control" name="country_code" style="max-width: 100px;">
+                        <t t-foreach="request.env['res.country'].search([])" t-as="country">
+                            <option t-att-value="country.phone_code">+<t t-esc="country.phone_code"/> (<t t-esc="country.name"/>)</option>
+                        </t>
+                    </select>
+                    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required="required" />
+                </div>
+            </div>
+        </xpath>
+    </template>
 
      <record id="partner_inherit_form_letter" model="ir.ui.view">
             <field name="name">res.partner.inherit.form.letter</field>
