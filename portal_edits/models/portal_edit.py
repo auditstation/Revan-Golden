@@ -131,6 +131,7 @@ class WebsitePortalsInherit(WebsiteSale):
             data_phone = "".join(data.get('phone').split())
            
             if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
+                _logger.info(f'ddddddddddddddd{data_phone[0:4],data_phone[0:5]}')
                 
                 error["phone"] = 'error'
                 error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
