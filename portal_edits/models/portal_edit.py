@@ -130,7 +130,7 @@ class WebsitePortalsInherit(WebsiteSale):
             phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
             data_phone = "".join(data.get('phone').split())
            
-            if data_phone[:0]!= '+' and data_phone[0:2]!= '00':  
+            if data_phone[:1]!= '+' and data_phone[0:2]!= '00':  
                 
                 
                 error["phone"] = 'error'
