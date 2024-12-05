@@ -131,19 +131,19 @@ class WebsitePortalsInherit(WebsiteSale):
             data_phone = "".join(data.get('phone').split())
            
             if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
-                _logger.info(f'ddddddddddddddd{data_phone[0:4],data_phone[0:5]}')
+                
                 
                 error["phone"] = 'error'
-                error_message.append(_('Invalid numberaaa! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
            
                
             elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
                
                 error["phone"] = 'error'
-                error_message.append(_('Invalid numbersss! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
             elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
                 error["phone"] = 'error'
-                error_message.append(_('Invalid numberrrr! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
         return error, error_message
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
