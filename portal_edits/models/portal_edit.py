@@ -134,7 +134,7 @@ class WebsitePortalsInherit(WebsiteSale):
                 _logger.info(f'ddddddddddddddd{data_phone[0:4],data_phone[0:5]}')
                 
                 error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(_('Invalid numberaaa! Please enter a valid number with country code %s',str("+"+prefix_code)))
            
                
             elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
