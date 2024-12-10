@@ -62,24 +62,9 @@ class PortalInherit(CustomerPortal):
         error = dict()
         error_message = []
         error, error_message = super().details_form_validate(data)
-        if data.get('phone') and data.get('country_id'):
-            prefix_code="".join(str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code).split())
-            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
-            data_phone = "".join(data.get('phone').split())
-           
-            if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
-                
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-           
-               
-            elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
-               
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-            elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+        if data.get('phone') and len(data.get('phone')) < 8:
+            error["phone"] = 'error'
+            error_message.append(_('Invalid number! Please enter a valid number'))
         return error, error_message
 
 
@@ -125,24 +110,9 @@ class WebsitePortalsInherit(WebsiteSale):
         error_message = []
 
         error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
-        if data.get('phone') and data.get('country_id'):
-            prefix_code="".join(str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code).split())
-            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
-            data_phone = "".join(data.get('phone').split())
-           
-            if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
-                
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-           
-               
-            elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
-               
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-            elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+        if data.get('phone') and len(data.get('phone')) < 8:
+            error["phone"] = 'error'
+            error_message.append(_('Invalid number! Please enter a valid number'))
         return error, error_message
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
@@ -202,11 +172,6 @@ class WebsitePortalsInherit(WebsiteSale):
                 values = kw
             else:
                 partner_id = self._checkout_form_save(mode, post, kw)
-                # if 'country_id' in kw:
-                #     prefix_code=str(request.env['res.country'].sudo().browse(int(kw['country_id'])).phone_code)
-                #     partner_object = request.env['res.partner'].sudo().browse(partner_id)
-                #     if partner_object.phone[0:4]!= '+'+ prefix_code and partner_object.phone[0:5]!= '00'+ prefix_code:
-                #         partner_object.phone =  '+'+prefix_code + partner_object.phone
                 # We need to validate _checkout_form_save return, because when partner_id not in shippings
                 # it returns Forbidden() instead the partner_id
                 if isinstance(partner_id, Forbidden):
@@ -372,8 +337,7 @@ class WebsitePortalsInherit(WebsiteSale):
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
-   
-    phone_limit = fields.Integer('Limit Phone')
+
 
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
@@ -469,10 +433,8 @@ class InheritLogin(AuthSignupHome):
         response = super().web_auth_signup(*args, **kw)
         user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
         user.tel_pass = passw
-        phone=kw.get("login")
-        user.partner_id.mobile =  phone
+        user.partner_id.mobile =  kw.get("login")
         user.partner_id.phone = kw.get("login")
-        user.partner_id.email = ''
         return response
 
 

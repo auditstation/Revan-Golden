@@ -27,10 +27,10 @@
     'depends': ['base','website','portal','website_sale','website_custom_code','website_sale_wishlist'],
     'data': [
         "views/homepage.xml",
-        # "views/portal_my_home.xml",
-        # "views/contactus.xml",
-        # "views/website_product.xml",
-        # "views/website_sale.xml",
+        "views/portal_my_home.xml",
+        "views/contactus.xml",
+        "views/website_product.xml",
+        "views/website_sale.xml",
     ],
     'assets': {
     },

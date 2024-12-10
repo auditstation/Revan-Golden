@@ -194,7 +194,7 @@ class ProductProduct(models.Model):
     hide_on_website = fields.Boolean("Hide on Website",
                                      help="Check right if you want to hide the variant in your website")
     is_out_of_stock = fields.Boolean(compute='_compute_out_of_stock')
-    @api.depends('qty_available')
+
     def _compute_out_of_stock(self):
         for rec in self:
             if rec.type == 'product':
