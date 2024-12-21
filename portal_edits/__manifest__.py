@@ -8,7 +8,7 @@
     ],
 
     'data': [
-        'data/product_cron_data.xml',
+        'data/data.xml',
         'views/set_random_password.xml',
 
 
