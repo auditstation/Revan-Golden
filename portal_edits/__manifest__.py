@@ -8,7 +8,8 @@
     ],
 
     'data': [
-        #'views/edit_fields_portal.xml',
+        'data/product_cron_data.xml',
+        'views/set_random_password.xml',
 
 
     ],
