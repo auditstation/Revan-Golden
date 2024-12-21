@@ -7,7 +7,7 @@
             <field name="code">model.unpublish_out_of_stock_products()</field>
             <field name="active" eval="True"/>
             <field name="interval_number">1</field>
-            <field name="interval_type">hours</field>
+    <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
         </record>

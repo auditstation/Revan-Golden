@@ -490,19 +490,23 @@ class InheritLogin(AuthSignupHome):
     @http.route()
     def web_auth_signup(self, *args, **kw):
         login_user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
-        if not login_user :
-            passw = self.random_password()
-            if 'password' in kw:
-                kw['password'] = passw
-                kw['confirm_password'] = passw
-                request.params["password"] = passw
-                request.params["confirm_password"] = passw
-            response = super().web_auth_signup(*args, **kw)
-            user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
-            user.tel_pass = passw
-            user.partner_id.mobile = kw.get("login")
-            user.partner_id.phone = kw.get("login")
-            return response
+
+        if login_user:
+            # If the user already exists, redirect to the login page with a message
+            return request.render('web.login', {'error': 'You are already signed up. Please log in.'})
+        passw = self.random_password()
+        if 'password' in kw:
+            kw['password'] = passw
+            kw['confirm_password'] = passw
+            request.params["password"] = passw
+            request.params["confirm_password"] = passw
+        response = super().web_auth_signup(*args, **kw)
+        user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
+        user.tel_pass = passw
+        user.partner_id.mobile = kw.get("login")
+        user.partner_id.phone = kw.get("login")
+        return response
+
 
 class ProductCronJob(models.Model):
     _inherit = 'product.product'
