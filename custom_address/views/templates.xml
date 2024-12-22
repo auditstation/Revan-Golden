@@ -15,7 +15,7 @@
 
 
         </xpath>
-        <xpath expr="//select[@id='state_id']" position="replace">
+        <xpath expr="//select[@name='state_id']" position="replace">
             <!-- Tu nuevo contenido para el selector del país va aquí -->
             <select id="state_id" name="state_id"
                     t-attf-class="form-select #{error.get('state_id') and 'is-invalid' or ''}" data-init="1">
