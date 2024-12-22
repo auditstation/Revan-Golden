@@ -416,7 +416,7 @@ class WebsitePortalsInherit(WebsiteSale):
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
-    phone_limit=fields.integer()
+    phone_limit=fields.Integer()
 
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
