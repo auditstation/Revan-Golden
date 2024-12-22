@@ -101,10 +101,10 @@ class PortalInherit(CustomerPortal):
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
-                phone_limit = country.phone_limit
-                if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                    raise ValueError(
-                        _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
 
                 # Update the phone number in data with the normalized format
                 data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
@@ -188,10 +188,10 @@ class WebsitePortalsInherit(WebsiteSale):
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
-                phone_limit = country.phone_limit
-                if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                    raise ValueError(
-                        _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
 
                 # Update the phone number in data with the normalized format
                 data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
