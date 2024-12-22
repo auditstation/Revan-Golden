@@ -443,7 +443,7 @@ class CountryInherit(models.Model):
     def add_stat_and_province(self):
         for rec in self:
             # Check if a state with the same name and code already exists for the country
-            existing_state = env['res.country.state'].search([
+            existing_state = self.env['res.country.state'].search([
                 ('name', '=', 'State / Province...'),
                 ('code', '=', '(A)'),
                 ('country_id', '=', rec.id)
@@ -451,7 +451,7 @@ class CountryInherit(models.Model):
 
             if not existing_state:
                 # Create the state
-                env['res.country.state'].create({
+                self.env['res.country.state'].create({
                     'name': 'State / Province...',
                     'code': '(A)',
                     'country_id': rec.id,
