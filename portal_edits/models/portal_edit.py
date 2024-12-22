@@ -209,7 +209,7 @@ class WebsitePortalsInherit(WebsiteSale):
             if state:
                 if state.name=="State / Province...":
                     error["state"] = ' Please Select State'
-                    error_message.append("Please Select States")
+                    error_message.append("Please Select State")
 
                 # Optionally: Check phone length against phone_limit
                 # phone_limit = country.phone_limit
@@ -437,6 +437,26 @@ class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
     phone_limit=fields.Integer()
+
+
+
+    def add_stat_and_province(self):
+        for rec in self:
+            # Check if a state with the same name and code already exists for the country
+            existing_state = env['res.country.state'].search([
+                ('name', '=', 'State / Province...'),
+                ('code', '=', '(A)'),
+                ('country_id', '=', rec.id)
+            ], limit=1)
+
+            if not existing_state:
+                # Create the state
+                env['res.country.state'].create({
+                    'name': 'State / Province...',
+                    'code': '(A)',
+                    'country_id': rec.id,
+                })
+
 
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
