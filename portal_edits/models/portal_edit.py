@@ -160,6 +160,7 @@ class WebsitePortalsInherit(WebsiteSale):
 
         phone = data.get('phone')
         country_id = data.get('country_id')
+        state_id = data.get('state_id')
 
         if phone and country_id:
             try:
@@ -199,6 +200,25 @@ class WebsitePortalsInherit(WebsiteSale):
             except (phonenumbers.NumberParseException, ValueError) as e:
                 error["phone"] = 'error'
                 error_message.append(str(e))
+
+
+
+        if state_id:
+
+            state = request.env['res.country.state'].browse(int(state_id))
+            if state:
+                if state.name=="State / Province...":
+                    error["state"] = ' Please Select State'
+                    error_message.append("Please Select States")
+
+                # Optionally: Check phone length against phone_limit
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+
+                # Update the phone number in data with the normalized format
+
 
         return error, error_message
 
