@@ -76,6 +76,11 @@ class PortalInherit(CustomerPortal):
 
         if phone and country_id:
             try:
+                # Normalize the phone number to handle cases with "00" prefix
+                phone = phone.strip()
+                if phone.startswith("00"):
+                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
+
                 # Get the country's phone code from the database
                 country = request.env['res.country'].browse(int(country_id))
                 country_code = country.phone_code
@@ -96,10 +101,10 @@ class PortalInherit(CustomerPortal):
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
-                # phone_limit = country.phone_limit
-                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                #     raise ValueError(
-                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+                phone_limit = country.phone_limit
+                if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                    raise ValueError(
+                        _("Phone number length does not match the expected limit of %s digits.", phone_limit))
 
                 # Update the phone number in data with the normalized format
                 data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
@@ -109,7 +114,6 @@ class PortalInherit(CustomerPortal):
                 error_message.append(str(e))
 
         return error, error_message
-
 
 class WebsitePortalsInherit(WebsiteSale):
     WRITABLE_PARTNER_FIELDS = [
@@ -159,6 +163,11 @@ class WebsitePortalsInherit(WebsiteSale):
 
         if phone and country_id:
             try:
+                # Normalize the phone number to handle cases with "00" prefix
+                phone = phone.strip()
+                if phone.startswith("00"):
+                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
+
                 # Get the country's phone code from the database
                 country = request.env['res.country'].browse(int(country_id))
                 country_code = country.phone_code
@@ -179,10 +188,10 @@ class WebsitePortalsInherit(WebsiteSale):
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
-                # phone_limit = country.phone_limit
-                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                #     raise ValueError(
-                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+                phone_limit = country.phone_limit
+                if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                    raise ValueError(
+                        _("Phone number length does not match the expected limit of %s digits.", phone_limit))
 
                 # Update the phone number in data with the normalized format
                 data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
