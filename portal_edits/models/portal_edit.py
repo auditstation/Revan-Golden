@@ -129,25 +129,25 @@ class WebsitePortalsInherit(WebsiteSale):
         'didication_letter'
     ]
 
-    # def _get_mandatory_fields_billing(self, country_id=False):
-    #     req = ["name", "country_id"]
-    #     if country_id:
-    #         country = request.env['res.country'].browse(country_id)
-    #         if country.state_required:
-    #             req += ['state_id']
-    #         # if country.zip_required:
-    #         #     req += ['zip']
-    #     return req
-    #
-    # def _get_mandatory_fields_shipping(self, country_id=False):
-    #     req = ["name", "country_id"]
-    #     if country_id:
-    #         country = request.env['res.country'].browse(country_id)
-    #         if country.state_required:
-    #             req += ['state_id']
-    #         # if country.zip_required:
-    #         #     req += ['zip']
-    #     return req
+    def _get_mandatory_fields_billing(self, country_id=False):
+        req = ["name", "country_id"]
+        if country_id:
+            country = request.env['res.country'].browse(country_id)
+            if country.state_required:
+                req += ['state_id']
+            # if country.zip_required:
+            #     req += ['zip']
+        return req
+
+    def _get_mandatory_fields_shipping(self, country_id=False):
+        req = ["name", "country_id"]
+        if country_id:
+            country = request.env['res.country'].browse(country_id)
+            if country.state_required:
+                req += ['state_id']
+            # if country.zip_required:
+            #     req += ['zip']
+        return req
 
     def checkout_form_validate(self, mode, all_form_values, data):
         # mode: tuple ('new|edit', 'billing|shipping')
@@ -416,7 +416,7 @@ class WebsitePortalsInherit(WebsiteSale):
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
-
+    phone_limit=fields.integer()
 
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
