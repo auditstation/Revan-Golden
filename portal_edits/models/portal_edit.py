@@ -133,8 +133,8 @@ class WebsitePortalsInherit(WebsiteSale):
         req = ["name", "country_id"]
         if country_id:
             country = request.env['res.country'].browse(country_id)
-            if country.state_required:
-                req += ['state_id']
+            # if country.state_required:
+            #     req += ['state_id']
             # if country.zip_required:
             #     req += ['zip']
         return req
