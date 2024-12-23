@@ -11,7 +11,6 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo import api, fields, models
 
-
 from werkzeug.exceptions import Forbidden, NotFound
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
 
@@ -19,8 +18,6 @@ import werkzeug
 from werkzeug.urls import url_encode
 import os
 from odoo.addons.web.controllers.home import ensure_db, Home, SIGN_UP_REQUEST_PARAMS, LOGIN_SUCCESSFUL_PARAMS
-
-
 
 import odoo
 import odoo.modules.registry
@@ -30,6 +27,7 @@ from odoo.tools import ustr
 from odoo.tools.translate import _
 from odoo.addons.web.controllers.utils import ensure_db, _get_login_redirect_url, is_user_internal
 
+import phonenumbers
 
 
 _logger = logging.getLogger(__name__)
@@ -57,29 +55,50 @@ class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
     def details_form_validate(self, data, partner_creation=False):
-        
-        
-        error = dict()
-        error_message = []
         error, error_message = super().details_form_validate(data)
-        if data.get('phone') and data.get('country_id'):
-            prefix_code="".join(str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code).split())
-            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
-            data_phone = "".join(data.get('phone').split())
-           
-            if data_phone[0:4]!= '+'+ prefix_code and data_phone[0:5]!= '00'+ prefix_code: 
-                
+
+        phone = data.get('phone')
+        country_id = data.get('country_id')
+
+        if phone and country_id:
+            try:
+                # Normalize the phone number to handle cases with "00" prefix
+                phone = phone.strip()
+                if phone.startswith("00"):
+                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
+
+                # Get the country's phone code from the database
+                country = request.env['res.country'].browse(int(country_id))
+                country_code = country.phone_code
+
+                # Parse the phone number
+                try:
+                    parsed_number = phonenumbers.parse(phone, None)
+                except phonenumbers.NumberParseException:
+                    # If parsing fails, assume phone is missing the country code
+                    parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
+
+                # Validate country code
+                if str(parsed_number.country_code) != str(country_code):
+                    raise phonenumbers.NumberParseException(1, _("Country code mismatch!"))
+
+                # Check if the phone number is valid
+                if not phonenumbers.is_valid_number(parsed_number):
+                    raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
+
+                # Optionally: Check phone length against phone_limit
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+
+                # Update the phone number in data with the normalized format
+                data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
+
+            except (phonenumbers.NumberParseException, ValueError) as e:
                 error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-           
-               
-            elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
-               
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-            elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(str(e))
+
         return error, error_message
 
 
@@ -124,26 +143,70 @@ class WebsitePortalsInherit(WebsiteSale):
         error = dict()
         error_message = []
 
-        error, error_message = super().checkout_form_validate(mode, all_form_values, data)   
-        if data.get('phone') and data.get('country_id'):
-            prefix_code="".join(str(request.env['res.country'].browse(int(data.get('country_id'))).phone_code).split())
-            phone_limit=request.env['res.country'].browse(int(data.get('country_id'))).phone_limit 
-            data_phone = "".join(data.get('phone').split())
-           
-            if data_phone[:1]!= '+' and data_phone[0:2]!= '00':  
-                
-                
+        error, error_message = super().checkout_form_validate(mode, all_form_values, data)
+
+        phone = data.get('phone')
+        country_id = data.get('country_id')
+        state_id = data.get('state_id')
+
+        if phone and country_id:
+            try:
+                # Normalize the phone number to handle cases with "00" prefix
+                phone = phone.strip()
+                if phone.startswith("00"):
+                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
+
+                # Get the country's phone code from the database
+                country = request.env['res.country'].browse(int(country_id))
+                country_code = country.phone_code
+
+                # Parse the phone number
+                try:
+                    parsed_number = phonenumbers.parse(phone, None)
+                except phonenumbers.NumberParseException:
+                    # If parsing fails, assume phone is missing the country code
+                    parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
+
+                # Validate country code
+                if str(parsed_number.country_code) != str(country_code):
+                    raise phonenumbers.NumberParseException(1, _("Country code mismatch!"))
+
+                # Check if the phone number is valid
+                if not phonenumbers.is_valid_number(parsed_number):
+                    raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
+
+                # Optionally: Check phone length against phone_limit
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+
+                # Update the phone number in data with the normalized format
+                data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
+
+            except (phonenumbers.NumberParseException, ValueError) as e:
                 error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-           
-               
-            elif  data_phone[1:4] == prefix_code and len((data_phone[4:]))!=phone_limit:
-               
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
-            elif data_phone[0:2] =='00' and data_phone[2:5] == prefix_code and len((data_phone[5:]))!=phone_limit: 
-                error["phone"] = 'error'
-                error_message.append(_('Invalid number! Please enter a valid number with country code %s',str("+"+prefix_code)))
+                error_message.append(str(e))
+
+
+
+        if state_id:
+
+            state = request.env['res.country.state'].browse(int(state_id))
+            if state:
+                if state.name=="State / Province...":
+                    error["state"] = ' Please Select State'
+                    error_message.append("Please Select State")
+
+                # Optionally: Check phone length against phone_limit
+                # phone_limit = country.phone_limit
+                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
+                #     raise ValueError(
+                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
+
+                # Update the phone number in data with the normalized format
+
+
         return error, error_message
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
@@ -461,6 +524,11 @@ class InheritLogin(AuthSignupHome):
     
     @http.route()
     def web_auth_signup(self, *args, **kw):
+        login_user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
+
+        if login_user:
+            # If the user already exists, redirect to the login page with a message
+            return request.render('web.login', {'error': 'You are already signed up. Please log in.'})
         passw = self.random_password()
         if 'password' in kw:
             kw['password'] = passw
@@ -468,13 +536,22 @@ class InheritLogin(AuthSignupHome):
             request.params["password"] = passw
             request.params["confirm_password"] = passw
         response = super().web_auth_signup(*args, **kw)
-        user=request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
+        user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
         user.tel_pass = passw
-        phone=kw.get("login")
-        user.partner_id.mobile =  phone
+        user.partner_id.mobile = kw.get("login")
         user.partner_id.phone = kw.get("login")
-        user.partner_id.email = ''
         return response
+
+
+class ProductCronJob(models.Model):
+    _inherit = 'product.product'
+
+    @api.model
+    def unpublish_out_of_stock_products(self):
+        products = self.search([('type', '=', 'product')])
+        for product in products:
+            if product.virtual_available == 0:
+                product.write({'website_published': False})
 
 
     

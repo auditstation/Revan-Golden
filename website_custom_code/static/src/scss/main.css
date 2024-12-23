@@ -18,6 +18,9 @@
 
 
 }
+.availability_messages {
+    display: none !important;
+}
 
 .div_zip{
     display: none !important;
