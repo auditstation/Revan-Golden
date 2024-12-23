@@ -439,6 +439,27 @@ class CountryInherit(models.Model):
    
     phone_limit = fields.Integer('Limit Phone')
 
+
+
+    def add_stat_and_province(self):
+        for rec in self:
+            # Check if a state with the same name and code already exists for the country
+            existing_state = self.env['res.country.state'].search([
+                ('name', '=', 'State / Province...'),
+                ('code', '=', '(A)'),
+                ('country_id', '=', rec.id)
+            ], limit=1)
+
+            if not existing_state:
+                # Create the state
+                self.env['res.country.state'].create({
+                    'name': 'State / Province...',
+                    'code': '(A)',
+                    'country_id': rec.id,
+                })
+
+
+
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
     didication_letter = fields.Text('Didication letter')
