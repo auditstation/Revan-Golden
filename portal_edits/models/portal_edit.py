@@ -561,7 +561,7 @@ class ProductCronJob(models.Model):
     _inherit = 'product.product'
 
     @api.model
-    def unpublish_out_of_stock_variants(self):
+    def unpublish_out_of_stock_products(self):
         products = self.search([
             ('type', '=', 'product'),
             ('website_published', '=', True)
