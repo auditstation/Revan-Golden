@@ -568,13 +568,13 @@ class ProductCronJob(models.Model):
         ])
         for product in products:
             if product.qty_available <= 0:
-                _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.name}")
-                _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.qty_available}")
-                _logger.info(f"  ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.id}")
-
+                _logger.info(f"Unpublishing product variant: {product.name} (ID: {product.id}), Qty: {product.qty_available}")
                 product.write({'website_published': False})
 
-                # Check if all variants of the template are unpublished
+                # Check stock levels for all variants of the template
                 template = product.product_tmpl_id
-                if all(not variant.website_published for variant in template.product_variant_ids):
+                if all(variant.qty_available <= 0 for variant in template.product_variant_ids):
+                    _logger.info(f"Unpublishing product template: {template.name} (ID: {template.id})")
                     template.write({'website_published': False})
+                else:
+                    _logger.info(f"Template {template.name} (ID: {template.id}) remains published due to stock in other variants.")
