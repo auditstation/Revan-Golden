@@ -564,5 +564,5 @@ class ProductCronJob(models.Model):
     def unpublish_out_of_stock_products(self):
         products = self.search([('type', '=', 'product')])
         for product in products:
-            if product.virtual_available == 0:
+            if product.qty_available == 0:
                 product.write({'website_published': False})
