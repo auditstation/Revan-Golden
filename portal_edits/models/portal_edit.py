@@ -570,6 +570,7 @@ class ProductCronJob(models.Model):
             if product.qty_available <= 0:
                 _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.name}")
                 _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.qty_available}")
+                _logger.info(f"  ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.id}")
 
                 product.write({'website_published': False})
 
