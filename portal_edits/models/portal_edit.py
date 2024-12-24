@@ -568,6 +568,9 @@ class ProductCronJob(models.Model):
         ])
         for product in products:
             if product.qty_available <= 0:
+                _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.name}")
+                _logger.info(f"PRODUCT ID &&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@@@@@@@ {product.qty_available}")
+
                 product.write({'website_published': False})
 
                 # Check if all variants of the template are unpublished
