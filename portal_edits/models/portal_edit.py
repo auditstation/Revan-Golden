@@ -563,20 +563,28 @@ class InheritLogin(AuthSignupHome):
         user.partner_id.phone = kw.get("login")
         return response
 
-
 class ProductCronJob(models.Model):
     _inherit = 'product.product'
 
     @api.model
     def unpublish_out_of_stock_products(self):
-        products = self.search([('type', '=', 'product')])
-        for product in products:
-            if product.qty_available == 0:
-                product.write({'website_published': False})
+        # Search for all published product templates
+        templates = self.env['product.template'].search([
+            ('website_published', '=', True),
+            ('product_variant_ids.type', '=', 'product')
+        ])
+
+        for template in templates:
+            # Check stock levels for all variants of the template
+            all_variants_out_of_stock = all(
+                variant.qty_available <= 0 for variant in template.product_variant_ids
+            )
+
+            if all_variants_out_of_stock:
+                _logger.info(f"Unpublishing product template: {template.name} (ID: {template.id})")
+                template.write({'website_published': False})
             else:
-                pass
+                _logger.info(f"Template {template.name} (ID: {template.id}) remains published due to stock in some variants.")
 
-
-    
 
     
