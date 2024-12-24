@@ -559,14 +559,18 @@ class InheritLogin(AuthSignupHome):
 
 class ProductCronJob(models.Model):
     _inherit = 'product.product'
+
     @api.model
-    def unpublish_out_of_stock_products(self):
-        # Only check published products to avoid unnecessary updates
-        published_products = self.search([
+    def unpublish_out_of_stock_variants(self):
+        products = self.search([
             ('type', '=', 'product'),
-            ('website_published', '=', True)  # Only consider published products
+            ('website_published', '=', True)
         ])
-        for product in published_products:
-            # Check stock availability
+        for product in products:
             if product.qty_available <= 0:
                 product.write({'website_published': False})
+
+                # Check if all variants of the template are unpublished
+                template = product.product_tmpl_id
+                if all(not variant.website_published for variant in template.product_variant_ids):
+                    template.write({'website_published': False})
