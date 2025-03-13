@@ -262,8 +262,10 @@ class SaleOrederInherit(models.Model):
         url = base_url + 'print-orders'
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body_data = create_request_get_data.content
+        
        
         b64PDF = codecs.encode(response_body_data, 'base64')
+        _logger.info(f'base_64file{b64PDF}')
         self.file_ship=b64PDF
        
 
