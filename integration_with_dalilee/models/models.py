@@ -126,6 +126,7 @@ class SaleOrederInherit(models.Model):
 
 
     def add_order(self,sale_id):
+        _logger.info(f'sale_id{sale_id}')
         data = {
             "customer_name": str(sale_id.partner_id.name),
             "customer_number": str(sale_id.partner_id.phone),
