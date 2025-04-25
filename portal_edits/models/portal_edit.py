@@ -91,6 +91,7 @@ class PortalInherit(CustomerPortal):
                 except phonenumbers.NumberParseException:
                     # If parsing fails, assume phone is missing the country code
                     parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
+                _logger.info(f"###############PHONE NUMBER :{parsed_number}")
 
                 # Validate country code
                 if str(parsed_number.country_code) != str(country_code):
@@ -99,8 +100,12 @@ class PortalInherit(CustomerPortal):
                 # Check if the phone number is valid
                 if not phonenumbers.is_valid_number(parsed_number):
                     _logger.info(f"###############PHONE NUMBER :{parsed_number}")
+                    if country_code==968 and  phone.startswith("7"):
+                        pass
 
-                    raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
+                    else:
+
+                        raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
                 # phone_limit = country.phone_limit
