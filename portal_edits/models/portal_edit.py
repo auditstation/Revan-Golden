@@ -98,6 +98,8 @@ class PortalInherit(CustomerPortal):
 
                 # Check if the phone number is valid
                 if not phonenumbers.is_valid_number(parsed_number):
+                    _logger.info(f"###############PHONE NUMBER :{parsed_number}")
+
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
@@ -186,6 +188,8 @@ class WebsitePortalsInherit(WebsiteSale):
 
                 # Check if the phone number is valid
                 if not phonenumbers.is_valid_number(parsed_number):
+                    _logger.info(f"###############PHONE NUMBER :{parsed_number}")
+
                     raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
