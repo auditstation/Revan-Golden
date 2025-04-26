@@ -39,13 +39,26 @@ class ProductTemplate(models.Model):
             valid_combination_list = []
 
             combinations = tpl._get_possible_combinations()
-
             for cmb in combinations:
-                variant = tpl._get_variant_for_combination(cmb)
+                # for cmb in combinations:
+            #     variant = tpl._get_variant_for_combination(cmb)
 
-                if variant.qty_available > 0:
-                    available = list(map(lambda item: item.id, cmb))
-                    valid_combination_list.append(available)
+            #     if variant.qty_available > 0:
+            #         available = list(map(lambda item: item.id, cmb))
+            #         valid_combination_list.append(available)
+                variant = tpl._get_variant_for_combination(cmb)
+            
+                if variant:
+                    total_qty = 0
+                    for quant in variant.stock_quant_ids:
+                        if quant.location_id.usage == 'internal':
+                            total_qty += quant.quantity
+            
+                    if total_qty > 0:
+                        available = list(map(lambda item: item.id, cmb))
+                        valid_combination_list.append(available)
+
+            
             return {
                 'success': True,
                 'message':f'print value_to_show_tuple {valid_combination_list}',
