@@ -73,6 +73,7 @@ class ProductTemplate(models.Model):
                 variant = tpl._get_variant_for_combination(cmb)
 
                 if variant:
+                    # Check quantity across ALL warehouses, not just website warehouse
                     total_qty = sum(quant.quantity for quant in variant.stock_quant_ids
                                 if quant.location_id.usage == 'internal')
 
@@ -82,13 +83,9 @@ class ProductTemplate(models.Model):
 
             return {
                 'success': True,
-                'message': f'print value_to_show_tuple {valid_combination_list}',
-                "value_to_show_tuple": valid_combination_list
+                'message': f'Available combinations: {valid_combination_list}',
+                'value_to_show_tuple': valid_combination_list
             }
-
-            # return {
-            #     "value_to_show_tuple": valid_combination_list
-            # }
 
     def get_variant_count(self):
         for rec in self:
