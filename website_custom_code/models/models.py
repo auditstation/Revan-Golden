@@ -205,12 +205,29 @@ class ProductProduct(models.Model):
                                      help="Check right if you want to hide the variant in your website")
     is_out_of_stock = fields.Boolean(compute='_compute_out_of_stock')
 
+    # def _compute_out_of_stock(self):
+    #     for rec in self:
+    #         if rec.type == 'product':
+    #             rec.is_out_of_stock = rec.qty_available == 0
+    #             rec.hide_on_website = rec.qty_available == 0
+
+    #         else:
+    #             rec.is_out_of_stock = False
+    #             rec.hide_on_website = False
+
+    @api.depends('stock_quant_ids.quantity')
     def _compute_out_of_stock(self):
+        preferred_warehouses = self.env['stock.warehouse'].search([]) 
+
         for rec in self:
             if rec.type == 'product':
-                rec.is_out_of_stock = rec.qty_available == 0
-                rec.hide_on_website = rec.qty_available == 0
+                total_qty = 0
+                for quant in rec.stock_quant_ids:
+                    if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
+                        total_qty += quant.quantity
 
+                rec.is_out_of_stock = total_qty <= 0
+                rec.hide_on_website = total_qty <= 0
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
