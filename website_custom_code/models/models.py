@@ -16,7 +16,7 @@ class ProductTemplate(models.Model):
     # @api.depends('qty_available')
     # def _compute_product_visibility(self):
     #     for product_temp in self:
-            
+
     #             variants = product_temp.product_variant_ids
     #             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
     #             product_temp.is_visible = is_visible
@@ -33,35 +33,56 @@ class ProductTemplate(models.Model):
                 product_temp.is_published = is_visible
 
 
-    def get_possible_combinations_available(self):
+    # def get_possible_combinations_available(self):
 
+    #     for tpl in self.sudo():
+    #         valid_combination_list = []
+
+    #         combinations = tpl._get_possible_combinations()
+    #         for cmb in combinations:
+    #             # for cmb in combinations:
+    #         #     variant = tpl._get_variant_for_combination(cmb)
+
+    #         #     if variant.qty_available > 0:
+    #         #         available = list(map(lambda item: item.id, cmb))
+    #         #         valid_combination_list.append(available)
+    #             variant = tpl._get_variant_for_combination(cmb)
+
+    #             if variant:
+    #                 total_qty = 0
+    #                 for quant in variant.stock_quant_ids:
+    #                     if quant.location_id.usage == 'internal':
+    #                         total_qty += quant.quantity
+
+    #                 if total_qty > 0:
+    #                     available = list(map(lambda item: item.id, cmb))
+    #                     valid_combination_list.append(available)
+
+
+    #         return {
+    #             'success': True,
+    #             'message':f'print value_to_show_tuple {valid_combination_list}',
+    #             "value_to_show_tuple": valid_combination_list
+    #         }
+    def get_possible_combinations_available(self):
         for tpl in self.sudo():
             valid_combination_list = []
 
             combinations = tpl._get_possible_combinations()
             for cmb in combinations:
-                # for cmb in combinations:
-            #     variant = tpl._get_variant_for_combination(cmb)
-
-            #     if variant.qty_available > 0:
-            #         available = list(map(lambda item: item.id, cmb))
-            #         valid_combination_list.append(available)
                 variant = tpl._get_variant_for_combination(cmb)
-            
+
                 if variant:
-                    total_qty = 0
-                    for quant in variant.stock_quant_ids:
-                        if quant.location_id.usage == 'internal':
-                            total_qty += quant.quantity
-            
+                    total_qty = sum(quant.quantity for quant in variant.stock_quant_ids
+                                if quant.location_id.usage == 'internal')
+
                     if total_qty > 0:
                         available = list(map(lambda item: item.id, cmb))
                         valid_combination_list.append(available)
 
-            
             return {
                 'success': True,
-                'message':f'print value_to_show_tuple {valid_combination_list}',
+                'message': f'print value_to_show_tuple {valid_combination_list}',
                 "value_to_show_tuple": valid_combination_list
             }
 
@@ -162,20 +183,20 @@ class ProductTemplate(models.Model):
                 no_variant_attr_val += ptav
 
         for combination in self.sudo()._get_possible_combinations(parent_combination, necessary_values):
-            
+
             org_combination = combination
             combination -= no_variant_attr_val
             # variant_id = self.product_variant_ids.filtered(
             #     lambda variant: variant.product_template_attribute_value_ids == combination)
             variant_id = self.sudo()._get_variant_for_combination(combination)
-           
+
             if variant_id and not variant_id.hide_on_website:
-                
+
 
                 return org_combination
             elif variant_id.product_tmpl_id.qty_available == 0:
                 return org_combination
-           
+
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
         result = super(ProductTemplate, self)._is_combination_possible(combination, parent_combination,
@@ -230,7 +251,7 @@ class ProductProduct(models.Model):
 
     @api.depends('stock_quant_ids.quantity')
     def _compute_out_of_stock(self):
-        preferred_warehouses = self.env['stock.warehouse'].search([]) 
+        preferred_warehouses = self.env['stock.warehouse'].search([])
 
         for rec in self:
             if rec.type == 'product':
