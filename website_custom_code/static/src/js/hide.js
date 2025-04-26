@@ -74,6 +74,28 @@ publicWidget.registry.WebsiteSale.include({
         });
     },
 
+    async _logVariantQuantities(product_tmpl_id) {
+        try {
+            const response = await $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/get_variant_quantities",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    params: { product_tmpl_id: product_tmpl_id },
+                }),
+            });
+
+            if (response && response.result) {
+                console.log("Variant quantities by warehouse:", response.result);
+            }
+        } catch (error) {
+            console.error("Failed to fetch variant quantities:", error);
+        }
+    },
+
     onChangeVariant(ev) {
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
