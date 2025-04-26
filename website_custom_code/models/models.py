@@ -22,6 +22,36 @@ class ProductTemplate(models.Model):
     #             product_temp.is_visible = is_visible
     #             if product_temp.qty_available == 0:
     #                 product_temp.is_published = is_visible
+    
+    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, pricelist=False, parent_combination=False, only_template=False):
+        """Override to consider inventory across all warehouses"""
+        combination_info = super()._get_combination_info(
+            combination=combination, product_id=product_id, add_qty=add_qty, pricelist=pricelist,
+            parent_combination=parent_combination, only_template=only_template
+        )
+
+        if product_id or combination_info.get('product_id'):
+            product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
+
+            total_qty = sum(quant.quantity for quant in product.stock_quant_ids
+                           if quant.location_id.usage == 'internal')
+
+            combination_info.update({
+                'virtual_available': total_qty,
+                'product_type': product.type,
+                'inventory_availability': 'always',
+                'available_threshold': 0,
+                'cart_qty': 0,
+                'free_qty': total_qty,
+            })
+
+            if total_qty > 0:
+                combination_info.update({
+                    'is_combination_possible': True,
+                    'is_possible': True,
+                })
+
+        return combination_info
     @api.depends('product_variant_ids.stock_quant_ids.quantity')
     def _compute_product_visibility(self):
         for product_temp in self:
