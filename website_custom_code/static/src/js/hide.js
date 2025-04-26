@@ -46,6 +46,9 @@ publicWidget.registry.WebsiteSale.include({
                     id_tuples = response.result.data.value_to_show_tuple;
                     console.log("response>>>", response);
                     console.log("id_tuples>>>", id_tuples);
+                    
+                    this._logVariantQuantities(product_tmpl_id);
+
 
                     // Auto-select the first available variant
                     this._autoSelectFirstVariant($parent);
