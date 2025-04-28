@@ -37,8 +37,8 @@ class ProductTemplate(models.Model):
         if product_id or combination_info.get('product_id'):
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
-            # Calculate total available_quantity across all warehouses
-            total_qty = sum(quant.available_quantity for quant in product.stock_quant_ids
+            # Calculate total quantity across all warehouses
+            total_qty = sum(quant.quantity for quant in product.stock_quant_ids
                            if quant.location_id.usage == 'internal')
 
             # Update the combination_info with our calculated availability
@@ -51,7 +51,7 @@ class ProductTemplate(models.Model):
                 'free_qty': total_qty,
             })
 
-            # If we have available_quantity in any warehouse, show as available
+            # If we have quantity in any warehouse, show as available
             if total_qty > 0:
                 combination_info.update({
                     'is_combination_possible': True,
@@ -59,11 +59,11 @@ class ProductTemplate(models.Model):
                 })
 
         return combination_info
-    @api.depends('product_variant_ids.stock_quant_ids.available_quantity')
+    @api.depends('product_variant_ids.stock_quant_ids.quantity')
     def _compute_product_visibility(self):
         for product_temp in self:
             total_qty = sum(product_temp.product_variant_ids.mapped('stock_quant_ids').filtered(
-                lambda q: q.location_id.usage == 'internal').mapped('available_quantity'))
+                lambda q: q.location_id.usage == 'internal').mapped('quantity'))
             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
             if total_qty == 0:
@@ -111,7 +111,7 @@ class ProductTemplate(models.Model):
 
                 if variant:
                     # Check quantity across ALL warehouses, not just website warehouse
-                    total_qty = sum(quant.available_quantity for quant in variant.stock_quant_ids
+                    total_qty = sum(quant.quantity for quant in variant.stock_quant_ids
                                 if quant.location_id.usage == 'internal')
 
                     if total_qty > 0:
@@ -283,7 +283,7 @@ class ProductProduct(models.Model):
     #             rec.is_out_of_stock = False
     #             rec.hide_on_website = False
 
-    @api.depends('stock_quant_ids.available_quantity')
+    @api.depends('stock_quant_ids.quantity')
     def _compute_out_of_stock(self):
         preferred_warehouses = self.env['stock.warehouse'].search([])
 
@@ -292,7 +292,7 @@ class ProductProduct(models.Model):
                 total_qty = 0
                 for quant in rec.stock_quant_ids:
                     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        total_qty += quant.available_quantity
+                        total_qty += quant.quantity
 
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
