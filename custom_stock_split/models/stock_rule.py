@@ -42,7 +42,7 @@ class StockRule(models.Model):
                     'name': procurement.name,
                     'origin': procurement.origin,
                     'company_id': procurement.company_id.id,
-                    'group_id': procurement.group_id.id,  # Use group_id if available
+                    'group_id': procurement.group_id.id if procurement.group_id else False,  # Safely handle missing group_id
                 })
                 new_procurements.append((new_proc, rule))
                 remaining_qty -= available_in_khoud
@@ -59,7 +59,7 @@ class StockRule(models.Model):
                     'location_id': bawshar_loc.id,
                     'location_dest_id': khoud_loc.id,
                     'procure_method': 'make_to_stock',
-                    'group_id': procurement.group_id.id if procurement.group_id else False,
+                    'group_id': procurement.group_id.id if procurement.group_id else False,  # Handle group_id safely here as well
                     'origin': procurement.origin,
                 }
 
