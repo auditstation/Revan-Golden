@@ -42,14 +42,13 @@ class SaleOrder(models.Model):
         if not location:
             raise UserError(f"Location with ID {location_id} not found.")
 
-        # Create stock picking based on the sale order
         picking = self.env['stock.picking'].create({
             'origin': order.name,
             'partner_id': order.partner_id.id,
             'picking_type_id': self._get_picking_type_id(location_id),
             'location_id': location.id,
             'location_dest_id': self._get_destination_location_id(),
-            'move_lines': [(0, 0, {
+            'move_ids_without_package': [(0, 0, {
                 'product_id': product.id,
                 'product_uom': product.uom_id.id,
                 'product_uom_qty': qty,
