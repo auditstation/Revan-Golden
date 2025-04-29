@@ -47,7 +47,7 @@ class StockRule(models.Model):
                     origin=procurement.origin,
                     company_id=procurement.company_id,
                     values=procurement.values,
-                    date_planned=procurement.date_planned
+
                 )
                 new_procurements.append((new_proc, rule))
                 remaining_qty -= available_in_khoud
