@@ -1,55 +1,58 @@
 import logging
-from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo import models, api
 
 _logger = logging.getLogger(__name__)
-
 
 class StockRule(models.Model):
     _inherit = 'stock.rule'
 
     @api.model
     def _run_pull(self, procurements):
-        _logger.info("Starting custom _run_pull logic")
+        _logger.info("Running custom _run_pull for custom stock allocation logic")
         new_procurements = []
 
         for procurement, rule in procurements:
             product = procurement.product_id
             needed_qty = procurement.product_qty
-            _logger.info(f"Processing procurement for product: {product.display_name}, Requested Qty: {needed_qty}")
+            _logger.info(f"Procurement: {product.display_name}, Needed Qty: {needed_qty}")
 
-            # Get locations
+            # Locations
             khoud_loc = self.env['stock.location'].search([('id', '=', 8)], limit=1)
             bawshar_loc = self.env['stock.location'].search([('id', '=', 18)], limit=1)
 
-            _logger.info(f"Khoud location found: {khoud_loc.name if khoud_loc else 'Not Found'}")
-            _logger.info(f"Bawshar location found: {bawshar_loc.name if bawshar_loc else 'Not Found'}")
-
             if not khoud_loc or not bawshar_loc:
-                _logger.warning("One or both locations not found. Falling back to default behavior.")
+                _logger.warning("Required stock locations not found, using default behavior.")
                 return super()._run_pull([(procurement, rule)])
 
             available_in_khoud = product.with_context(location=khoud_loc.id).qty_available
-            _logger.info(f"Available in Khoud: {available_in_khoud} units")
+            _logger.info(f"Available in Khoud: {available_in_khoud}")
 
-            # If khoud has enough stock, use default pull
             if available_in_khoud >= needed_qty:
-                _logger.info("Khoud has enough stock. Using default pull.")
+                _logger.info("Khoud has enough stock, using default pull.")
                 return super()._run_pull([(procurement, rule)])
 
-            # If khoud has partial stock, create a partial procurement
+            # Remaining qty after pulling from khoud
             remaining_qty = needed_qty
             if available_in_khoud > 0:
-                _logger.info(f"Khoud can partially fulfill: {available_in_khoud} units. Creating partial procurement.")
-                partial_procurement = procurement.copy({
+                partial_proc_vals = {
+                    'name': procurement.name,
+                    'product_id': procurement.product_id,
                     'product_qty': available_in_khoud,
-                })
-                new_procurements.append((partial_procurement, rule))
-                remaining_qty = needed_qty - available_in_khoud
-                _logger.info(f"Remaining quantity to pull from Bawshar: {remaining_qty}")
+                    'product_uom': procurement.product_uom,
+                    'location_id': procurement.location_id.id,
+                    'rule_id': rule.id,
+                    'group_id': procurement.group_id.id,
+                    'date_planned': procurement.date_planned,
+                    'values': procurement.values,
+                    'origin': procurement.origin,
+                }
+                _logger.info(f"Creating partial procurement with {available_in_khoud} units from Khoud")
+                new_procurements.append((self.env['procurement.group'].Procurement(**partial_proc_vals), rule))
+                remaining_qty -= available_in_khoud
 
-            # Create internal transfer move from Bawshar to Khoud for the remaining quantity
-            if remaining_qty > 0 and bawshar_loc:
+            # Internal transfer from Bawshar to Khoud
+            if remaining_qty > 0:
+                _logger.info(f"Creating stock move from Bawshar to Khoud for {remaining_qty} units")
                 move_vals = rule._prepare_move_values(
                     procurement.product_id,
                     remaining_qty,
@@ -60,11 +63,10 @@ class StockRule(models.Model):
                     procurement.origin
                 )
                 self.env['stock.move'].create(move_vals)
-                _logger.info(f"Created stock move from Bawshar to Khoud for: {remaining_qty} units")
 
         if new_procurements:
-            _logger.info("Running default pull for partial procurements.")
+            _logger.info(f"Running default pull for {len(new_procurements)} partial procurements")
             return super()._run_pull(new_procurements)
 
-        _logger.info("No partial procurements. Running default pull for original procurements.")
+        _logger.info("Falling back to default behavior for remaining procurements")
         return super()._run_pull(procurements)
