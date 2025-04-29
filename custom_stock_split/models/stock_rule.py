@@ -19,8 +19,8 @@ class StockRule(models.Model):
             _logger.info(f"Processing procurement for product: {product.display_name}, Requested Qty: {needed_qty}")
 
             # Get locations
-            khoud_loc = self.env['stock.location'].search([('name', '=', 'khoud/Stock')], limit=1)
-            bawshar_loc = self.env['stock.location'].search([('name', '=', 'bawshar/Stock')], limit=1)
+            khoud_loc = self.env['stock.location'].search([('id', '=', 8)], limit=1)
+            bawshar_loc = self.env['stock.location'].search([('id', '=', 18)], limit=1)
 
             _logger.info(f"Khoud location found: {khoud_loc.name if khoud_loc else 'Not Found'}")
             _logger.info(f"Bawshar location found: {bawshar_loc.name if bawshar_loc else 'Not Found'}")
