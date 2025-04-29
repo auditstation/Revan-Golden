@@ -1,5 +1,5 @@
-import logging
 from odoo import models, api
+import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -36,15 +36,15 @@ class StockRule(models.Model):
             if available_in_khoud > 0:
                 _logger.info(f"Creating procurement order for {available_in_khoud} from Khoud")
 
-                # Safely handle the 'group_id' attribute
-                group_id = getattr(procurement, 'group_id', None)  # Safely get group_id
+                group_id = getattr(procurement, 'group_id', None)
                 if group_id:
                     group_id = group_id.id
                 else:
                     group_id = False
 
-                # Create Procurement Order (not Group)
-                new_proc = self.env['procurement.order'].create({
+                # Corrected model reference
+                procurement_order_model = self.env['procurement.order']
+                new_proc = procurement_order_model.create({
                     'product_id': procurement.product_id.id,
                     'product_qty': available_in_khoud,
                     'product_uom': procurement.product_uom.id,
@@ -52,7 +52,7 @@ class StockRule(models.Model):
                     'name': procurement.name,
                     'origin': procurement.origin,
                     'company_id': procurement.company_id.id,
-                    'group_id': group_id,  # Use group_id if exists, otherwise False
+                    'group_id': group_id,
                 })
                 new_procurements.append((new_proc, rule))
                 remaining_qty -= available_in_khoud
@@ -69,7 +69,7 @@ class StockRule(models.Model):
                     'location_id': bawshar_loc.id,
                     'location_dest_id': khoud_loc.id,
                     'procure_method': 'make_to_stock',
-                    'group_id': group_id,  # Safely handle group_id here as well
+                    'group_id': group_id,
                     'origin': procurement.origin,
                 }
 
