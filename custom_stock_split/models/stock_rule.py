@@ -16,8 +16,12 @@ class StockRule(models.Model):
             needed_qty = procurement.product_qty
             _logger.info(f"Processing product: {product.display_name}, Needed: {needed_qty}")
 
-            khoud_loc = self.env['stock.location'].search([('name', '=', 'khoud/Stock')], limit=1)
-            bawshar_loc = self.env['stock.location'].search([('name', '=', 'bawshar/Stock')], limit=1)
+            # khoud_loc = self.env['stock.location'].search([('name', '=', 'khoud/Stock')], limit=1)
+            # bawshar_loc = self.env['stock.location'].search([('name', '=', 'bawshar/Stock')], limit=1)
+
+            khoud_loc = self.env['stock.location'].search([('id', '=', 8)], limit=1)
+            bawshar_loc = self.env['stock.location'].search([('id', '=', 18)], limit=1)
+
 
             if not khoud_loc or not bawshar_loc:
                 _logger.warning("Stock locations not found. Default Odoo behavior will run.")
