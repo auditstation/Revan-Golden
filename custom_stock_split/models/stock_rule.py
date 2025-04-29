@@ -34,7 +34,7 @@ class StockRule(models.Model):
 
             # Partial procurement from Khoud
             if available_in_khoud > 0:
-                _logger.info(f"Creating procurement for {available_in_khoud} from Khoud")
+                _logger.info(f"Creating procurement order for {available_in_khoud} from Khoud")
 
                 # Safely handle the 'group_id' attribute
                 group_id = getattr(procurement, 'group_id', None)  # Safely get group_id
@@ -43,7 +43,8 @@ class StockRule(models.Model):
                 else:
                     group_id = False
 
-                new_proc = self.env['procurement.group'].create({
+                # Create Procurement Order (not Group)
+                new_proc = self.env['procurement.order'].create({
                     'product_id': procurement.product_id.id,
                     'product_qty': available_in_khoud,
                     'product_uom': procurement.product_uom.id,
