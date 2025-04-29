@@ -5,7 +5,14 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    check_stock = fields.Boolean('Check Stock', default=False)
+    check_stock = fields.Boolean(string='Check Stock', compute='_compute_check_stock', store=True)
+
+    @api.depends('website_id')
+    def _compute_check_stock(self):
+        for order in self:
+            order.check_stock = bool(order.website_id)
+
+
 
     def action_confirm(self):
         for order in self:
