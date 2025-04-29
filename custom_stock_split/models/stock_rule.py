@@ -3,6 +3,7 @@ from odoo import models, api
 
 _logger = logging.getLogger(__name__)
 
+
 class StockRule(models.Model):
     _inherit = 'stock.rule'
 
@@ -34,6 +35,14 @@ class StockRule(models.Model):
             # Partial procurement from Khoud
             if available_in_khoud > 0:
                 _logger.info(f"Creating procurement for {available_in_khoud} from Khoud")
+
+                # Safely handle the 'group_id' attribute
+                group_id = getattr(procurement, 'group_id', None)  # Safely get group_id
+                if group_id:
+                    group_id = group_id.id
+                else:
+                    group_id = False
+
                 new_proc = self.env['procurement.group'].create({
                     'product_id': procurement.product_id.id,
                     'product_qty': available_in_khoud,
@@ -42,7 +51,7 @@ class StockRule(models.Model):
                     'name': procurement.name,
                     'origin': procurement.origin,
                     'company_id': procurement.company_id.id,
-                    'group_id': procurement.group_id.id if procurement.group_id else False,  # Safely handle missing group_id
+                    'group_id': group_id,  # Use group_id if exists, otherwise False
                 })
                 new_procurements.append((new_proc, rule))
                 remaining_qty -= available_in_khoud
@@ -59,7 +68,7 @@ class StockRule(models.Model):
                     'location_id': bawshar_loc.id,
                     'location_dest_id': khoud_loc.id,
                     'procure_method': 'make_to_stock',
-                    'group_id': procurement.group_id.id if procurement.group_id else False,  # Handle group_id safely here as well
+                    'group_id': group_id,  # Safely handle group_id here as well
                     'origin': procurement.origin,
                 }
 
