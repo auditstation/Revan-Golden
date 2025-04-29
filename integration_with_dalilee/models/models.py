@@ -132,7 +132,7 @@ class SaleOrederInherit(models.Model):
             "customer_number": str(sale_id.partner_id.phone),
             "order_price": 0,
             "wilaya_id": "1",
-            "external_way_bill_number":'S'+sale_id.name,
+            "external_way_bill_number":'Classy/'+sale_id.name,
             "address": str(sale_id.partner_shipping_id.country_id.name)+"-"+str(sale_id.partner_shipping_id.state_id.name)+"-"+str(sale_id.partner_shipping_id.street),
             "volume_weight": "2"
         }
