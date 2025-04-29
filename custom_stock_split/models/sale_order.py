@@ -10,7 +10,7 @@ class SaleOrder(models.Model):
     @api.depends('website_id')
     def _compute_check_stock(self):
         for order in self:
-            order.check_stock = bool(order.website_id)
+            order.check_stock = order.website_id
 
 
 
