@@ -46,7 +46,7 @@ class SaleOrder(models.Model):
                                         for move in picking.move_ids_without_package:
                                             if product.id == move.product_id.id:
                                                 move.quantity  = move.product_uom_qty
-        
+                                        picking.state="waiting"
                                     if picking.picking_type_id.code == 'internal':
                                         for move in picking.move_ids_without_package:
                                             if product.id == move.product_id.id:
