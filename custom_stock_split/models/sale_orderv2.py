@@ -42,6 +42,11 @@ class SaleOrder(models.Model):
                         if remaining_qty > 0:
                             if order.picking_ids:
                                 for picking in order.picking_ids:
+                                    if picking.picking_type_id.code == 'outgoing':
+                                        for move in picking.move_ids_without_package:
+                                            if product.id == move.product_id.id:
+                                                move.quantity  = move.product_uom_qty
+        
                                     if picking.picking_type_id.code == 'internal':
                                         for move in picking.move_ids_without_package:
                                             if product.id == move.product_id.id:
