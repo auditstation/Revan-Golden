@@ -50,8 +50,8 @@ class SaleOrder(models.Model):
                             # Create picking for `bawshar/Stock` for the remaining quantity
                             # self._create_stock_picking(order, product, remaining_qty, 18)
 
-            # Call the original `action_confirm` method to confirm the order
-            return res
+        # Call the original `action_confirm` method to confirm the order
+        return res
 
     def _get_stock_quantity(self, product, location_id):
         stock_quant = self.env['stock.quant'].search([
@@ -63,4 +63,3 @@ class SaleOrder(models.Model):
 
 
 
-   
