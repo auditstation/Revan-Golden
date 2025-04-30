@@ -31,6 +31,7 @@ class SaleOrder(models.Model):
                             for picking in order.picking_ids:
                                 if 'OUT' in picking.name:
                                     for move in picking.move_ids_without_package:
+                                        if product.id == move.product_id.id:
                                             move.quantity  = move.product_uom_qty
 
 
@@ -43,6 +44,8 @@ class SaleOrder(models.Model):
                                 for picking in order.picking_ids:
                                     if 'INT' in picking.name:
                                         for move in picking.move_ids_without_package:
+                                            if product.id == move.product_id.id:
+
                                                 move.quantity  = remaining_qty
                                                 move.product_uom_qty = remaining_qty
 
