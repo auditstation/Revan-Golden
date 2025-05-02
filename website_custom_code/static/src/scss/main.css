@@ -18,6 +18,9 @@
 
 
 }
+.availability_messages {
+    display: none !important;
+}
 
 .availability_messages {
     display: none !important;
