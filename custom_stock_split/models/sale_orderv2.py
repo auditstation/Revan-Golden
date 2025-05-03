@@ -62,7 +62,7 @@ class SaleOrder(models.Model):
         return res
 
     def _get_stock_quantity(self, product, location_id):
-        stock_quant = self.env['stock.quant'].search([
+        stock_quant = self.env['stock.quant'].sudo().search([
             ('product_id', '=', product.id),
             ('location_id', '=', location_id)
         ], limit=1)

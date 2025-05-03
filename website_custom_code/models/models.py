@@ -38,7 +38,7 @@ class ProductTemplate(models.Model):
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
             # Calculate total quantity across all warehouses
-            total_qty = sum(quant.quantity for quant in product.stock_quant_ids
+            total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
                            if quant.location_id.usage == 'internal')
 
             # Update the combination_info with our calculated availability
@@ -62,7 +62,7 @@ class ProductTemplate(models.Model):
     @api.depends('product_variant_ids.stock_quant_ids.quantity')
     def _compute_product_visibility(self):
         for product_temp in self:
-            total_qty = sum(product_temp.product_variant_ids.mapped('stock_quant_ids').filtered(
+            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
                 lambda q: q.location_id.usage == 'internal').mapped('quantity'))
             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
@@ -111,7 +111,7 @@ class ProductTemplate(models.Model):
 
                 if variant:
                     # Check quantity across ALL warehouses, not just website warehouse
-                    total_qty = sum(quant.quantity for quant in variant.stock_quant_ids
+                    total_qty = sum(quant.quantity for quant in variant.sudo().stock_quant_ids
                                 if quant.location_id.usage == 'internal')
 
                     if total_qty > 0:
@@ -285,12 +285,13 @@ class ProductProduct(models.Model):
 
     @api.depends('stock_quant_ids.quantity')
     def _compute_out_of_stock(self):
-        preferred_warehouses = self.env['stock.warehouse'].search([])
+        preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
 
         for rec in self:
             if rec.type == 'product':
                 total_qty = 0
-                for quant in rec.stock_quant_ids:
+
+                for quant in rec.sudo().stock_quant_ids:
                     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
                         total_qty += quant.quantity
 
