@@ -33,6 +33,7 @@ class SaleOrder(models.Model):
                                     for move in picking.move_ids_without_package:
                                         if product.id == move.product_id.id:
                                             move.quantity  = move.product_uom_qty
+                            continue
 
 
                         # self._create_stock_picking(order, product, qty_to_deliver, 8)
