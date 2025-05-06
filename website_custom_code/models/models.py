@@ -300,3 +300,6 @@ class ProductProduct(models.Model):
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
+
+
+                
