@@ -29,29 +29,27 @@ from odoo.addons.web.controllers.utils import ensure_db, _get_login_redirect_url
 
 import phonenumbers
 
+
 _logger = logging.getLogger(__name__)
 
-
 class UserInherit(models.Model):
-    _inherit = "res.users"
-    tel_pass = fields.Char(groups='base.group_no_one', invisible=True, copy=False)
-
+    _inherit="res.users"
+    tel_pass = fields.Char(groups='base.group_no_one',invisible=True, copy=False)
     def random_password(length=40, prefix="pass"):
         import secrets
         import string
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(20))
         return password
-
     def change_user_pass(self):
         for rec in self:
             if rec.share:
                 passw = rec.random_password()
 
-                rec.sudo().write({'password': passw, 'tel_pass': passw})
+                
+                rec.sudo().write({'password':passw,'tel_pass':passw})
             else:
-                rec.sudo().write({'login': rec.partner_id.phone})
-
+                rec.sudo().write({'login':rec.partner_id.phone})
 
 class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
@@ -109,70 +107,6 @@ class PortalInherit(CustomerPortal):
 
         return error, error_message
 
-    # def details_form_validate(self, data, partner_creation=False):
-    #
-    #
-    #     error = dict()
-    #     error_message = []
-    #     error, error_message = super().details_form_validate(data)
-    #     if data.get('phone') and len(data.get('phone')) < 8:
-    #         error["phone"] = 'error'
-    #         error_message.append(_('Invalid number! Please enter a valid number'))
-    #     return error, error_message
-
-    def details_form_validate(self, data, partner_creation=False):
-        error, error_message = super().details_form_validate(data)
-
-        phone = data.get('phone')
-        country_id = data.get('country_id')
-
-        if phone and country_id:
-            try:
-                # Normalize the phone number to handle cases with "00" prefix
-                phone = phone.strip()
-                if phone.startswith("00"):
-                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
-
-                # Get the country's phone code from the database
-                country = request.env['res.country'].browse(int(country_id))
-                country_code = country.phone_code
-
-                # Parse the phone number
-                try:
-                    parsed_number = phonenumbers.parse(phone, None)
-                except phonenumbers.NumberParseException:
-                    # If parsing fails, assume phone is missing the country code
-                    parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
-
-
-                # Validate country code
-                if str(parsed_number.country_code) != str(country_code):
-                    raise phonenumbers.NumberParseException(1, _("Country code mismatch!"))
-
-                # Check if the phone number is valid
-                if not phonenumbers.is_valid_number(parsed_number):
-                    _logger.info(f"###############PHONE NUMBER :{parsed_number}")
-                    if country_code==968 and  phone.startswith("7"):
-                        pass
-
-                    else:
-
-                        raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
-
-                # Optionally: Check phone length against phone_limit
-                # phone_limit = country.phone_limit
-                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                #     raise ValueError(
-                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
-
-                # Update the phone number in data with the normalized format
-                data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
-
-            except (phonenumbers.NumberParseException, ValueError) as e:
-                error["phone"] = 'error'
-                error_message.append(str(e))
-
-        return error, error_message
 
 class WebsitePortalsInherit(WebsiteSale):
     WRITABLE_PARTNER_FIELDS = [
@@ -294,25 +228,27 @@ class WebsitePortalsInherit(WebsiteSale):
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
-
+    
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
-
+    
         mode = (False, False)
         can_edit_vat = False
         values, errors = {}, {}
-
+        
         partner_id = int(kw.get('partner_id', -1))
-
+      
+        
+    
         # IF PUBLIC ORDER
         if order.partner_id.id == request.website.user_id.sudo().partner_id.id:
-
+           
             mode = ('new', 'billing')
             can_edit_vat = True
         # IF ORDER LINKED TO A PARTNER
         else:
-
+            
             if partner_id > 0:
                 if partner_id == order.partner_id.id:
                     mode = ('edit', 'billing')
@@ -332,18 +268,24 @@ class WebsitePortalsInherit(WebsiteSale):
                 mode = ('new', 'shipping')
             else:  # no mode - refresh without post?
                 return request.redirect('/shop/checkout')
-
+    
         # IF POSTED
         if 'submitted' in kw and request.httprequest.method == "POST":
             pre_values = self.values_preprocess(kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
+          
 
             if errors:
                 errors['error_message'] = error_msg
                 values = kw
             else:
                 partner_id = self._checkout_form_save(mode, post, kw)
+                # if 'country_id' in kw:
+                #     prefix_code=str(request.env['res.country'].sudo().browse(int(kw['country_id'])).phone_code)
+                #     partner_object = request.env['res.partner'].sudo().browse(partner_id)
+                #     if partner_object.phone[0:4]!= '+'+ prefix_code and partner_object.phone[0:5]!= '00'+ prefix_code:
+                #         partner_object.phone =  '+'+prefix_code + partner_object.phone
                 # We need to validate _checkout_form_save return, because when partner_id not in shippings
                 # it returns Forbidden() instead the partner_id
                 if isinstance(partner_id, Forbidden):
@@ -362,17 +304,21 @@ class WebsitePortalsInherit(WebsiteSale):
                         request.website.sale_get_order(update_pricelist=True)
                 elif mode[1] == 'shipping':
                     order.partner_shipping_id = partner_id
-
+                    
+    
                 # TDE FIXME: don't ever do this
                 # -> TDE: you are the guy that did what we should never do in commit e6f038a
                 order.message_partner_ids = [(4, partner_id), (3, request.website.partner_id.id)]
-
+        
+                
                 if 'didication_letter' in kw:
                     order.partner_shipping_id.didication_letter = kw['didication_letter']
-
+            
                 if not errors:
                     return request.redirect(kw.get('callback') or '/shop/confirm_order')
-
+    
+            
+            
         render_values = {
             'website_sale_order': order,
             'partner_id': partner_id,
@@ -500,31 +446,13 @@ class WebsitePortalsInherit(WebsiteSale):
     #
     #     return request.render("website_sale.payment", render_values)
 
+    
 
 class CountryInherit(models.Model):
     _inherit = "res.country"
     active = fields.Boolean('Active', default=True)
-    phone_limit=fields.Integer()
-
-
-
-    def add_stat_and_province(self):
-        for rec in self:
-            # Check if a state with the same name and code already exists for the country
-            existing_state = self.env['res.country.state'].search([
-                ('name', '=', 'State / Province...'),
-                ('code', '=', '(A)'),
-                ('country_id', '=', rec.id)
-            ], limit=1)
-
-            if not existing_state:
-                # Create the state
-                self.env['res.country.state'].create({
-                    'name': 'State / Province...',
-                    'code': '(A)',
-                    'country_id': rec.id,
-                })
-
+   
+    phone_limit = fields.Integer('Limit Phone')
 
 
 
@@ -567,7 +495,7 @@ class WebsiteInherit(models.Model):
 
     def sale_get_order(self, *args, **kwargs):
         so = super().sale_get_order(*args, **kwargs)
-
+        
         if so.partner_shipping_id.didication_letter:
             so.didication_sale = so.partner_shipping_id.didication_letter
             so.partner_shipping_id.didication_letter = ''
@@ -576,33 +504,38 @@ class WebsiteInherit(models.Model):
 
 class InheritLogin(AuthSignupHome):
 
+    
     @http.route()
     def web_login(self, *args, **kw):
-
+        
         ensure_db()
-        user = request.env['res.users'].sudo().search([('login', '=', kw.get('login'))])
+        user=request.env['res.users'].sudo().search([('login','=',kw.get('login'))])
         passw = self.random_password()
         if user:
             if user.tel_pass and user.share:
+              
 
-                kw['password'] = user.tel_pass
+                kw['password'] =user.tel_pass
                 request.params["password"] = user.tel_pass
-
-
-
+                
+               
+                
             elif not user.share:
-
+                
+               
                 if 'password' in kw:
                     request.params["password"] = kw['password']
                 else:
                     request.params["password"] = ''
-                    return request.render('web.login', {'error': 'you should fill password'})
-        elif not user and kw.get('login'):
+                    return request.render('web.login',{'error':'you should fill password'})
+        elif not user and kw.get('login'):   
             request.params["password"] = ''
             return request.redirect('/web/signup')
-
+        
+       
         response = super().web_login(*args, **kw)
-
+       
+        
         response.qcontext.update(self.get_auth_signup_config())
         if request.session.uid:
             if request.httprequest.method == 'GET' and request.params.get('redirect'):
@@ -611,20 +544,20 @@ class InheritLogin(AuthSignupHome):
             # Add message for non-internal user account without redirect if account was just created
             if response.location == '/web/login_successful' and kw.get('confirm_password'):
                 return request.redirect_query('/web/login_successful', query={'account_created': True})
-
+       
         return response
-
-    def changed_pass(self, user, passw):
-
+    
+    def changed_pass(self,user,passw):
+       
         request.env['res.users'].with_user(SUPERUSER_ID).browse(user)._change_password(passw)
-        request.env['res.users'].with_user(SUPERUSER_ID).browse(user).write({'password': passw})
+        request.env['res.users'].with_user(SUPERUSER_ID).browse(user).write({'password':passw})
 
     def random_password(length=40, prefix="pass"):
-
+        
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(20))
         return password
-
+    
     @http.route()
     def web_auth_signup(self, *args, **kw):
         login_user = request.env["res.users"].sudo().search([("login", "=", kw.get("login"))])
