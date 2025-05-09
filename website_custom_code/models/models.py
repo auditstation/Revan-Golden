@@ -116,7 +116,8 @@ class ProductTemplate(models.Model):
                 variant = tpl._get_variant_for_combination(cmb)
 
                 if variant:
-                    total_qty = sum(quant.quantity for quant in variant.sudo().free_qty)
+                    # total_qty = sum(quant.quantity for quant in variant.sudo().free_qty)
+                    total_qty = variant.sudo().free_qty
 
                     if total_qty > 0:
                         available = list(map(lambda item: item.id, cmb))
