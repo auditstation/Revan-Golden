@@ -27,7 +27,11 @@ class ProductTemplate(models.Model):
 
     def _get_combination_info(self, combination=False, product_id=False, add_qty=False, parent_combination=False,
                               only_template=False):
-        combination_info = super()._get_combination_info(
+        """Override to consider inventory from website warehouse location only."""
+
+        _logger.info("#############_get_combination_info")
+
+        combination_info = super(ProductTemplate, self)._get_combination_info(
             combination=combination,
             product_id=product_id,
             add_qty=add_qty,
@@ -35,34 +39,41 @@ class ProductTemplate(models.Model):
             only_template=only_template
         )
 
-        product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
+        # Get product from combination_info
+        if product_id or combination_info.get('product_id'):
+            _logger.info("#############_get_combination_info line 43")
 
-        # Get the website-specific warehouse
-        website = self.env['website'].get_current_website()
-        warehouse = website.warehouse_id if website else None
-        location = warehouse.lot_stock_id if warehouse else None
+            product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
-        # Fallback to summing all internal if no specific warehouse found
-        if location:
-            free_qty = product.with_context(location=location.id).free_qty
-        else:
-            free_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-                           if quant.location_id.usage == 'internal')
+            # Get website warehouse stock location
+            website = self.env['website'].get_current_website()
+            warehouse = website.warehouse_id
+            stock_location = warehouse.lot_stock_id
 
-        combination_info.update({
-            'virtual_available': free_qty,
-            'free_qty': free_qty,
-            'cart_qty': 0,
-            'product_type': product.type,
-            'inventory_availability': 'always',
-            'available_threshold': 0,
-        })
+            # Calculate quantity only in the website's main warehouse location
+            total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
+                            if quant.location_id.id == stock_location.id)
 
-        if free_qty > 0:
+            # Update the combination_info with the correct warehouse availability
             combination_info.update({
-                'is_combination_possible': True,
-                'is_possible': True,
+                'virtual_available': total_qty,
+                'product_type': product.type,
+                'inventory_availability': 'always' if total_qty > 0 else 'never',
+                'available_threshold': 0,
+                'cart_qty': 0,
+                'free_qty': total_qty,
             })
+
+            if total_qty > 0:
+                combination_info.update({
+                    'is_combination_possible': True,
+                    'is_possible': True,
+                })
+            else:
+                combination_info.update({
+                    'is_combination_possible': False,
+                    'is_possible': False,
+                })
 
         return combination_info
 
