@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from odoo.fields import first
 
 from odoo import models, fields, api
 from odoo.http import request
@@ -27,7 +26,7 @@ class ProductTemplate(models.Model):
 
     def _get_combination_info(self, combination=False, product_id=False, add_qty=False, parent_combination=False,
                               only_template=False):
-        """Override to consider inventory from website warehouse location only."""
+        """Override to consider inventory across all internal locations (warehouses)."""
 
         _logger.info("#############_get_combination_info")
 
@@ -39,22 +38,16 @@ class ProductTemplate(models.Model):
             only_template=only_template
         )
 
-        # Get product from combination_info
         if product_id or combination_info.get('product_id'):
             _logger.info("#############_get_combination_info line 43")
 
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
-            # Get website warehouse stock location
-            website = self.env['website'].get_current_website()
-            warehouse = website.warehouse_id
-            stock_location = warehouse.lot_stock_id
-
-            # Calculate quantity only in the website's main warehouse location
+            # Sum quantity across all internal warehouse locations
             total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-                            if quant.location_id.id == stock_location.id)
+                            if quant.location_id.usage == 'internal')
 
-            # Update the combination_info with the correct warehouse availability
+            # Update the combination_info dictionary
             combination_info.update({
                 'virtual_available': total_qty,
                 'product_type': product.type,
@@ -62,63 +55,11 @@ class ProductTemplate(models.Model):
                 'available_threshold': 0,
                 'cart_qty': 0,
                 'free_qty': total_qty,
+                'is_combination_possible': total_qty > 0,
+                'is_possible': total_qty > 0,
             })
 
-            if total_qty > 0:
-                combination_info.update({
-                    'is_combination_possible': True,
-                    'is_possible': True,
-                })
-            else:
-                combination_info.update({
-                    'is_combination_possible': False,
-                    'is_possible': False,
-                })
-
         return combination_info
-
-    # def _get_combination_info(self, combination=False, product_id=False, add_qty=False, parent_combination=False,
-    #                           only_template=False):
-    #     """Override to consider inventory across all warehouses"""
-    #
-    #     _logger.info("#############_get_combination_info")
-    #
-    #     combination_info = super(ProductTemplate, self)._get_combination_info(
-    #         combination=combination,
-    #         product_id=product_id,
-    #         add_qty=add_qty,
-    #         parent_combination=parent_combination,
-    #         only_template=only_template
-    #     )
-    #
-    #     # Get product from combination_info
-    #     if product_id or combination_info.get('product_id'):
-    #         _logger.info("#############_get_combination_info line 43")
-    #
-    #         product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
-    #
-    #         # Calculate total quantity across all warehouses
-    #         total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-    #                         if quant.location_id.usage == 'internal')
-    #
-    #         # Update the combination_info with our calculated availability
-    #         combination_info.update({
-    #             'virtual_available': total_qty,
-    #             'product_type': product.type,
-    #             'inventory_availability': 'always',  # Force always available if we have stock somewhere
-    #             'available_threshold': 0,
-    #             'cart_qty': 0,
-    #             'free_qty': total_qty,
-    #         })
-    #
-    #         # If we have quantity in any warehouse, show as available
-    #         if total_qty > 0:
-    #             combination_info.update({
-    #                 'is_combination_possible': True,
-    #                 'is_possible': True,
-    #             })
-    #
-    #     return combination_info
 
     @api.depends('product_variant_ids.stock_quant_ids.quantity')
     def _compute_product_visibility(self):
