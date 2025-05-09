@@ -78,6 +78,9 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     async _logVariantQuantities(product_tmpl_id) {
+        console.log(" @@@_logVariantQuantities:");
+
+
         try {
             const response = await $.ajax({
                 type: "POST",
