@@ -37,6 +37,8 @@ class ProductTemplate(models.Model):
             parent_combination=parent_combination,
             only_template=only_template
         )
+        if 'combination' not in combination_info or combination_info['combination'] is None:
+            combination_info['combination'] = []
 
         if product_id or combination_info.get('product_id'):
             _logger.info("#############_get_combination_info line 43")
