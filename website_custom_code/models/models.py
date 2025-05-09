@@ -44,8 +44,9 @@ class ProductTemplate(models.Model):
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
             # Sum quantity across all internal warehouse locations
-            total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-                            if quant.location_id.usage == 'internal')
+            # total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
+            #                 if quant.location_id.usage == 'internal')
+            total_qty = product.sudo().free_qty
 
             # Update the combination_info dictionary
             combination_info.update({
@@ -61,13 +62,14 @@ class ProductTemplate(models.Model):
 
         return combination_info
 
-    @api.depends('product_variant_ids.stock_quant_ids.quantity')
+    @api.depends('product_variant_ids.free_qty')
     def _compute_product_visibility(self):
-        _logger.info("#############_compute_product_visibility line 72")
+        # _logger.info("#############_compute_product_visibility line 72")
 
         for product_temp in self:
-            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
-                lambda q: q.location_id.usage == 'internal').mapped('quantity'))
+            # total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
+            #     lambda q: q.location_id.usage == 'internal').mapped('quantity'))
+            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty'))
             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
             if total_qty == 0:
@@ -114,9 +116,7 @@ class ProductTemplate(models.Model):
                 variant = tpl._get_variant_for_combination(cmb)
 
                 if variant:
-                    # Check quantity across ALL warehouses, not just website warehouse
-                    total_qty = sum(quant.quantity for quant in variant.sudo().stock_quant_ids
-                                    if quant.location_id.usage == 'internal')
+                    total_qty = sum(quant.quantity for quant in variant.sudo().free_qty)
 
                     if total_qty > 0:
                         available = list(map(lambda item: item.id, cmb))
@@ -295,35 +295,36 @@ class ProductProduct(models.Model):
     #             rec.is_out_of_stock = False
     #             rec.hide_on_website = False
 
-    @api.depends('stock_quant_ids.quantity')
+    @api.depends('stock_quant_ids.quantity','free_qty')
     def _compute_out_of_stock(self):
-        preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
+        # preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
 
         for rec in self:
             if rec.type == 'product':
                 total_qty = 0
 
-                for quant in rec.sudo().stock_quant_ids:
-                    if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        total_qty += quant.quantity
-
+                # for quant in rec.sudo().stock_quant_ids:
+                #     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
+                #         total_qty += quant.quantity
+                total_qty = rec.free_qty
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
 
-    @api.depends('stock_quant_ids.quantity', 'stock_quant_ids.reserved_quantity')
+    @api.depends('stock_quant_ids.quantity', 'stock_quant_ids.reserved_quantity','free_qty')
     def _compute_virtual_available(self):
         _logger.info("#############_compute_virtual_available")
 
         for product in self:
             # Sum available quantity across all internal locations
-            total_qty = sum(
-                quant.quantity - quant.reserved_quantity
-                for quant in product.stock_quant_ids
-                if quant.location_id.usage == 'internal'
-            )
+            # total_qty = sum(
+            #     quant.quantity - quant.reserved_quantity
+            #     for quant in product.stock_quant_ids
+            #     if quant.location_id.usage == 'internal'
+            # )
+            total_qty = product.free_qty
             _logger.info(f"#############total_qty{total_qty}")
 
             product.virtual_available = total_qty

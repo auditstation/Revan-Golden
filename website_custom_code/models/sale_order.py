@@ -39,7 +39,9 @@ class SaleOrederInherit(models.Model):
 
         # Compute free quantity manually across all internal locations
         prod = product or line.product_id
-        internal_quants = prod.sudo().stock_quant_ids.filtered(lambda q: q.location_id.usage == 'internal')
-        free_qty = sum(internal_quants.mapped('quantity'))
+        # internal_quants = prod.sudo().stock_quant_ids.filtered(lambda q: q.location_id.usage == 'internal')
+        # free_qty = sum(internal_quants.mapped('quantity'))
+        free_qty = prod.sudo().free_qty
+
 
         return cart_qty, free_qty
