@@ -13,116 +13,38 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     is_visible = fields.Boolean('Visible', compute='_compute_product_visibility')
-    # @api.depends('qty_available')
-    # def _compute_product_visibility(self):
-    #     for product_temp in self:
-
-    #             variants = product_temp.product_variant_ids
-    #             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
-    #             product_temp.is_visible = is_visible
-    #             if product_temp.qty_available == 0:
-    #                 product_temp.is_published = is_visible
-
-    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, parent_combination=False, only_template=False):
-        """Override to consider inventory across all warehouses"""
-        combination_info = super()._get_combination_info(
-            combination=combination,
-            product_id=product_id,
-            add_qty=add_qty,
-            parent_combination=parent_combination,
-            only_template=only_template
-        )
-
-        # Get product from combination_info
-        if product_id or combination_info.get('product_id'):
-            product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
-
-            # Calculate total quantity across all warehouses
-            total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-                           if quant.location_id.usage == 'internal')
-
-            # Update the combination_info with our calculated availability
-            combination_info.update({
-                'virtual_available': total_qty,
-                'product_type': product.type,
-                'inventory_availability': 'always', # Force always available if we have stock somewhere
-                'available_threshold': 0,
-                'cart_qty': 0,
-                'free_qty': total_qty,
-            })
-
-            # If we have quantity in any warehouse, show as available
-            if total_qty > 0:
-                combination_info.update({
-                    'is_combination_possible': True,
-                    'is_possible': True,
-                })
-
-        return combination_info
-    @api.depends('product_variant_ids.stock_quant_ids.quantity')
+    @api.depends('qty_available')
     def _compute_product_visibility(self):
         for product_temp in self:
-            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
-                lambda q: q.location_id.usage == 'internal').mapped('quantity'))
-            is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
-            product_temp.is_visible = is_visible
-            if total_qty == 0:
-                product_temp.is_published = is_visible
+            
+                variants = product_temp.product_variant_ids
+                is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
+                product_temp.is_visible = is_visible
+                if product_temp.qty_available == 0:
+                    product_temp.is_published = is_visible
 
-
-    # def get_possible_combinations_available(self):
-
-    #     for tpl in self.sudo():
-    #         valid_combination_list = []
-
-    #         combinations = tpl._get_possible_combinations()
-    #         for cmb in combinations:
-    #             # for cmb in combinations:
-    #         #     variant = tpl._get_variant_for_combination(cmb)
-
-    #         #     if variant.qty_available > 0:
-    #         #         available = list(map(lambda item: item.id, cmb))
-    #         #         valid_combination_list.append(available)
-    #             variant = tpl._get_variant_for_combination(cmb)
-
-    #             if variant:
-    #                 total_qty = 0
-    #                 for quant in variant.stock_quant_ids:
-    #                     if quant.location_id.usage == 'internal':
-    #                         total_qty += quant.quantity
-
-    #                 if total_qty > 0:
-    #                     available = list(map(lambda item: item.id, cmb))
-    #                     valid_combination_list.append(available)
-
-
-    #         return {
-    #             'success': True,
-    #             'message':f'print value_to_show_tuple {valid_combination_list}',
-    #             "value_to_show_tuple": valid_combination_list
-    #         }
     def get_possible_combinations_available(self):
+
         for tpl in self.sudo():
             valid_combination_list = []
 
             combinations = tpl._get_possible_combinations()
+
             for cmb in combinations:
                 variant = tpl._get_variant_for_combination(cmb)
 
-                if variant:
-                    # Check quantity across ALL warehouses, not just website warehouse
-                    total_qty = sum(quant.quantity for quant in variant.sudo().stock_quant_ids
-                                if quant.location_id.usage == 'internal')
-
-                    if total_qty > 0:
-                        available = list(map(lambda item: item.id, cmb))
-                        valid_combination_list.append(available)
-
+                if variant.qty_available > 0:
+                    available = list(map(lambda item: item.id, cmb))
+                    valid_combination_list.append(available)
             return {
                 'success': True,
-                'message': f'Available combinations: {valid_combination_list}',
-                'value_to_show_tuple': valid_combination_list
+                'message':f'print value_to_show_tuple {valid_combination_list}',
+                "value_to_show_tuple": valid_combination_list
             }
+
+            # return {
+            #     "value_to_show_tuple": valid_combination_list
+            # }
 
     def get_variant_count(self):
         for rec in self:
@@ -217,20 +139,20 @@ class ProductTemplate(models.Model):
                 no_variant_attr_val += ptav
 
         for combination in self.sudo()._get_possible_combinations(parent_combination, necessary_values):
-
+            
             org_combination = combination
             combination -= no_variant_attr_val
             # variant_id = self.product_variant_ids.filtered(
             #     lambda variant: variant.product_template_attribute_value_ids == combination)
             variant_id = self.sudo()._get_variant_for_combination(combination)
-
+           
             if variant_id and not variant_id.hide_on_website:
-
+                
 
                 return org_combination
             elif variant_id.product_tmpl_id.qty_available == 0:
                 return org_combination
-
+           
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
         result = super(ProductTemplate, self)._is_combination_possible(combination, parent_combination,
@@ -272,34 +194,13 @@ class ProductProduct(models.Model):
     hide_on_website = fields.Boolean("Hide on Website",
                                      help="Check right if you want to hide the variant in your website")
     is_out_of_stock = fields.Boolean(compute='_compute_out_of_stock')
-
-    # def _compute_out_of_stock(self):
-    #     for rec in self:
-    #         if rec.type == 'product':
-    #             rec.is_out_of_stock = rec.qty_available == 0
-    #             rec.hide_on_website = rec.qty_available == 0
-
-    #         else:
-    #             rec.is_out_of_stock = False
-    #             rec.hide_on_website = False
-
-    @api.depends('stock_quant_ids.quantity')
+    @api.depends('qty_available')
     def _compute_out_of_stock(self):
-        preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
-
         for rec in self:
             if rec.type == 'product':
-                total_qty = 0
+                rec.is_out_of_stock = rec.qty_available == 0
+                rec.hide_on_website = rec.qty_available == 0
 
-                for quant in rec.sudo().stock_quant_ids:
-                    if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        total_qty += quant.quantity
-
-                rec.is_out_of_stock = total_qty <= 0
-                rec.hide_on_website = total_qty <= 0
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
-
-
-                
