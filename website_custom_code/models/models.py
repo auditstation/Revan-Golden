@@ -24,7 +24,7 @@ class ProductTemplate(models.Model):
     #             if product_temp.qty_available == 0:
     #                 product_temp.is_published = is_visible
 
-    def _get_combination_info(self, combination=False, product_id=False, add_qty=False, parent_combination=False,
+    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, parent_combination=False,
                               only_template=False):
         """Override to consider inventory across all internal locations (warehouses)."""
 
