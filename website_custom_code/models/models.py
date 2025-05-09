@@ -27,6 +27,9 @@ class ProductTemplate(models.Model):
     def _get_combination_info(self, combination=False, product_id=False, add_qty=1, parent_combination=False,
                               only_template=False):
         """Override to consider inventory across all warehouses"""
+
+        _logger.info("#############_get_combination_info")
+
         combination_info = super()._get_combination_info(
             combination=combination,
             product_id=product_id,
@@ -37,6 +40,8 @@ class ProductTemplate(models.Model):
 
         # Get product from combination_info
         if product_id or combination_info.get('product_id'):
+            _logger.info("#############_get_combination_info line 43")
+
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
             # Calculate total quantity across all warehouses
@@ -64,6 +69,8 @@ class ProductTemplate(models.Model):
 
     @api.depends('product_variant_ids.stock_quant_ids.quantity')
     def _compute_product_visibility(self):
+        _logger.info("#############_compute_product_visibility line 72")
+
         for product_temp in self:
             total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
                 lambda q: q.location_id.usage == 'internal').mapped('quantity'))
@@ -103,6 +110,8 @@ class ProductTemplate(models.Model):
     #             "value_to_show_tuple": valid_combination_list
     #         }
     def get_possible_combinations_available(self):
+        _logger.info("#############get_possible_combinations_available line 113")
+
         for tpl in self.sudo():
             valid_combination_list = []
 
@@ -126,6 +135,8 @@ class ProductTemplate(models.Model):
             }
 
     def get_variant_count(self):
+        _logger.info("#############get_variant_count line 138")
+
         for rec in self:
             valid_combination_list = []
             attribute_ids = []
@@ -199,6 +210,9 @@ class ProductTemplate(models.Model):
             return unavailable_variant_dict
 
     def _get_first_possible_combination(self, parent_combination=None, necessary_values=None):
+
+        _logger.info("#############_get_first_possible_combination line 214")
+
         """See `_get_possible_combinations` (one iteration).
 
         This method return the same result (empty recordset) if no
@@ -232,6 +246,8 @@ class ProductTemplate(models.Model):
                 return org_combination
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
+        _logger.info("#############_is_combination_possible line 249")
+
         result = super(ProductTemplate, self)._is_combination_possible(combination, parent_combination,
                                                                        ignore_no_variant)
         if result and self._context.get("special_call"):
@@ -253,6 +269,8 @@ class ProductTemplate(models.Model):
 
     # warlock fixing
     def _get_variant_for_combination(self, combination):
+        _logger.info("#############_get_variant_for_combination line 272")
+
         if not combination:
             combination = self.env['product.template.attribute.value']
 
