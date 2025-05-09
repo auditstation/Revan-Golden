@@ -62,7 +62,7 @@ class ProductTemplate(models.Model):
 
         return combination_info
 
-    @api.depends('product_variant_ids.stock_quant_ids.quantity','product_variant_ids.virtual_available','product_variant_ids.hide_on_website','is_out_of_stock')
+    @api.depends('product_variant_ids.stock_quant_ids.quantity','product_variant_ids.virtual_available','product_variant_ids.hide_on_website')
     def _compute_product_visibility(self):
         _logger.info("#############_compute_product_visibility line 72")
 
