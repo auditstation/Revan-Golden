@@ -103,6 +103,8 @@ publicWidget.registry.WebsiteSale.include({
     },
 
     onChangeVariant(ev) {
+        console.log(" @@@onChangeVariant##:");
+
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
