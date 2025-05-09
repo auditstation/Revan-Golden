@@ -44,8 +44,10 @@ class ProductTemplate(models.Model):
             product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
 
             # Sum quantity across all internal warehouse locations
-            total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-                            if quant.location_id.usage == 'internal')
+            # total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
+            #                 if quant.location_id.usage == 'internal')
+            total_qty = product.sudo().with_context(warehouse=None).free_qty
+
 
             # Update the combination_info dictionary
             combination_info.update({
@@ -295,7 +297,7 @@ class ProductProduct(models.Model):
     #             rec.is_out_of_stock = False
     #             rec.hide_on_website = False
 
-    @api.depends('stock_quant_ids.quantity')
+    @api.depends('stock_quant_ids.quantity','stock_quant_ids.reserved_quantity')
     def _compute_out_of_stock(self):
         preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
 
@@ -305,7 +307,7 @@ class ProductProduct(models.Model):
 
                 for quant in rec.sudo().stock_quant_ids:
                     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        total_qty += quant.quantity
+                        total_qty += quant.quantity - quant.reserved_quantity
 
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
