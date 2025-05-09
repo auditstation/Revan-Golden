@@ -62,13 +62,15 @@ class ProductTemplate(models.Model):
 
         return combination_info
 
-    @api.depends('product_variant_ids.stock_quant_ids.quantity')
+    @api.depends('product_variant_ids.stock_quant_ids.quantity','product_variant_ids.virtual_available','product_variant_ids.hide_on_website','is_out_of_stock')
     def _compute_product_visibility(self):
         _logger.info("#############_compute_product_visibility line 72")
 
         for product_temp in self:
-            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
-                lambda q: q.location_id.usage == 'internal').mapped('quantity'))
+            # total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
+            #     lambda q: q.location_id.usage == 'internal').mapped('quantity'))
+            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty')) or 0.0
+
             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
             if total_qty == 0:
