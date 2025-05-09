@@ -313,5 +313,10 @@ class ProductProduct(models.Model):
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
 
-
+    @api.depends('stock_quant_ids.quantity', 'stock_quant_ids.reserved_quantity')
+    def _compute_virtual_available(self):
+        for product in self:
+            total_qty = sum(quant.quantity - quant.reserved_quantity for quant in product.stock_quant_ids
+                            if quant.location_id.usage == 'internal')
+            product.virtual_available = total_qty
 
