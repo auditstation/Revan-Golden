@@ -24,10 +24,9 @@ class ProductTemplate(models.Model):
     #             if product_temp.qty_available == 0:
     #                 product_temp.is_published = is_visible
 
-    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, parent_combination=False,
-                              only_template=False):
+    def _get_combination_info(self, combination=None, product_id=None, add_qty=1,
+    parent_combination=None, only_template=False):
         """Override to consider inventory across all internal locations (warehouses)."""
-
         _logger.info("#############_get_combination_info")
 
         combination_info = super(ProductTemplate, self)._get_combination_info(
@@ -37,31 +36,29 @@ class ProductTemplate(models.Model):
             parent_combination=parent_combination,
             only_template=only_template
         )
+
         if 'combination' not in combination_info or combination_info['combination'] is None:
             combination_info['combination'] = []
 
-        if product_id or combination_info.get('product_id'):
-            _logger.info("#############_get_combination_info line 43")
+        product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
+        if not product:
+            return combination_info
 
-            product = self.env['product.product'].browse(product_id or combination_info.get('product_id'))
+        total_qty = product.sudo().with_context(warehouse=None).free_qty or 0.0
 
-            # Sum quantity across all internal warehouse locations
-            # total_qty = sum(quant.quantity for quant in product.sudo().stock_quant_ids
-            #                 if quant.location_id.usage == 'internal')
-            total_qty = product.sudo().with_context(warehouse=None).free_qty
+        combination_info.update({
+            'virtual_available': total_qty,
+            'product_type': product.type,
+            'inventory_availability': 'always' if total_qty > 0 else 'never',
+            'available_threshold': 0,
+            'cart_qty': 0,
+            'free_qty': total_qty,
+            'is_combination_possible': total_qty > 0,
+            'is_possible': total_qty > 0,
+        })
 
-
-            # Update the combination_info dictionary
-            combination_info.update({
-                'virtual_available': total_qty,
-                'product_type': product.type,
-                'inventory_availability': 'always' if total_qty > 0 else 'never',
-                'available_threshold': 0,
-                'cart_qty': 0,
-                'free_qty': total_qty,
-                'is_combination_possible': total_qty > 0,
-                'is_possible': total_qty > 0,
-            })
+        if not combination_info.get('combination'):
+            combination_info['combination'] = []
 
         return combination_info
 
