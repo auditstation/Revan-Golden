@@ -47,6 +47,9 @@ publicWidget.registry.WebsiteSale.include({
                     console.log("response>>>", response);
                     console.log("id_tuples>>>", id_tuples);
 
+                    // this._logVariantQuantities(product_tmpl_id);
+
+
                     // Auto-select the first available variant
                     this._autoSelectFirstVariant($parent);
                 } else {
@@ -74,7 +77,34 @@ publicWidget.registry.WebsiteSale.include({
         });
     },
 
+    async _logVariantQuantities(product_tmpl_id) {
+        console.log(" @@@_logVariantQuantities:");
+
+
+        try {
+            const response = await $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/get_variant_quantities",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    params: { product_tmpl_id: product_tmpl_id },
+                }),
+            });
+
+            if (response && response.result) {
+                console.log("Variant quantities by warehouse:", response.result);
+            }
+        } catch (error) {
+            console.error("Failed to fetch variant quantities:", error);
+        }
+    },
+
     onChangeVariant(ev) {
+        console.log(" @@@onChangeVariant##:");
+
         const instance = this;
         const $parent = $(ev.target).closest(".js_product");
         const $target = $(ev.target);
