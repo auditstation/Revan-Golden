@@ -15,5 +15,6 @@ class StockPicking(models.Model):
                 if delivery_pickings:
                     for delivery_picking in delivery_pickings:
                         delivery_picking.state='assigned'
+                        delivery_picking.button_validate()
 
         return res
