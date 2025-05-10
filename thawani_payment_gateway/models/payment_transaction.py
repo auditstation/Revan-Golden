@@ -253,14 +253,13 @@ class PaymentTransaction(models.Model):
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
 
                         if check_done and 'True' in check_done:
-                            pass
 
-                            # order=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])])
-                            # if len(order.picking_ids) == 1:
-                            #     pick = order.picking_ids[0]
-                            #     if pick.picking_type_id.code == 'outgoing':
-                            #         pick.with_user(SUPERUSER_ID).action_assign()
-                            #         pick.with_user(SUPERUSER_ID).button_validate()
+                            order=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])])
+                            if len(order.picking_ids) == 1:
+                                pick = order.picking_ids[0]
+                                if pick.picking_type_id.code == 'outgoing':
+                                    pick.with_user(SUPERUSER_ID).action_assign()
+                                    pick.with_user(SUPERUSER_ID).button_validate()
 
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
