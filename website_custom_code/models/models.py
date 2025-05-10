@@ -73,6 +73,7 @@ class ProductTemplate(models.Model):
 
             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
+            _logger.info('#############_compute_product_visibility total_qty {total_qty}')
             if total_qty == 0:
                 product_temp.is_published = is_visible
 
