@@ -313,6 +313,7 @@ class ProductProduct(models.Model):
 
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
+                rec.is_published = total_qty > 0
             else:
                 rec.is_out_of_stock = False
                 rec.hide_on_website = False
