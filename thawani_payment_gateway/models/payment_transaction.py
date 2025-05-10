@@ -40,8 +40,8 @@ class PaymentTransaction(models.Model):
             return res
         _logger.info("entered _get_specific_rendering_values")
         return self.execute_payment()
-
-
+    
+    
     # print(response.text)
 
     def execute_payment(self):
@@ -50,7 +50,7 @@ class PaymentTransaction(models.Model):
             [('code', '=', 'thawani')])._thawani_get_api_url()
         _logger.info('base_api_url')
         _logger.info(base_api_url)
-
+        
         api_url = f"{base_api_url}api/v1/checkout/session"
         _logger.info('api_url')
         _logger.info(api_url)
@@ -63,7 +63,7 @@ class PaymentTransaction(models.Model):
         _logger.info(thawani_secret_key)
         thawani_publishable_key = self.env['payment.provider'].sudo().search([('code', '=',
                                                         'thawani')]).thawani_publishable_key
-
+        
         odoo_base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url')
         sale_order = self.env['payment.transaction'].sudo().search(
@@ -74,11 +74,11 @@ class PaymentTransaction(models.Model):
         invoice_items =[]
         dis = 0
         for rec in order_line:
-            if rec.price_unit < 0 and rec.product_template_id.detailed_type =='service':
+            if rec.price_unit < 0 and rec.product_template_id.detailed_type =='service': 
                 dis = int(rec.product_template_id.name[:2])
         for rec in order_line:
             new_price =0
-            if rec.price_unit > 0:
+            if rec.price_unit > 0: 
                 if rec.product_template_id.detailed_type!='service':
                     new_price += int(rec.price_total * 1000)/int(rec.product_uom_qty)
                     _logger.info(f'sssssaaaaaaaa{int(new_price) - int(((new_price)* dis )/100)}')
@@ -96,14 +96,14 @@ class PaymentTransaction(models.Model):
                         'quantity': int(rec.product_uom_qty),
                         'unit_amount': int(rec.price_unit * 1000) if rec.currency_id.name =='OMR' else
                         int((rec.price_unit * 1000 * 1.25)/sorted([i.company_rate for i in rec.currency_id.rate_ids])[-1]) if rec.currency_id.name =='KWD' else int((rec.price_unit * 1000)/sorted(rec.currency_id.rate_ids)[-1].company_rate),
-                        }
-                    invoice_items.append(dic)
+                        }  
+                    invoice_items.append(dic)      
 
-
+           
         # if len(self.partner_phone.replace('-', "").rsplit(' ', 1)[1]) > 11:
         #     raise ValidationError(
         #         _("Phone number must not  be greater than 11 characters"))
-
+        
         ################################
         payload = json.dumps({
         "client_reference_id":str(client_reference_id) ,
@@ -127,7 +127,7 @@ class PaymentTransaction(models.Model):
         response = requests.request("POST", api_url, headers=headers, data=payload)
         _logger.info(response)
         _logger.info('response')
-
+        
         response_data = response.json()
         if not response_data.get('success') == True:
             raise ValidationError(f"{response_data.get('detail')}")
@@ -169,13 +169,13 @@ class PaymentTransaction(models.Model):
             # _logger.info(tx_id)
             _logger.info(tx)
             _logger.info(tx.provider_reference)
-
+            
                 # reference = response_data["Data"]["CustomerReference"]
                 # domain.append(reference)
             # if tx := self.sudo().search(domain):
                         # return tx
             return tx
-
+              
         # else:
         #     raise ValidationError(
         #         "thawani: " + _(
@@ -206,7 +206,7 @@ class PaymentTransaction(models.Model):
                     [('code', '=', 'thawani')])._thawani_get_api_url()
         _logger.info('base_api_url')
         _logger.info(base_api_url)
-
+                
         api_url = f"{base_api_url}api/v1/checkout/session"
         _logger.info('api_url')
         _logger.info(api_url)
@@ -219,10 +219,10 @@ class PaymentTransaction(models.Model):
         _logger.info(thawani_secret_key)
         thawani_publishable_key = request.env['payment.provider'].sudo().search([('code', '=',
                                                                 'thawani')]).thawani_publishable_key
-
+                
         odoo_base_url = request.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
-
+                
         url = f"{base_api_url}api/v1/checkout/session/{thawani_session}"
         _logger.info(url)
 
@@ -235,7 +235,7 @@ class PaymentTransaction(models.Model):
         response_data = response.json()
         _logger.info("response_data")
         _logger.info(response_data)
-
+       
             # if provider_code != 'thawani' or len(tx) == 1:
             #     return tx
         domain = [('provider_code', '=', 'thawani')]
@@ -247,29 +247,25 @@ class PaymentTransaction(models.Model):
                     _logger.info('statusssss')
                     _logger.info(payment_status)
                     if payment_status == 'paid':
-
+                      
                         self.sudo()._set_done()
                         self.with_user(SUPERUSER_ID)._reconcile_after_done()
                         self.with_user(SUPERUSER_ID)._finalize_post_processing()
-
+                        
                         if check_done and 'True' in check_done:
-
-                            order=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])])
-                            if len(order.picking_ids) == 1:
-                                pick = order.picking_ids[0]
-                                if pick.picking_type_id.code == 'outgoing':
-                                    pick.with_user(SUPERUSER_ID).action_assign()
-                                    pick.with_user(SUPERUSER_ID).button_validate()
-
+                           
+                            pick=self.env['sale.order'].with_user(SUPERUSER_ID).search([('name','in',[i.name for i in self.sale_order_ids])]).picking_ids[0]
+                            pick.with_user(SUPERUSER_ID).action_assign()
+                            pick.with_user(SUPERUSER_ID).button_validate()
                         # self.with_user(SUPERUSER_ID)._check_amount_and_confirm_order()
                         # self._log_message_on_linked_documents
                         # self._send_order_confirmation_mail()
                         # self.sudo()._cron_finalize_post_processing()
 
                         # self.sudo()._reconcile_after_done()
-
-
-
+                        
+                        
+                       
 
                         _logger.info('paiiiiidd')
                     else:
@@ -277,6 +273,6 @@ class PaymentTransaction(models.Model):
                         message = "you cancelled your transaction"
                         self._set_canceled(message)
                         _logger.info('cancellleeed transaction')
-
-
-
+                         
+             
+        
