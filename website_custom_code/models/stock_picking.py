@@ -14,7 +14,9 @@ class StockPicking(models.Model):
                 ])
                 if delivery_pickings:
                     for delivery_picking in delivery_pickings:
-                        delivery_picking.state='assigned'
+                        for move in delivery_picking.move_ids_without_package:
+                            move.quantity  = move.product_uom_qty
+                        delivery_picking.action_assign()
                         delivery_picking.button_validate()
 
         return res
