@@ -114,7 +114,6 @@ class ProductTemplate(models.Model):
             valid_combination_list = []
 
             combinations = tpl._get_possible_combinations()
-
             for cmb in combinations:
                 variant = tpl._get_variant_for_combination(cmb)
 
@@ -129,13 +128,9 @@ class ProductTemplate(models.Model):
 
             return {
                 'success': True,
-                'message':f'print value_to_show_tuple {valid_combination_list}',
-                "value_to_show_tuple": valid_combination_list
+                'message': f'Available combinations: {valid_combination_list}',
+                'value_to_show_tuple': valid_combination_list
             }
-
-            # return {
-            #     "value_to_show_tuple": valid_combination_list
-            # }
 
     def get_variant_count(self):
         _logger.info("#############get_variant_count line 138")
@@ -306,10 +301,11 @@ class ProductProduct(models.Model):
 
     @api.depends('stock_quant_ids.quantity','stock_quant_ids.reserved_quantity')
     def _compute_out_of_stock(self):
+        preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
+
         for rec in self:
             if rec.type == 'product':
-                rec.is_out_of_stock = rec.qty_available == 0
-                rec.hide_on_website = rec.qty_available == 0
+                total_qty = 0
 
                 for quant in rec.sudo().stock_quant_ids:
                     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
