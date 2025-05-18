@@ -48,8 +48,9 @@ class SaleOrder(models.Model):
                                     if picking.picking_type_id.code == 'outgoing':
                                         for move in picking.move_ids_without_package:
                                             if product.id == move.product_id.id:
-                                                move.quantity  = move.product_uom_qty
-                                        picking.do_unreserve()
+                                                move.quantity  = khoud_stock
+                                                # move.quantity  = move.product_uom_qty
+                                        # picking.do_unreserve()
                                     if picking.picking_type_id.code == 'internal':
                                         for move in picking.move_ids_without_package:
                                             if product.id == move.product_id.id:
