@@ -39,7 +39,7 @@ class StockPicking(models.Model):
                 for delivery_picking in delivery_pickings:
                     # Set quantity done to match the demand for validation
                     for move in delivery_picking.move_ids_without_package:
-                        move.quantity_done = move.product_uom_qty
+                        move.quantity = move.product_uom_qty
 
                     # Reserve stock if needed
                     delivery_picking.action_assign()
