@@ -37,11 +37,7 @@ class StockPicking(models.Model):
                     for move in delivery_picking.move_ids_without_package:
                         move.quantity = move.product_uom_qty
                     delivery_picking.action_assign()
-                    if delivery_picking._check_quantity():
-                        delivery_picking.button_validate()
-                    else:
-                        raise UserError(
-                            f"Cannot validate delivery for '{delivery_picking.name}' due to insufficient stock."
-                        )
+                    delivery_picking.button_validate()
+
         # Now proceed with the original validation
         return super(StockPicking, self).button_validate()
