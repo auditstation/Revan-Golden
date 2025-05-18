@@ -7,7 +7,7 @@ class StockPicking(models.Model):
         res = super(StockPicking,self).button_validate()
 
         for picking in self:
-            if picking.picking_type_id.code == 'internal' and picking.sale_id:
+            if picking.picking_type_id.code == 'internal' and picking.location_id.usage == "transit" and picking.sale_id:
                 delivery_pickings = self.env['stock.picking'].search([
                     ('sale_id', '=', picking.sale_id.id),
                     ('picking_type_id.code', '=', 'outgoing'),
