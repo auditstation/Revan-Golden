@@ -49,7 +49,7 @@ class StockPicking(models.Model):
                 for delivery_picking in delivery_pickings:
                     if delivery_picking.move_ids_without_package:
                         for move in delivery_picking.move_ids_without_package:
-                            move.quantity_done = move.product_uom_qty
+                            move.quantity += move.product_uom_qty
                         delivery_picking.action_assign()
                         delivery_picking.button_validate()
 
