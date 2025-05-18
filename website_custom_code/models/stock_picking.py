@@ -23,10 +23,10 @@ class StockPicking(models.Model):
                         # Only process if there are stock moves to work with
                         if delivery_picking.move_ids_without_package:
                             for move in delivery_picking.move_ids_without_package:
-                                move.quantity_done = move.product_uom_qty
+                                move.quantity = move.product_uom_qty
 
                             # Assign stock and validate
-                            delivery_picking.action_assign()
+                            # delivery_picking.action_assign()
                             delivery_picking.button_validate()
 
         return res
