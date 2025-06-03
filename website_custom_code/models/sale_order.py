@@ -21,6 +21,7 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 
+
 class SaleOrederInherit(models.Model):
     _inherit = "sale.order"
 
