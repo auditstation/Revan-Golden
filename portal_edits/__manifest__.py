@@ -10,9 +10,10 @@
     'data': [
         'data/data.xml',
         'views/set_random_password.xml',
+        #'views/edit_fields_portal.xml',
 
 
     ],
-
+    
     'application': True,
 }

@@ -270,5 +270,5 @@ class SaleOrederInherit(models.Model):
         self.file_ship=b64PDF
        
 
-
-
+    
+        
