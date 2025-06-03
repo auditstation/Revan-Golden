@@ -5,7 +5,7 @@
     'summary': """
         Show flag on currency Hide Unavailable Variants on the website""",
     'description': """ This module gives option to hide the variants form the website by simply enabling a
-    boolean field. Here no need to set the exclusions. So customer can only see the valid and available attribute
+    boolean field. Here no need to set the exclusions. So customer can only see the valid and available attribute 
     values for the product.
     Hide Variants,
     Hide Attribute Values,
@@ -19,7 +19,7 @@
     'version': '1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['website_sale', 'stock', 'web','website_sale_stock'],
+    'depends': ['website_sale', 'stock', 'web'],
 
     # always loaded
     'data': [

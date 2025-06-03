@@ -56,58 +56,6 @@ class UserInherit(models.Model):
 class PortalInherit(CustomerPortal):
     MANDATORY_BILLING_FIELDS = ["name", "phone", "state_id", "country_id", "street"]
     OPTIONAL_BILLING_FIELDS = ["zipcode", "city", "email", "vat", "company_name", "didication_letter"]
-    def details_form_validate(self, data, partner_creation=False):
-        error, error_message = super().details_form_validate(data)
-
-        phone = data.get('phone')
-        country_id = data.get('country_id')
-
-        if phone and country_id:
-            try:
-                # Normalize the phone number to handle cases with "00" prefix
-                phone = phone.strip()
-                if phone.startswith("00"):
-                    phone = "+" + phone[2:]  # Replace leading "00" with "+"
-
-                # Get the country's phone code from the database
-                country = request.env['res.country'].browse(int(country_id))
-                country_code = country.phone_code
-
-                # Parse the phone number
-                try:
-                    parsed_number = phonenumbers.parse(phone, None)
-                except phonenumbers.NumberParseException:
-                    # If parsing fails, assume phone is missing the country code
-                    parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
-
-                # Validate country code
-                if str(parsed_number.country_code) != str(country_code):
-                    raise phonenumbers.NumberParseException(1, _("Country code mismatch!"))
-
-                # Check if the phone number is valid
-                if not phonenumbers.is_valid_number(parsed_number):
-                    _logger.info(f"###############PHONE NUMBER :{parsed_number}")
-                    if country_code==968 and  phone.startswith("7"):
-                        pass
-
-                    else:
-
-                        raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
-
-                # Optionally: Check phone length against phone_limit
-                # phone_limit = country.phone_limit
-                # if phone_limit and len(str(parsed_number.national_number)) != phone_limit:
-                #     raise ValueError(
-                #         _("Phone number length does not match the expected limit of %s digits.", phone_limit))
-
-                # Update the phone number in data with the normalized format
-                data['phone'] = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
-
-            except (phonenumbers.NumberParseException, ValueError) as e:
-                error["phone"] = 'error'
-                error_message.append(str(e))
-
-        return error, error_message
 
     # def details_form_validate(self, data, partner_creation=False):
     #
@@ -144,7 +92,6 @@ class PortalInherit(CustomerPortal):
                     # If parsing fails, assume phone is missing the country code
                     parsed_number = phonenumbers.parse(f"+{country_code}{phone}", None)
 
-
                 # Validate country code
                 if str(parsed_number.country_code) != str(country_code):
                     raise phonenumbers.NumberParseException(1, _("Country code mismatch!"))
@@ -152,12 +99,8 @@ class PortalInherit(CustomerPortal):
                 # Check if the phone number is valid
                 if not phonenumbers.is_valid_number(parsed_number):
                     _logger.info(f"###############PHONE NUMBER :{parsed_number}")
-                    if country_code==968 and  phone.startswith("7"):
-                        pass
 
-                    else:
-
-                        raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
+                    raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
                 # phone_limit = country.phone_limit
@@ -246,15 +189,8 @@ class WebsitePortalsInherit(WebsiteSale):
                 # Check if the phone number is valid
                 if not phonenumbers.is_valid_number(parsed_number):
                     _logger.info(f"###############PHONE NUMBER :{parsed_number}")
-                    if country_code==968 and  phone.startswith("7"):
-                        pass
 
-                    else:
-
-                        raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
-
-                    # raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
-
+                    raise phonenumbers.NumberParseException(1, _("Invalid phone number!"))
 
                 # Optionally: Check phone length against phone_limit
                 # phone_limit = country.phone_limit
@@ -526,27 +462,6 @@ class CountryInherit(models.Model):
                 })
 
 
-
-
-    def add_stat_and_province(self):
-        for rec in self:
-            # Check if a state with the same name and code already exists for the country
-            existing_state = self.env['res.country.state'].search([
-                ('name', '=', 'State / Province...'),
-                ('code', '=', '(A)'),
-                ('country_id', '=', rec.id)
-            ], limit=1)
-
-            if not existing_state:
-                # Create the state
-                self.env['res.country.state'].create({
-                    'name': 'State / Province...',
-                    'code': '(A)',
-                    'country_id': rec.id,
-                })
-
-
-
 class PartnerInherit(models.Model):
     _inherit = "res.partner"
     didication_letter = fields.Text('Didication letter')
@@ -645,13 +560,12 @@ class InheritLogin(AuthSignupHome):
         user.partner_id.phone = kw.get("login")
         return response
 
+
 class ProductCronJob(models.Model):
     _inherit = 'product.product'
 
     @api.model
     def unpublish_out_of_stock_products(self):
-        _logger.info(f"INSIDE ###############  unpublish_out_of_stock_product ################3)")
-
         # Search for all published product templates
         templates = self.env['product.template'].search([
             ('website_published', '=', True),
@@ -669,6 +583,3 @@ class ProductCronJob(models.Model):
                 template.write({'website_published': False})
             else:
                 _logger.info(f"Template {template.name} (ID: {template.id}) remains published due to stock in some variants.")
-
-
-    
