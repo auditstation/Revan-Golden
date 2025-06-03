@@ -650,6 +650,8 @@ class ProductCronJob(models.Model):
 
     @api.model
     def unpublish_out_of_stock_products(self):
+        _logger.info(f"INSIDE ###############  unpublish_out_of_stock_product ################3)")
+
         # Search for all published product templates
         templates = self.env['product.template'].search([
             ('website_published', '=', True),
