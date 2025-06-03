@@ -307,15 +307,17 @@ class ProductProduct(models.Model):
 
         for rec in self:
             if rec.type == 'product':
-                total_qty = 0
 
-                for quant in rec.sudo().stock_quant_ids:
-                    if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        total_qty += quant.quantity - quant.reserved_quantity
+                # for quant in rec.sudo().stock_quant_ids:
+                #     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
+                        # total_qty += quant.quantity - quant.reserved_quantity
+                total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty')) or 0.0
+                _logger.info(f"#############total_qty ><>>>>>>>>>>>>>>>>>>>>>>>>{total_qty}")
 
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
                 if total_qty <= 0:
+                    
                     rec.is_published = False
             else:
                 rec.is_out_of_stock = False
