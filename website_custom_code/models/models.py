@@ -14,15 +14,15 @@ class ProductTemplate(models.Model):
 
     is_visible = fields.Boolean('Visible', compute='_compute_product_visibility')
 
-    # @api.depends('qty_available')
-    # def _compute_product_visibility(self):
-    #     for product_temp in self:
+    @api.depends('qty_available')
+    def _compute_product_visibility(self):
+        for product_temp in self:
 
-    #             variants = product_temp.product_variant_ids
-    #             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
-    #             product_temp.is_visible = is_visible
-    #             if product_temp.qty_available == 0:
-    #                 product_temp.is_published = is_visible
+                variants = product_temp.product_variant_ids
+                is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
+                product_temp.is_visible = is_visible
+                if product_temp.qty_available == 0:
+                    product_temp.is_published = is_visible
 
     def _get_combination_info(self, combination=None, product_id=None, add_qty=1,
     parent_combination=None, only_template=False):
@@ -62,20 +62,20 @@ class ProductTemplate(models.Model):
 
         return combination_info
 
-    @api.depends('product_variant_ids.stock_quant_ids.quantity','product_variant_ids.virtual_available','product_variant_ids.hide_on_website')
-    def _compute_product_visibility(self):
-        _logger.info("#############_compute_product_visibility line 72")
-
-        for product_temp in self:
-            # total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
-            #     lambda q: q.location_id.usage == 'internal').mapped('quantity'))
-            total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty')) or 0.0
-
-            is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
-            product_temp.is_visible = is_visible
-            _logger.info(f'#############_compute_product_visibility total_qty {total_qty}')
-            if total_qty <= 0:
-                product_temp.is_published = is_visible
+    # @api.depends('product_variant_ids.stock_quant_ids.quantity','product_variant_ids.virtual_available','product_variant_ids.hide_on_website')
+    # def _compute_product_visibility(self):
+    #     _logger.info("#############_compute_product_visibility line 72")
+    #
+    #     for product_temp in self:
+    #         # total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
+    #         #     lambda q: q.location_id.usage == 'internal').mapped('quantity'))
+    #         total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty')) or 0.0
+    #
+    #         is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
+    #         product_temp.is_visible = is_visible
+    #         _logger.info(f'#############_compute_product_visibility total_qty {total_qty}')
+    #         if total_qty <= 0:
+    #             product_temp.is_published = is_visible
 
     # def get_possible_combinations_available(self):
 
