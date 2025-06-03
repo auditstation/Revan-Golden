@@ -108,30 +108,52 @@ class ProductTemplate(models.Model):
     #             'message':f'print value_to_show_tuple {valid_combination_list}',
     #             "value_to_show_tuple": valid_combination_list
     #         }
-    def get_possible_combinations_available(self):
-        _logger.info("#############get_possible_combinations_available line 113")
+    # def get_possible_combinations_available(self):
+    #     _logger.info("#############get_possible_combinations_available line 113")
+    #
+    #     for tpl in self.sudo():
+    #         valid_combination_list = []
+    #
+    #         combinations = tpl._get_possible_combinations()
+    #         for cmb in combinations:
+    #             variant = tpl._get_variant_for_combination(cmb)
+    #
+    #             if variant:
+    #                 # Check quantity across ALL warehouses, not just website warehouse
+    #                 total_qty = sum(quant.quantity for quant in variant.sudo().stock_quant_ids
+    #                                 if quant.location_id.usage == 'internal')
+    #
+    #                 if total_qty > 0:
+    #                     available = list(map(lambda item: item.id, cmb))
+    #                     valid_combination_list.append(available)
+    #
+    #         return {
+    #             'success': True,
+    #             'message': f'Available combinations: {valid_combination_list}',
+    #             'value_to_show_tuple': valid_combination_list
+    #         }
 
+    def get_possible_combinations_available(self):
+        result = []
         for tpl in self.sudo():
             valid_combination_list = []
-
             combinations = tpl._get_possible_combinations()
+
             for cmb in combinations:
                 variant = tpl._get_variant_for_combination(cmb)
+                if variant.qty_available > 0:
+                    available = [item.id for item in cmb]
+                    valid_combination_list.append(available)
 
-                if variant:
-                    # Check quantity across ALL warehouses, not just website warehouse
-                    total_qty = sum(quant.quantity for quant in variant.sudo().stock_quant_ids
-                                    if quant.location_id.usage == 'internal')
-
-                    if total_qty > 0:
-                        available = list(map(lambda item: item.id, cmb))
-                        valid_combination_list.append(available)
-
-            return {
-                'success': True,
-                'message': f'Available combinations: {valid_combination_list}',
+            result.append({
+                'product_id': tpl.id,
                 'value_to_show_tuple': valid_combination_list
-            }
+            })
+        return {
+            'success': True,
+            'message': 'Collected combinations for products',
+            'data': result
+        }
 
     def get_variant_count(self):
         _logger.info("#############get_variant_count line 138")
