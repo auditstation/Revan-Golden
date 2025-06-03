@@ -301,6 +301,8 @@ class ProductProduct(models.Model):
 
     @api.depends('stock_quant_ids.quantity','stock_quant_ids.reserved_quantity')
     def _compute_out_of_stock(self):
+        _logger.info("#############_compute_out_of_stock ><>>>>>>>>>>>>>>>>>>>>>>>>")
+
         preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
 
         for rec in self:
