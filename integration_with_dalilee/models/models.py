@@ -126,12 +126,13 @@ class SaleOrederInherit(models.Model):
 
 
     def add_order(self,sale_id):
+        _logger.info(f'sale_id{sale_id}')
         data = {
             "customer_name": str(sale_id.partner_id.name),
             "customer_number": str(sale_id.partner_id.phone),
             "order_price": 0,
             "wilaya_id": "1",
-            "external_way_bill_number":sale_id.name,
+            "external_way_bill_number":'Classy/'+sale_id.name,
             "address": str(sale_id.partner_shipping_id.country_id.name)+"-"+str(sale_id.partner_shipping_id.state_id.name)+"-"+str(sale_id.partner_shipping_id.street),
             "volume_weight": "2"
         }
@@ -262,10 +263,12 @@ class SaleOrederInherit(models.Model):
         url = base_url + 'print-orders'
         create_request_get_data = requests.post(url, data=json.dumps(data), headers=headers)
         response_body_data = create_request_get_data.content
+        
        
         b64PDF = codecs.encode(response_body_data, 'base64')
+        _logger.info(f'base_64file{b64PDF}')
         self.file_ship=b64PDF
        
 
-    
-        
+
+

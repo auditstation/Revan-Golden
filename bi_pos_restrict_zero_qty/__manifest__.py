@@ -18,7 +18,7 @@
     'assets':{
         'point_of_sale._assets_pos': [
             '/bi_pos_restrict_zero_qty/static/src/app/models/models.js',
-            '/bi_pos_restrict_zero_qty/static/src/app/models/test.js',
+            # '/bi_pos_restrict_zero_qty/static/src/app/models/test.js',
          ],
     },
     'demo': [],
