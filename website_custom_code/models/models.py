@@ -70,8 +70,9 @@ class ProductTemplate(models.Model):
             # total_qty = sum(product_temp.product_variant_ids.sudo().mapped('stock_quant_ids').filtered(
             #     lambda q: q.location_id.usage == 'internal').mapped('quantity'))
             total_qty = sum(product_temp.product_variant_ids.sudo().mapped('free_qty')) or 0.0
+            is_visible = any(not variant.hide_on_website for variant in product_temp.product_variant_ids)
 
-            is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
+            # is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
             product_temp.is_visible = is_visible
             _logger.info(f'#############_compute_product_visibility total_qty {total_qty}')
             if total_qty <= 0:
