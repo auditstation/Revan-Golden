@@ -17,7 +17,7 @@ class ProductTemplate(models.Model):
     # @api.depends('qty_available')
     # def _compute_product_visibility(self):
     #     for product_temp in self:
-    #
+
     #             variants = product_temp.product_variant_ids
     #             is_visible = False in product_temp.product_variant_ids.mapped('hide_on_website')
     #             product_temp.is_visible = is_visible
@@ -301,23 +301,19 @@ class ProductProduct(models.Model):
 
     @api.depends('stock_quant_ids.quantity','stock_quant_ids.reserved_quantity')
     def _compute_out_of_stock(self):
-        _logger.info("#############_compute_out_of_stock ><>>>>>>>>>>>>>>>>>>>>>>>>")
-
         preferred_warehouses = self.env['stock.warehouse'].sudo().search([])
 
         for rec in self:
             if rec.type == 'product':
+                total_qty = 0
 
-                # for quant in rec.sudo().stock_quant_ids:
-                #     if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
-                        # total_qty += quant.quantity - quant.reserved_quantity
-                total_qty = rec.free_qty or 0.0
-                _logger.info(f"#############total_qty ><>>>>>>>>>>>>>>>>>>>>>>>>{total_qty}")
+                for quant in rec.sudo().stock_quant_ids:
+                    if quant.location_id.warehouse_id in preferred_warehouses and quant.location_id.usage == 'internal':
+                        total_qty += quant.quantity - quant.reserved_quantity
 
                 rec.is_out_of_stock = total_qty <= 0
                 rec.hide_on_website = total_qty <= 0
                 if total_qty <= 0:
-
                     rec.is_published = False
             else:
                 rec.is_out_of_stock = False
